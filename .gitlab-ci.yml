@@ -1,55 +1,19 @@
-# This file is a template, and might need editing before it works on your project.
-# You can copy and paste this template into a new `.gitlab-ci.yml` file.
-# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
-#
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Nodejs.gitlab-ci.yml
-
-# Official framework image. Look for the different tagged releases at:
-# https://hub.docker.com/r/library/node/tags/
 image: node:alpine
 
-stage:
-  - install
+stages:
+  - test
   - build
-  - deploy
 
-# Pick zero or more services to be used on all builds.
-# Only needed when using a docker container to run your tests in.
-# Check out: https://docs.gitlab.com/ee/ci/services/index.html
-# services:
-#   - mysql:latest
-#   - redis:latest
-#   - postgres:latest
-
-# This folder is cached between builds
-# https://docs.gitlab.com/ee/ci/yaml/index.html#cache
-cache:
-  key: modules-cache
-  paths:
-    - node_modules
-    - dist
-
-job_install:
-  stage: install
-  tags:
-    - vue3
+test:
+  stage: test
   script:
-    - npm install
-job_bilud:
+    - npm run test
+  only:
+    - master
+
+build:
   stage: build
-  tags:
-    - vue3
   script:
     - npm run build
-job_deploy:
-  stage: deploy
-  image: docker
-  tags:
-    - vue3
-  script: 
-    - docker build -t rainbow-admin .
-    - if [ $(docker ps -ap --filter name=rainbow-admin-main) ];then docker rm -f rainbow-admin-main;fi
-    - docker run -d -p 10080:80 --name=rainbow-admin-main rainbow-admin
+  only:
+    - master

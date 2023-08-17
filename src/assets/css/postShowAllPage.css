@@ -1,0 +1,45 @@
+/* 圖片區塊最外框 */
+
+.picture-div {
+    padding: 12px;
+}
+
+/* 圖片輪播區塊 */
+
+.slider-div img {
+    max-height: 480px;
+    max-width: 100%;
+    object-fit: contain;
+    padding: 30px;
+}
+
+.carousel-div {
+    margin-top: -72px;
+}
+
+.carousel-div img {
+    max-height: 120px;
+    object-fit: contain;
+}
+
+
+
+/* 留言區塊 */
+
+.message-block {
+    margin-left: 72px;
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+.message-user-message {
+    display: flex;
+}
+
+.user-post-time {
+    margin-left: 48px;
+}
+
+.user-name {
+    text-decoration: underline;
+}

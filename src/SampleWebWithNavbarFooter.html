@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HomePage</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+<body>
+    <div id="navbar-container"></div>
+
+
+    <!-- 內頁部分 -->
+
+
+    <div id="footer-container"></div>
+
+
+    <script>
+        // Use jQuery AJAX to load the navbar and footer
+        $(document).ready(function () {
+            $.ajax({
+                url: 'navbar.html', // Path to your navbar.html file
+                success: function (data) {
+                    $('#navbar-container').html(data);
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $.ajax({
+                url: 'footer.html', // Path to your footer.html file
+                success: function (data) {
+                    $('#footer-container').html(data);
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

@@ -9,10 +9,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.3.4"
+    "axios": "^1.4.0",
+    "bootstrap": "^5.3.1",
+    "jquery": "^3.7.0",
+    "vue": "^3.3.4",
+    "flexslider": "^2.7.2",
+    "vue-carousel": "^0.18.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "jquery": "^3.7.0",
+    "flexslider": "^2.7.2"
   }
 }

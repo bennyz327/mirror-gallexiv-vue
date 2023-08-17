@@ -1,57 +1,77 @@
-image: node:alpine
+# image: node:alpine
 
-stages:
+# stages:
 
-  - install
-  - build
-  - deploy
-
-
-cache:
-  paths:
-    - node_modules/
+#   - install
+#   - build
+#   - deploy
 
 
-# 安装依赖
-
-install:
-
-  stage: install
-  only:
-    changes:
-      - package.json
-
-  # 执行脚本
-
-  script:
-    npm install
+# cache:
+#   paths:
+#     - node_modules/
 
 
-# 打包项目
+# # 安装依赖
 
-build:
+# install:
 
-  stage: build 
-  # only: master
-  script: 
-    - npm run build
-  artifacts: 
-    paths:
-        - dist/
+#   stage: install
+#   only:
+#     changes:
+#       - package.json
+
+#   # 执行脚本
+
+#   script:
+#     npm install
 
 
-# 部署项目
+# # 打包项目
 
-deploy:
+# build:
 
+#   stage: build 
+#   # only: master
+#   script: 
+#     - npm run build
+#   artifacts: 
+#     paths:
+#         - dist/
+
+
+# # 部署项目
+
+# deploy:
+
+#   stage: deploy
+#   # only: master
+
+#   script: 
+#     # 清空网站根目录，目录请根据服务器实际情况填写
+
+#     - rm -rf /opt/app/web/admin/*
+
+#     # 复制打包后的文件至网站根目录，目录请根据服务器实际情况填写
+
+#     - cp -rf ${CI_PROJECT_DIR}/dist/* /opt/app/web/admin/
+
+image: node:16.5.0
+pages:
   stage: deploy
-  # only: master
-
-  script: 
-    # 清空网站根目录，目录请根据服务器实际情况填写
-
-    - rm -rf /opt/app/web/admin/*
-
-    # 复制打包后的文件至网站根目录，目录请根据服务器实际情况填写
-
-    - cp -rf ${CI_PROJECT_DIR}/dist/* /opt/app/web/admin/
+  cache:
+    key:
+      files:
+        - package-lock.json
+      prefix: npm
+    paths:
+      - node_modules/
+  script:
+    - npm install
+    - npm run build
+    - cp -a dist/. public/
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

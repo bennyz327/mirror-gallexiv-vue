@@ -75,11 +75,13 @@ pages:
     - npm run build
     - cp -a dist/. public/
 
-    - docker build -t app/vue .
-    - docker run -d -p 8080:8080 --rm --name vuetest app/vue
+    - npm run dev
+    # - docker build -t app/vue .
+    # - docker run -d -p 8080:8080 --rm --name vuetest app/vue
   artifacts:
     paths:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    
 

@@ -1,27 +1,55 @@
-image: node:alpine
-
 stages:
-  - dev
-  # - test
-  # - build
 
-dev:
-  stage: dev
-  script:
-    - npm run dev
+  - install
+  - build
+  - deploy
+
+
+cache:
+  paths:
+    - node_modules/
+
+
+# 安装依赖
+
+install:
+
+  stage: install
   only:
-    - master
+    changes:
+      - package.json
 
-# test:
-#   stage: test
-#   script:
-#     - npm run test
-#   only:
-#     - master
+  # 执行脚本
 
-# build:
-#   stage: build
-#   script:
-#     - npm run build
-#   only:
-#     - master
+  script:
+    npm install
+
+
+# 打包项目
+
+build:
+
+  stage: build 
+  # only: master
+  script: 
+    - npm run build
+  artifacts: 
+    paths:
+        - dist/
+
+
+# 部署项目
+
+deploy:
+
+  stage: deploy
+  # only: master
+
+  script: 
+    # 清空网站根目录，目录请根据服务器实际情况填写
+
+    - rm -rf /opt/app/web/admin/*
+
+    # 复制打包后的文件至网站根目录，目录请根据服务器实际情况填写
+
+    - cp -rf ${CI_PROJECT_DIR}/dist/* /opt/app/web/admin/

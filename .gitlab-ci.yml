@@ -57,6 +57,10 @@
 #     - cp -rf ${CI_PROJECT_DIR}/dist/* /opt/app/web/admin/
 
 image: node:16.5.0
+stages:
+  # - install
+  # - build
+  - deploy
 pages:
   stage: deploy
   cache:
@@ -70,8 +74,10 @@ pages:
     - npm install
     - npm run build
     - cp -a dist/. public/
+    - npm run dev
   artifacts:
     paths:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+

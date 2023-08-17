@@ -1,8 +1,16 @@
 image: node:alpine
 
 stages:
+  - dev
   # - test
-  - build
+  # - build
+
+dev:
+  stage: dev
+  script:
+    - npm run dev
+  only:
+    - master
 
 # test:
 #   stage: test
@@ -11,9 +19,9 @@ stages:
 #   only:
 #     - master
 
-build:
-  stage: build
-  script:
-    - npm run build
-  only:
-    - master
+# build:
+#   stage: build
+#   script:
+#     - npm run build
+#   only:
+#     - master

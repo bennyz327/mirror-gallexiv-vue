@@ -74,7 +74,9 @@ pages:
     - npm install
     - npm run build
     - cp -a dist/. public/
-    - npm run dev
+
+    - docker build -t app/vue .
+    - docker run -d -p 8080:8080 --rm --name vuetest app/vue
   artifacts:
     paths:
       - public

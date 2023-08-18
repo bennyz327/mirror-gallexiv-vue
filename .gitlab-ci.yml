@@ -87,15 +87,16 @@
 #   rules:
 #     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
-image: docker
-services:
-  - docker:dind
-stages:
-  - deploy
-step-deploy-prod:
-  stage: deploy
-  script:
-    - docker build -t app/vue-demo .
-    - docker run -d -p 80:80 --rm --name todoapp app/vue-demo
+# 不對 這變成讓LCT用docker裝一個docker
+# image: docker
+# services:
+#   - docker:dind
+# stages:
+#   - deploy
+# step-deploy-prod:
+#   stage: deploy
+#   script:
+#     - docker build -t app/vue-demo .
+#     - docker run -d -p 80:80 --rm --name todoapp app/vue-demo
     
 

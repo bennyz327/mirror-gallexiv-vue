@@ -139,13 +139,13 @@ run_unit_tests:
 run_build:
   image: node:gallium-alpine3.16
   stage: build
-  needs:
-    - run_unit_tests
-  dependencies:
-    - run_unit_tests
-  only:
-    - develop
-    - /^v.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:0|[a-z]*)$/
+  # needs:
+  #   - run_unit_tests
+  # dependencies:
+  #   - run_unit_tests
+  # only:
+  #   - develop
+  #   - /^v.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:0|[a-z]*)$/
   script:
     - cp ${nginx} default.conf
     - >
@@ -176,10 +176,10 @@ run_deploy_dev:
     - run_build
   variables:
     GIT_STRATEGY: none
-  only:
-    - develop
-  tags:
-    - develop
+  # only:
+    # - develop
+  # tags:
+    # - develop
   script:
     - docker-compose down
     - docker-compose up -d --build

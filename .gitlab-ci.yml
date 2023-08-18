@@ -38,8 +38,6 @@
 #   artifacts: 
 #     paths:
 #         - dist/
-
-
 # # 部署项目
 
 # deploy:
@@ -56,35 +54,48 @@
 
 #     - cp -rf ${CI_PROJECT_DIR}/dist/* /opt/app/web/admin/
 
-image: node:16.5.0
+
+# 能動的，但是怪怪的
+# image: node:16.5.0
+# stages:
+#   # - install
+#   # - build
+#   - deploy
+# pages:
+#   stage: deploy
+#   cache:
+#     key:
+#       files:
+#         - package-lock.json
+#       prefix: npm
+#     paths:
+#       - node_modules/
+#   script:
+#     - npm install
+#     - npm run build
+#     - cp -a dist/. public/
+
+#     - ls .
+#     - ls /
+
+#     # - npm run dev
+#     - docker build -t app/vue .
+#     - docker run -d -p 8080:8080 --rm --name vuetest app/vue
+#   artifacts:
+#     paths:
+#       - public
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+image: docker
+services:
+  - docker:dind
 stages:
-  # - install
-  # - build
   - deploy
-pages:
+step-deploy-prod:
   stage: deploy
-  cache:
-    key:
-      files:
-        - package-lock.json
-      prefix: npm
-    paths:
-      - node_modules/
   script:
-    - npm install
-    - npm run build
-    - cp -a dist/. public/
-
-    - ls .
-    - ls /
-
-    # - npm run dev
-    - docker build -t app/vue .
-    - docker run -d -p 8080:8080 --rm --name vuetest app/vue
-  artifacts:
-    paths:
-      - public
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - docker build -t app/vue-demo .
+    - docker run -d -p 80:80 --rm --name todoapp app/vue-demo
     
 

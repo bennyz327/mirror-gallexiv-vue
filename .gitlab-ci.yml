@@ -43,6 +43,8 @@ stages:
 install_dependencies:
   image: node:gallium-alpine3.16
   stage: install
+  only:
+    - master
   script:
     - yarn install
   artifacts:
@@ -104,6 +106,8 @@ run_build:
     - run_dev_tests
   script:
     - docker build -t gallexiv-vue
+  only:
+    - master
 
   ### DEPLOY TO DEVELOP ###
 run_deploy_dev:
@@ -115,8 +119,8 @@ run_deploy_dev:
     - run_build
   variables:
     GIT_STRATEGY: none
-  # only:
-    # - develop
+  only:
+    - devXX
   # tags:
     # - develop
   script:
@@ -146,8 +150,8 @@ run_deploy_prod:
   variables:
     GIT_STRATEGY: none
   only:
-    - master
-    - /^v.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:0|[a-z]*)$/
+    - masterXX
+    # - /^v.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:0|[a-z]*)$/
   except:
     - branches
   script:

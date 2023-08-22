@@ -1,40 +1,43 @@
 <script>
+import {ref, watch} from 'vue';
+export default {
+  setup() {
+    // 使用 ref 創建響應式vue
+    const selectedOption = ref('作品名稱');
 
-import {defineComponent, ref} from 'vue';
+    const apiUrl = ref('');
 
-export default defineComponent({
-  data() {
+    // 監聽selectedOption
+    watch(selectedOption, (newVal) => {
+      if (newVal === '作品名稱') {
+        apiUrl.value = '/localhost:8080/posts/byTitle';
+      } else if (newVal === '1') {
+        apiUrl.value = '/localhost:8080/posts/byAuthor';
+      } else if (newVal === '2') {
+        apiUrl.value = '/localhost:8080/posts/byHashtag';
+      } else {
+        apiUrl.value = '';
+      }
+    });
+
+    // 創建搜尋方法
+    const search = () => {
+      // 使用 apiUrl 發送api請求
+      // 例如使用 axios 發送到 apiUrl
+      // axios.get(apiUrl.value).then(response => {
+      // });
+      console.log('API request URL: ', apiUrl.value);
+    };
+
+    // 供模塊使用
     return {
-      selectedOption: '作品名稱',
-      //  使預設選項為第一個
+      selectedOption,
+      apiUrl,
+      search,
     };
   },
-  computed: {
-    apiUrl() {
-      // 透過select選擇搜尋的api
-      if (this.selectedOption === '作品名稱') {
-        return '/api/posts/byTitle';
-      } else if (this.selectedOption === '1') {
-        return '/api/posts/byAuthor';
-      } else if (this.selectedOption === '2') {
-        return '/api/posts/byHashtag';
-      }
-      return '';
-      // 沒有匹配的選項時可以指定一個api
-    },
-  },
-  methods: {
-    search() {
-      // 使用 this.apiUrl 發送api請求
-      // 例如，使用 axios 發送到 this.apiUrl
-      // axios.get(this.apiUrl).then(response => {
-      // });
-      console.log('API request URL: ', this.apiUrl);
-    },
-  },
-});
+};
 </script>
-
 
 <template>
 

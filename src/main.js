@@ -8,7 +8,7 @@ import router from "./router/router.js";
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.bundle.js'
-import 'vue3-carousel/dist/carousel.css'
+import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
 //套件匯入區
 

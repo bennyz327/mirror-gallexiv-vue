@@ -3,6 +3,8 @@ import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 
 
+export default {
+  setup() {
     const tags = ref([]);
     const currentPage = ref(1);
     const itemsPerPage = 5;
@@ -31,17 +33,20 @@ import axios from 'axios';
       currentPage.value = page;
     };
 
+    return {
+      tags,
+      paginatedTags,
+      totalPages,
+      setCurrentPage,
+    };
+  },
+};
+</script>
 
-// export default {
-//   setup() {
-//     return {
-//       tags,
-//       paginatedTags,
-//       totalPages,
-//       setCurrentPage,
-//     };
-//   },
-// };
+<script setup>
+import { useRoute } from 'vue-router';
+const route = useRoute();
+const id = route.params;
 </script>
 
 <template>
@@ -89,7 +94,7 @@ import axios from 'axios';
           <div class="card shadow-sm" style="object-fit: contain">
               <img src="../assets/Picture/mika.png" alt="Image Description" style="object-fit: cover; width: 100%; height: 225px;">
             <div class="card-body">
-              <p class="card-text">MikaSheep</p>
+              <p class="card-text">{{id}}MikaSheep</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <button type="button" class="btn btn- btn-outline-secondary">

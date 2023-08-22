@@ -164,13 +164,16 @@ const nextPage = () => {
 
 .tagname-block{
   background-color: #e6e6fa;
-  padding: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
   margin: 8px;
   border-radius: 8px;
-  max-height: 50px;
-  max-width: 120px;
-  overflow:hidden;
+  max-height: 48px;
+  max-width: 144px;
 
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 </style>

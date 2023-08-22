@@ -1,9 +1,13 @@
 <script setup>
 import Navbar from "./components/Navbar.vue";
+
 </script>
 
 <template>
 
-  <Navbar></Navbar>
+  <div v-if="$route.meta.keepNavbar">
+    <Navbar></Navbar>
+    <router-view></router-view>
+  </div>
 
 </template>

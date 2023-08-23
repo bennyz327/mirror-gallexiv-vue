@@ -1,11 +1,12 @@
 <script setup>
 import {ref, computed, onMounted} from 'vue';
 import tagJson from "../assets/tag.json";
+import Navbar from "../components/Navbar.vue";
 
 // Tag匯入及分頁功能
 const tags = ref([]);
 const currentPage = ref(1);
-const itemsPerPage = 7;
+const itemsPerPage = 5;
 const loadPopularTags = () => {
   try {
     // 導入數據
@@ -57,6 +58,8 @@ const nextPage = () => {
 </script>
 
 <template>
+
+  <Navbar></Navbar>
 
   <!-- 整個頁面的容器大小 -->
 

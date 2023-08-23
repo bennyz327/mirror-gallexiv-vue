@@ -1,6 +1,7 @@
 <script setup>
 import {ref, computed, onMounted} from 'vue';
 import axios from 'axios';
+import Navbar from "../components/Navbar.vue";
 
 // 頁數功能
 const tags = ref([]);
@@ -46,6 +47,8 @@ const nextPage = () => {
 </script>
 
 <template>
+
+  <Navbar></Navbar>
 
   <!-- 整個頁面的容器大小 -->
 

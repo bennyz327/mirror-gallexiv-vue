@@ -5,46 +5,38 @@ import HomepageTest from "../views/HomepageTest.vue";
 import TagSearch from "../views/TagSearch.vue";
 import RegisterPage from "../views/RegisterPage.vue";
 
+
+
 const routes = [
     {
         path: '/',
         name: 'Home',
         component: Homepage,
-        meta:{
-            keepNavbar:true
-        }
     },
     {
         path: '/post/1',
         name: 'Post',
         component: PostViewPage,
-        meta:{
-            keepNavbar:true
-        }
     },
     {
         path: '/tags/{id}',
         name: 'Tags',
         component: TagSearch,
-        meta:{
-            keepNavbar:true
-        }
     },
     {
         path: '/post/test',
         name: 'PostTest',
         component: HomepageTest,
-        meta:{
-            keepNavbar:true
-        }
     },
     {
         path: '/register',
         name: 'Register',
         component: RegisterPage,
-        meta:{
-            keepNavbar:false
-        }
+    },
+    {
+        path: '/postViewPage',
+        name: 'PostView',
+        component: PostViewPage,
     },
     // {
     //     path: '/market',

@@ -10,6 +10,9 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.bundle.js'
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
+// 輪播
+
+
 //套件匯入區
 
 

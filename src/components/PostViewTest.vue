@@ -2,7 +2,7 @@
   <div class="container mt-3">
     <Carousel :items-to-show="itemToShow" :wrap-around="wrapAround" :autoplay="autoplay"
               :pauseAutoplayOnHover="pauseAutoplayOnHover">
-      <Slide v-for="(item, index) in items.imageUrlList" :key="index">
+      <Slide v-for="(item, index) in items2.imageUrlListSM" :key="index">
         <div class="card">
           <img class="carousel__item slideImgs card-img-top" :src="item">
           <div class="card-body">
@@ -26,12 +26,12 @@ import { Navigation, Slide, Pagination, Carousel } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
 
 const itemToShow = 2 //輪播顯示數量
-const wrapAround = true //循環模式
+const wrapAround = false //循環模式
 const autoplay = 5000 //自動循環時間(單位:毫秒)
 const pauseAutoplayOnHover = true //游標懸浮暫停自動循環
-const items = reactive(
+const items2 = reactive(
     {
-      imageUrlList: ["https://cdn.discordapp.com/attachments/528864372202668032/1142080567979020399/image.png",
+      imageUrlListSM: ["https://cdn.discordapp.com/attachments/528864372202668032/1142080567979020399/image.png",
         "https://cdn.discordapp.com/attachments/528864372202668032/1136925984428392508/image.png",
         "https://cdn.discordapp.com/attachments/528864372202668032/1135057060439011369/2023-07-30_11.50.40.png",
       ]

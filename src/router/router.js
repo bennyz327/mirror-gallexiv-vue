@@ -4,6 +4,7 @@ import PostViewPage from "../views/PostViewPage.vue";
 import HomepageTest from "../views/HomepageTest.vue";
 import TagSearch from "../views/TagSearch.vue";
 import RegisterPage from "../views/RegisterPage.vue";
+import TestPage from "../views/TestPage.vue";
 
 
 
@@ -38,11 +39,11 @@ const routes = [
         name: 'PostView',
         component: PostViewPage,
     },
-    // {
-    //     path: '/market',
-    //     name: 'Market',
-    //     component: () => import('./views/Market.vue')
-    // }
+    {
+        path: '/testpage',
+        name: 'Testpage',
+        component: TestPage,
+    },
 ];
 
 const router = createRouter({

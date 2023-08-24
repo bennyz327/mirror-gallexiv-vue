@@ -4,10 +4,13 @@ import PostViewCarousel from "../components/PostViewCarousel.vue";
 import {defineComponent} from 'vue'
 import InputTextBox from "../components/InputTextBox.vue";
 
+const input = "ohyeah";
+
 export default defineComponent({
   name: "PostViewPage",
   components: {InputTextBox, PostViewCarousel, Navbar}
 })
+
 </script>
 
 <template>
@@ -25,18 +28,23 @@ export default defineComponent({
         <PostViewCarousel></PostViewCarousel>
       </div>
 
-      <hr class="border border-success border-1 opacity-50">
       <!-- Carousel底下 -->
 
       <!-- 留言區塊 -->
       <div class="message-block">
 
         <!-- 發文區塊 -->
-        <div class="post-message-block">
 
-          <input-text-box></input-text-box>
+          <div class="post-message-block">
+            <div class="rounded-circle" style="display:flex">
+              <img src="../assets/Picture/UserIcon.gif" alt="User" width="64" height="64" class="rounded-circle"
+                   style="object-fit:contain;"/>
+            </div>
 
-        </div>
+            <!-- 輸入框區塊 -->
+            <input-text-box label-id="messageInsert" labelText="留下您的留言"></input-text-box>
+          </div>
+
 
 
       </div>
@@ -46,57 +54,54 @@ export default defineComponent({
     <!-- 右邊版面 -->
     <div class="container-right-block">
 
-      <!-- 標題名稱 -->
-      <div class="picture-name-block">
+      <div class="author-and-description-block">
 
-        <div class="picture-name-div">
-          <h4 class="ellipsis">Connection reset</h4>
+        <!-- 標題名稱 -->
+        <div class="picture-name-block">
+
+          <div class="picture-name-div">
+            <h4 class="ellipsis">Connection reset</h4>
+          </div>
+
+          <div class="menu-block">
+            <i class="fa-solid fa-bars fa-xl" style="color: #d88d4f;"></i>
+          </div>
+
         </div>
 
-        <div class="menu-block">
-          <i class="fa-solid fa-bars fa-xl" style="color: #d88d4f;"></i>
-        </div>
+        <!--<hr class="border border-danger border-2 opacity-50">-->
 
-      </div>
-
-      <hr class="border border-danger border-2 opacity-50">
-
-      <div class="author-description-block">
-
-        <!-- 有超連結的區塊 -->
-        <router-link :to="'/user/'" class="link-color-avoid">
+        <div class="author-description-block">
 
           <div class="author-introduce-block">
 
             <!-- 頭像 -->
-            <div class="rounded-circle" style="display:flex">
-              <img src="../assets/Picture/UserIcon.gif" alt="User" width="64" height="64" class="rounded-circle"
-                   style="object-fit:contain;"/>
+            <div class="icon-authorname-block">
+              <div class="rounded-circle" style="display:flex">
+                <img src="../assets/Picture/UserIcon.gif" alt="User" width="64" height="64" class="rounded-circle"
+                     style="object-fit:contain;"/>
+              </div>
+
+              <!-- 名稱 -->
+              <div class="author-name-block">
+                <h6 class="ellipsis">
+                  BennyZhou
+                </h6>
+                <br>
+              </div>
             </div>
 
-            <!-- 名稱 -->
-            <div class="author-name-block">
-              <h6 class="ellipsis">
-                BennyZhou
-              </h6>
-              <br>
+            <!-- 內容簡介 -->
+            <div class="picture-description-block">
+              <div class="description-block">
+                <p id="descriptionText" style="display:none">訂閱即可解鎖新功能，而且若符合資格，還可獲得廣告收益分成。</p>
+                <a href="javascript:" onclick="descriptionText.style.display=descriptionText.style.display=='none'?'':'none'"><i class="fa-solid fa-crop-simple fa-bounce" style="color: #d88d4f;">顯示/隱藏敘述</i></a>
+                <!-- 可容納300字元左右 -->
+              </div>
             </div>
 
-          </div>
-
-        </router-link>
-
-        <!-- 內容簡介 -->
-        <div class="picture-description-block">
-          <div class="time-block">
-            <p>2023-06-18</p>
-          </div>
-          <div class="description-block">
-            <p>訂閱即可解鎖新功能，而且若符合資格，還可獲得廣告收益分成。</p>
-            <!-- 可容納500字元左右 -->
           </div>
         </div>
-
       </div>
     </div>
 
@@ -123,45 +128,55 @@ export default defineComponent({
 .container-left-block {
   float: left;
   width: auto;
-  margin: 8px;
+  margin-right: 16px;
 }
+
+.post-message-block{
+
+}
+
+
+
 
 .container-right-block {
   float: right;
-  width: auto;
-  margin: 8px;
-  padding: 16px;
-  background-color: #FCFAF1;
+  width: 480px;
   border-radius: 16px;
-  //box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+//margin: 8px; //box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
 }
 
 .container-button-block {
   float: none;
   height: 80px;
+}
 
+.author-and-description-block {
+  background-color: #FCFAF1;
 }
 
 .picture-name-block {
   display: flex;
-  width: 470px;
+  width: 480px;
   text-overflow: ellipsis;
   align-items: center;
-  margin: 8px;
+  padding: 16px;
 }
 
 .picture-name-div {
-  width: 470px;
+  width: 424px;
   max-width: 416px;
-}
-
-.menu-block {
-
 }
 
 .author-introduce-block {
   display: flex;
+//align-items: center; flex-direction: column;
+}
+
+.icon-authorname-block {
+  display: flex;
   align-items: center;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 .author-name-block {
@@ -176,8 +191,9 @@ export default defineComponent({
   display: flex;
   float: right;
   text-align: left;
-  height: 432px;
-  width: 420px;
+  height: 480px;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 .ellipsis {

@@ -1,48 +1,46 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import Homepage from "../views/Homepage.vue";
-import PostViewPage from "../views/PostViewPage.vue";
-import HomepageTest from "../views/HomepageTest.vue";
-import TagSearch from "../views/TagSearch.vue";
-import RegisterPage from "../views/RegisterPage.vue";
-import TestPage from "../views/TestPage.vue";
-
-
+import {createRouter, createWebHistory} from 'vue-router';
+// import Homepage from "../views/Homepage.vue";
+// import HomepageTest from "../views/HomepageTest.vue";
+// import TagSearch from "../views/TagSearch.vue";
+// import RegisterPage from "../views/RegisterPage.vue";
+// import TestPage from "../views/TestPage.vue";
+// import PostViewPage from "../views/PostViewPage.vue";
 
 const routes = [
     {
         path: '/',
         name: 'Home',
-        component: Homepage,
-    },
-    {
-        path: '/post/1',
-        name: 'Post',
-        component: PostViewPage,
+        component: () => import("../views/Homepage.vue"),
     },
     {
         path: '/tags/{id}',
         name: 'Tags',
-        component: TagSearch,
+        component: () => import("../views/TagSearch.vue"),
     },
     {
         path: '/post/test',
         name: 'PostTest',
-        component: HomepageTest,
+        component: () => import("../views/HomepageTest.vue"),
     },
     {
         path: '/register',
         name: 'Register',
-        component: RegisterPage,
+        component: () => import("../views/RegisterPage.vue"),
     },
     {
         path: '/postViewPage',
         name: 'PostView',
-        component: PostViewPage,
+        component: () => import("../views/PostViewPage.vue"),
     },
     {
         path: '/testpage',
         name: 'Testpage',
-        component: TestPage,
+        component: () => import("../views/TestPage.vue"),
+    },
+    {
+        path: '/testpage',
+        name: 'Testpage',
+        component: () => import(""),
     },
 ];
 

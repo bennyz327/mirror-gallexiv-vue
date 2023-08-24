@@ -1,4 +1,5 @@
 <script setup>
+defineProps(['labelId','labelText'])
 
 </script>
 
@@ -8,7 +9,7 @@
     <div class="input-data">
       <input type="text" required=""/>
       <div class="underline"></div>
-      <label>Message</label>
+      <label :id="labelId">{{ labelText }}</label>
     </div>
   </div>
 

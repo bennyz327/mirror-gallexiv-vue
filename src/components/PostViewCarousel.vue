@@ -12,7 +12,7 @@
     <div class="carousel-down">
       <Carousel
           id="thumbnails"
-          :items-to-show="3"
+          :items-to-show="5"
           :wrap-around="true"
           v-model="currentSlide"
           ref="carousel"
@@ -43,10 +43,10 @@ export default defineComponent({
     currentSlide: 0,
     items: reactive({
       imageUrlList: [
-        'https://cdn.discordapp.com/attachments/528864372202668032/1142080567979020399/image.png',
-        'https://cdn.discordapp.com/attachments/528864372202668032/1136925984428392508/image.png',
-        'https://cdn.discordapp.com/attachments/528864372202668032/1135057060439011369/2023-07-30_11.50.40.png',
-        'https://cdn.discordapp.com/attachments/557253153746321419/1143406386236096594/IMG20230822134828.jpg',
+        'https://cdn.discordapp.com/attachments/940525773457072169/1143597896827162654/101585724_p1.png',
+        'https://cdn.discordapp.com/attachments/940525773457072169/1143599997208776757/101317845_p0.png',
+        'https://cdn.discordapp.com/attachments/940525773457072169/1143601111375286352/RABBIT_108010979_p0.jpg',
+        'https://cdn.discordapp.com/attachments/940525773457072169/1143599096771391530/102395047_p4.png',
 
       ],
     }),

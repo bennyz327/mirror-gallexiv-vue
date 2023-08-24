@@ -1,15 +1,22 @@
-<script>
+<script setup>
 import Navbar from "../components/Navbar.vue";
 import PostViewCarousel from "../components/PostViewCarousel.vue";
-import {defineComponent} from 'vue'
 import InputTextBox from "../components/InputTextBox.vue";
+import { ref } from 'vue';
 
-const input = "ohyeah";
+// 愛心按鈕點擊功能
+const liked = ref(false);
+const toggleLike = () => {
+  liked.value = !liked.value;
+};
 
-export default defineComponent({
-  name: "PostViewPage",
-  components: {InputTextBox, PostViewCarousel, Navbar}
-})
+// 收藏按鈕點擊功能
+const collected = ref(false);
+const toggleCollect = () => {
+  collected.value = !collected.value;
+};
+
+//
 
 </script>
 
@@ -33,22 +40,37 @@ export default defineComponent({
       <!-- 留言區塊 -->
       <div class="message-block">
 
-        <!-- 發文區塊 -->
 
-          <div class="post-message-block">
+        <div class="like-and-collect-block">
+          <div class="like-button-block">
+            <button type="button" class="btn btn-outline-primary" @click="toggleLike" style="">
+              <i v-if="liked" class="fa-solid fa-heart fa-lg" style="color: #da2b2b;"></i>
+              <i v-else class="fa-regular fa-heart fa-lg" style="color: #da2b2b;"></i>
+            </button>
+          </div>
+
+          <div class="favorite-button-block">
+            <button :class="collected ? 'btn btn-primary' : 'btn btn-outline-primary'" type="button" @click="toggleCollect">收藏</button>
+          </div>
+        </div>
+
+        <div class="post-message-block">
+          <!-- 頭像區塊 -->
+          <div class="message-user-avatar-block">
             <div class="rounded-circle" style="display:flex">
               <img src="../assets/Picture/UserIcon.gif" alt="User" width="64" height="64" class="rounded-circle"
                    style="object-fit:contain;"/>
             </div>
+          </div>
 
+          <div class="message-input-block">
             <!-- 輸入框區塊 -->
             <input-text-box label-id="messageInsert" labelText="留下您的留言"></input-text-box>
           </div>
 
-
+        </div>
 
       </div>
-
     </div>
 
     <!-- 右邊版面 -->
@@ -95,7 +117,9 @@ export default defineComponent({
             <div class="picture-description-block">
               <div class="description-block">
                 <p id="descriptionText" style="display:none">訂閱即可解鎖新功能，而且若符合資格，還可獲得廣告收益分成。</p>
-                <a href="javascript:" onclick="descriptionText.style.display=descriptionText.style.display=='none'?'':'none'"><i class="fa-solid fa-crop-simple fa-bounce" style="color: #d88d4f;">顯示/隱藏敘述</i></a>
+                <a href="javascript:"
+                   onclick="descriptionText.style.display=descriptionText.style.display=='none'?'':'none'"><i
+                    class="fa-solid fa-crop-simple fa-bounce" style="color: #d88d4f;">顯示/隱藏敘述</i></a>
                 <!-- 可容納300字元左右 -->
               </div>
             </div>
@@ -131,12 +155,26 @@ export default defineComponent({
   margin-right: 16px;
 }
 
-.post-message-block{
-
+.post-message-block {
+  display: flex;
+  align-items: center;
 }
 
+.like-and-collect-block{
+  display: flex;
+  margin-top: 16px;
+  float:right;
+}
 
+.message-user-avatar-block{
+  display: inline-block;
+}
 
+.message-input-block {
+  display: inline-block;
+  align-items: center;
+  margin-top: 16px;
+}
 
 .container-right-block {
   float: right;
@@ -149,6 +187,7 @@ export default defineComponent({
   float: none;
   height: 80px;
 }
+
 
 .author-and-description-block {
   background-color: #FCFAF1;

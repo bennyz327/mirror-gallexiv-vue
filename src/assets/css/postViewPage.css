@@ -14,10 +14,18 @@
     align-items: center;
 }
 
+.message-block{
+    position:relative;
+}
+
 .like-and-collect-block {
     display: flex;
     margin-top: 16px;
     float: right;
+}
+
+.favorite-button-block button{
+ width: 80px;
 }
 
 .message-user-avatar-block {
@@ -41,7 +49,6 @@
     float: none;
     height: 80px;
 }
-
 
 .whole-picture-name-block {
     background-color: #FCFAF1;
@@ -101,4 +108,5 @@
 a.link-color-avoid {
     text-decoration: none;
     color: black;
+
 }

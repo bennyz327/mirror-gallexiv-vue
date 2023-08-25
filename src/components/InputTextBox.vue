@@ -1,5 +1,7 @@
 <script setup>
-defineProps(['labelId','labelText'])
+import {props} from "vue-slick-carousel/src/defaultProps.js";
+
+defineProps(['labelId','labelText','typeId','isRequired'])
 
 </script>
 
@@ -7,7 +9,7 @@ defineProps(['labelId','labelText'])
 
   <div class="wrapper" style="width: 420px">
     <div class="input-data">
-      <input type="text" required=""/>
+      <input :type="typeId" :required="isRequired"/>
       <div class="underline"></div>
       <label :id="labelId">{{ labelText }}</label>
     </div>
@@ -33,14 +35,15 @@ body {
 }
 
 .wrapper {
-  width: 440px;
+  width: 100%;
   background-color: #fff;
   padding: 30px;
+  margin: 0px;
 
 }
 
 .wrapper .input-data{
-  width: 100%;
+  width: 80%;
   height: 40px;
   position: relative;
 }

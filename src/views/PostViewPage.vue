@@ -37,8 +37,8 @@ const fetchData = async () => {
 
     const fakeUserData = {
       "postUserName": "Aosora",
-      "postDescription": "夏萊的老師有無限的包容力                                      還有無限的地下室",
-      "postTitle": "110",
+      "postDescription": "夏萊的老師有無窮的包容力  還有無限的地下室",
+      "postTitle": "Fbi Open UP",
       "userImageURL": "https://i.imgur.com/6rpzbog.gif",
       "postUserImageURL": "https://media.discordapp.net/attachments/782068953899335710/1138768475754598420/83E0E2EE11DE10FD3314E2FE2D1EBDAE.gif",
     };
@@ -108,7 +108,6 @@ const heartClass = computed(() => {
     <div class="container-postViewPageStyle">
 
       <!--------------------------------左半部區塊----------------------------------------->
-
       <div class="container-left-block">
         <!-- Carousel -->
         <div class="carousel-block">
@@ -116,7 +115,6 @@ const heartClass = computed(() => {
         </div>
 
         <!--------------------------------Carousel 分隔區 / 收藏按鈕區塊----------------------------------------->
-
         <div class="message-block">
 
           <!--愛心及收藏功能-->
@@ -156,7 +154,7 @@ const heartClass = computed(() => {
 
             <!-- 輸入框區塊 -->
             <div class="message-input-block">
-              <input-text-box label-id="messageInsert" labelText="留下您的留言"></input-text-box>
+              <input-text-box label-id="messageInsert" labelText="留下您的留言" type-id="text" is-required="false"></input-text-box>
             </div>
 
           </div>
@@ -210,7 +208,6 @@ const heartClass = computed(() => {
         </div>
 
         <!--------------------------------圖片名稱  作者內容分隔線----------------------------------------->
-
         <div class="whole-author-introduce-block">
 
           <div class="author-introduce-block">

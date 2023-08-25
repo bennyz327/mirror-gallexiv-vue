@@ -18,8 +18,8 @@ const routes = [
         component: () => import("../views/TagSearch.vue"),
     },
     {
-        path: '/post/test',
-        name: 'PostTest',
+        path: '/HomepageTest',
+        name: 'HomepageTest',
         component: () => import("../views/HomepageTest.vue"),
     },
     {

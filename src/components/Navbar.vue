@@ -154,9 +154,4 @@ export default {
   display: none;
 }
 
-.p-2 bd-highlight{
-
-
-}
-
 </style>

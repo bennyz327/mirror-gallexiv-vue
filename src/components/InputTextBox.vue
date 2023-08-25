@@ -5,7 +5,7 @@ defineProps(['labelId','labelText'])
 
 <template>
 
-  <div class="wrapper">
+  <div class="wrapper" style="width: 420px">
     <div class="input-data">
       <input type="text" required=""/>
       <div class="underline"></div>

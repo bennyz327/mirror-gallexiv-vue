@@ -23,6 +23,7 @@ const imgDataReference = ref([
   }
 ]);
 
+// 匯入資料到carousel
 const imgDataImportToCarousel = reactive(
     imgDataReference.value.map(item => item.imgPath)
 );
@@ -35,9 +36,9 @@ const fetchData = async () => {
   try {
 
     const fakeUserData = {
-      "postUserName": "Benny",
-      "postDescription": "gan ni nia",
-      "postTitle": "Blue",
+      "postUserName": "Aosora",
+      "postDescription": "夏萊的老師有無限的包容力                                      還有無限的地下室",
+      "postTitle": "110",
       "userImageURL": "https://i.imgur.com/6rpzbog.gif",
       "postUserImageURL": "https://media.discordapp.net/attachments/782068953899335710/1138768475754598420/83E0E2EE11DE10FD3314E2FE2D1EBDAE.gif",
     };
@@ -162,75 +163,97 @@ const heartClass = computed(() => {
 
           <!-- 底部留言區塊 -->
           <div class="message-show-block">
+            <!-- 單人留言區塊(v-for區塊) -->
+            <div class="single-message-block">
 
+              <div class="single-message-div">
+                <!-- 留言者頭像 -->
+                <div class="single-message-user-icon-div">
+
+                </div>
+
+                <!-- userName -->
+                <div class="single-message-userName-div">
+                </div>
+
+                <!-- userContext -->
+                <div class="single-message-userContext-div">
+                </div>
+
+                <!-- userContextTime -->
+                <div class="single-message-userContextTime-div">
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+      </div>
+    </div>
+
+    <!--------------------------------右半部區塊----------------------------------------->
+    <div class="container-right-block">
+
+      <div class="whole-picture-name-block">
+
+        <!-- 標題名稱 -->
+        <div class="picture-name-block">
+
+          <div class="picture-name-div">
+            <h4 class="ellipsis" id="mainPostPicName">{{ testData.postTitle }}</h4>
+          </div>
+
+          <div class="menu-block">
+            <i class="fa-solid fa-bars fa-xl" style="color: #d88d4f;"></i>
           </div>
 
         </div>
-      </div>
 
-      <!--------------------------------右半部區塊----------------------------------------->
-      <div class="container-right-block">
+        <!--------------------------------圖片名稱  作者內容分隔線----------------------------------------->
 
-        <div class="whole-picture-name-block">
+        <div class="whole-author-introduce-block">
 
-          <!-- 標題名稱 -->
-          <div class="picture-name-block">
+          <div class="author-introduce-block">
 
-            <div class="picture-name-div">
-              <h4 class="ellipsis" id="mainPostPicName">{{ testData.postTitle }}</h4>
-            </div>
-
-            <div class="menu-block">
-              <i class="fa-solid fa-bars fa-xl" style="color: #d88d4f;"></i>
-            </div>
-
-          </div>
-
-          <!--------------------------------圖片名稱  作者內容分隔線----------------------------------------->
-
-          <div class="whole-author-introduce-block">
-
-            <div class="author-introduce-block">
-
-              <!-- 頭像 -->
-              <div class="author-icon-block">
-                <div class="rounded-circle" style="display:flex">
-                  <img :src="testData.postUserImageURL" alt="User" width="64" height="64" class="rounded-circle"
-                       style="object-fit:contain;"/>
-                </div>
-
-                <!-- 名稱 -->
-                <div class="author-name-block">
-                  <h6 class="ellipsis" id="mainPostUserName">
-                    {{ testData.postUserName }}
-                  </h6>
-                  <br>
-                </div>
+            <!-- 頭像 -->
+            <div class="author-icon-block">
+              <div class="rounded-circle" style="display:flex">
+                <img :src="testData.postUserImageURL" alt="User" width="64" height="64" class="rounded-circle"
+                     style="object-fit:contain;"/>
               </div>
 
-              <!-- 圖片敘述 -->
-              <div class="picture-description-block">
-                <div class="description-block">
-                  <p id="descriptionText" style="display:none">{{ testData.postDescription }}</p>
-                  <a href="javascript:"
-                     onclick="descriptionText.style.display=descriptionText.style.display=='none'?'':'none'"><i
-                      class="fa-solid fa-crop-simple fa-bounce" style="color: #d88d4f;">顯示/隱藏敘述</i></a>
-                  <!-- 可容納300字元左右 -->
-                </div>
+              <!-- 名稱 -->
+              <div class="author-name-block">
+                <h6 class="ellipsis" id="mainPostUserName">
+                  {{ testData.postUserName }}
+                </h6>
+                <br>
               </div>
-
             </div>
+
+            <!-- 圖片敘述 -->
+            <div class="picture-description-block">
+              <div class="description-block">
+                <p id="descriptionText" style="display:none">{{ testData.postDescription }}</p>
+                <a href="javascript:"
+                   onclick="descriptionText.style.display=descriptionText.style.display=='none'?'':'none'"><i
+                    class="fa-solid fa-crop-simple fa-bounce" style="color: #d88d4f;">顯示/隱藏敘述</i></a>
+                <!-- 可容納300字元左右 -->
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
+    </div>
 
-      <!--------------------------------底部區塊----------------------------------------->
+    <!--------------------------------底部區塊----------------------------------------->
 
-      <div class="container-button-block">
-
-      </div>
+    <div class="container-button-block">
 
     </div>
+
+  </div>
 
   </div>
 

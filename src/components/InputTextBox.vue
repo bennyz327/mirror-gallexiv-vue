@@ -3,13 +3,15 @@ import {props} from "vue-slick-carousel/src/defaultProps.js";
 
 defineProps(['labelId','labelText','typeId','isRequired'])
 
+// ,'$emit(\'blur\')','$emit(\'input\', $event)'
+
 </script>
 
 <template>
 
   <div class="wrapper" style="width: 420px">
     <div class="input-data">
-      <input :type="typeId" :required="isRequired"/>
+      <input :type="typeId" :required="isRequired" @blur="$emit('blur')" @input="$emit('input', $event)"/>
       <div class="underline"></div>
       <label :id="labelId">{{ labelText }}</label>
     </div>
@@ -38,7 +40,7 @@ body {
   width: 100%;
   background-color: #fff;
   padding: 30px;
-  margin: 0px;
+  margin: 0;
 
 }
 

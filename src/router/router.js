@@ -2,7 +2,7 @@ import {createRouter, createWebHistory} from 'vue-router';
 // import Homepage from "../views/Homepage.vue";
 // import HomepageTest from "../views/HomepageTest.vue";
 // import TagSearch from "../views/TagSearch.vue";
-// import RegisterPage from "../views/RegisterPage.vue";
+// import RegisterPage from "../views/LoginAndRegisterPage.vue";
 // import TestPage from "../views/TestPage.vue";
 // import PostViewPage from "../views/PostViewPage.vue";
 
@@ -23,11 +23,6 @@ const routes = [
         component: () => import("../views/HomepageTest.vue"),
     },
     {
-        path: '/register',
-        name: 'Register',
-        component: () => import("../views/RegisterPage.vue"),
-    },
-    {
         path: '/postViewPage',
         name: 'PostView',
         component: () => import("../views/PostViewPage.vue"),
@@ -35,7 +30,7 @@ const routes = [
     {
         path: '/login',
         name: 'Login',
-        component: () => import("../views/LoginPage.vue"),
+        component: () => import("../views/LoginAndRegisterPage.vue"),
     },
     {
         path: '/testpage',

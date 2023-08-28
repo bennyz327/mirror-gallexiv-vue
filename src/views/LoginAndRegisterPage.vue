@@ -1,5 +1,6 @@
 <script setup>
 import css from "../assets/css/loginPage.css"
+import navbar from "../components/Navbar.vue";
 import InputTextBox from "../components/InputTextBox.vue";
 
 import {ref, watch} from "vue";
@@ -50,13 +51,10 @@ const loginButton = async () => {
   }
 };
 
-// 註冊畫面前台驗證
+//TODO 註冊畫面前台驗證(未完成)
 const showNickNameError = ref(false);
 const showAccountIdError = ref(false);
 const showPasswordError = ref(false);
-
-
-
 
 
 // 註冊導向功能
@@ -92,22 +90,32 @@ const signUpButton = async () => {
 
 <template>
 
+  <div class="navbar-block">
+    <v-btn block class="navbar-brand" a href="/">
+      回到Gallexiv首頁
+    </v-btn>
+  </div>
+
   <div class="container" :class="{ 'right-panel-active': isRightPanelActive }" id="container">
 
     <!--註冊表單-->
     <div class="form-container sign-up-container">
+
       <form action="#">
-        <h1>建立帳號</h1>
+        <h4>建立帳號</h4>
         <div class="message-input-block" style="margin-left: 72px;">
-          <input-text-box v-model="VsignUpNickNameId" label-id="signUpNickNameId" labelText="暱稱" type-id="text" is-required="true" @blur="validateNickNameId"/>
+          <input-text-box v-model="VsignUpNickNameId" label-id="signUpNickNameId" labelText="帳號名稱" type-id="text"
+                          is-required="true" @blur="validateNickNameId"/>
           <div class="error-message-block">
             <span v-if="showNickNameError">暱稱不能為空</span>
           </div>
-          <input-text-box v-model="VsignUpAccountId" label-id="signUpAccountId" labelText="E-mail" type-id="text" is-required="true" @blur="validateAccountId"/>
+          <input-text-box v-model="VsignUpAccountId" label-id="signUpAccountId" labelText="E-mail" type-id="text"
+                          is-required="true" @blur="validateAccountId"/>
           <div class="error-message-block">
             <span v-if="showAccountIdError">E-mail格式不正確</span>
           </div>
-          <input-text-box v-model="VsignUpPasswordId" label-id="signUpPasswordId" labelText="密碼" type-id="password" is-required="true" @blur="validatePassword"/>
+          <input-text-box v-model="VsignUpPasswordId" label-id="signUpPasswordId" labelText="密碼" type-id="password"
+                          is-required="true" @blur="validatePassword"/>
           <div class="error-message-block">
             <span v-if="showPasswordError">密碼總長度必須大於6位數</span>
           </div>
@@ -122,10 +130,12 @@ const signUpButton = async () => {
     <!--登入表單-->
     <div class="form-container sign-in-container">
       <form action="#">
-        <h3>登入以使用更多服務</h3>
+        <h5>登入以使用更多服務</h5>
         <div class="message-input-block" style="margin-left: 72px;">
-          <input-text-box v-model="VaccountId" label-id="accountId" labelText="E-mail" type-id="email" is-required="true"/>
-          <input-text-box v-model="VpasswordId" label-id="passwordId" labelText="密碼" type-id="password" is-required="true"/>
+          <input-text-box v-model="VaccountId" label-id="accountId" labelText="E-mail" type-id="email"
+                          is-required="true"/>
+          <input-text-box v-model="VpasswordId" label-id="passwordId" labelText="密碼" type-id="password"
+                          is-required="true"/>
         </div>
         <div class="erromsg-block" style="margin: 0;border: 0;height: 24px;color: #e51313">
           <span>{{ loginErrorMsg }}</span>
@@ -152,7 +162,7 @@ const signUpButton = async () => {
           <br>
           <h2>歡迎! 朋友</h2>
           <p>創作&nbsp;&nbsp;與世界分享您的作品</p>
-          <button class="ghost" id="signUp" @click="showSignUpPanel" >註冊</button>
+          <button class="ghost" id="signUp" @click="showSignUpPanel">註冊</button>
         </div>
       </div>
     </div>

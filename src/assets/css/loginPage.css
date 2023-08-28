@@ -1,9 +1,14 @@
 @font-face {
-    font-family: 'NotoGothic';
-    src: url('../NotoGothic.ttf') format('truetype');
-    /* 添加其他字体属性，如 font-weight、font-style 等 */
+    font-family: 'applegothic';
+    src: url('../applegothic.ttf') format('truetype');
 }
 
+.navbar-brand {
+    position: relative;
+    border-radius: 8px;
+    bottom: -8px;
+
+}
 
 * {
     box-sizing: border-box;
@@ -98,9 +103,9 @@ input {
     0 10px 10px rgba(0, 0, 0, 0.22);
     position: relative;
     overflow: hidden;
-    width: 800px;
+    width: 720px;
     max-width: 100%;
-    min-height: 600px;
+    min-height:540px;
 }
 
 .form-container {

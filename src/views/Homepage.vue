@@ -2,45 +2,10 @@
 import {ref, computed, onMounted} from 'vue';
 import axios from 'axios';
 import Navbar from "../components/Navbar.vue";
+import TagFunction from "../components/TagFunction.vue";
+import jsonFile from "../assets/tag.json"
 
-// 頁數功能
-const tags = ref([]);
-const currentPage = ref(1);
-const itemsPerPage = 7;
-
-// 抓取Tag api
-const loadPopularTags = async () => {
-  const response = await axios.get(`${urlTagMostPopular}`, datas);
-  tags.value = response.data.list;
-};
-
-onMounted(() => {
-  // 塞api區
-  loadPopularTags();
-
-
-});
-
-// 翻頁功能
-const paginatedTags = computed(() => {
-  const startIndex = (currentPage.value - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  return tags.value.slice(startIndex, endIndex);
-});
-
-const totalPages = computed(() => Math.ceil(tags.value.length / itemsPerPage));
-
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value -= 1;
-  }
-};
-
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value += 1;
-  }
-};
+const json = ref(jsonFile)
 
 // 圖片功能
 
@@ -65,38 +30,7 @@ const nextPage = () => {
     <!-- Tag 區塊 -->
 
     <div class="tag-div">
-
-      <!-- 左側按鈕 -->
-
-      <div class="d-flex justify-content-between align-items-center">
-
-        <div class="control-button">
-          <button class="btn btn-link" @click="prevPage" :disabled="currentPage === 1">
-            <i class="fa-solid fa-arrow-right fa-rotate-180 fa-lg"></i>
-          </button>
-        </div>
-
-        <!-- Tag -->
-
-        <div class="d-flex flex-row">
-          <div class="d-flex justify-content-between align-items-center"
-               style="margin: 16px; background-color:#ffffff ">
-            <router-link :to="'/tags/' + tag.tagId" class="text-decoration-none" v-for="(tag, index) in paginatedTags"
-                         :key="index">
-              <div class="tagname-block">#{{ tag.tagName }}</div>
-            </router-link>
-          </div>
-        </div>
-
-        <!-- 右側按鈕 -->
-
-        <div class="control-button">
-          <button class="btn btn-link" @click="nextPage" :disabled="currentPage === totalPages">
-            <i class="fa-solid fa-arrow-right fa-lg"></i>
-          </button>
-        </div>
-
-      </div>
+      <TagFunction :tagjson="json"></TagFunction>
     </div>
 
     <!-- 呈現圖片內容 -->

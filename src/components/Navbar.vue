@@ -95,16 +95,14 @@ export default {
         </form>
 
         <!-- 登入按鈕 -->
-
         <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">
 
           <!-- 登入前狀態 -->
-
           <button v-if="isLoggedIn" @click="login" class="btn btn-outline-secondary">登入</button>
 
           <!-- 登入後狀態 -->
-
           <div class="dropdown align-self-start" v-if="!isLoggedIn">
+
             <!-- 觸發下拉 -->
             <button
                 class="btn btn-link dropdown-toggle rounded-circle"
@@ -125,12 +123,10 @@ export default {
             </button>
 
             <!-- 下拉區塊 -->
-
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
               <!-- 下拉選單 -->
-
-              <a class="dropdown-item" href="#">個人資料</a>
+              <a class="dropdown-item" href="/userpage">個人資料</a>
               <a class="dropdown-item" href="#">設定</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#" @click="logout">登出</a>

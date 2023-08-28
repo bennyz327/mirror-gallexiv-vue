@@ -1,0 +1,111 @@
+@font-face {
+    font-family: 'applegothic';
+    src: url('../applegothic.ttf') format('truetype');
+}
+
+.user-block {
+    height: 600px;
+    max-height: 600px;
+    /*border: 2px solid red;*/
+}
+
+.background-div {
+    max-height: 300px;
+    overflow: auto;
+    border-radius: 16px;
+}
+
+.background-div::-webkit-scrollbar {
+    width: 0px;
+}
+
+.background-picture-src {
+    max-width: 100%;
+}
+
+
+.user-introduce-block {
+    height: 300px;
+    max-height: 300px;
+    /*border: 2px solid blue;*/
+}
+
+.user-icon-src-div {
+    display: flex;
+    position: relative;
+    top: -88px;
+    right: -88px;
+    /*border: 2px solid gray;*/
+}
+
+.user-name-div {
+    display: flex;
+    position: relative;
+    top: -168px;
+    right: -300px;
+    /*border: 2px solid yellow;*/
+}
+
+.user-follower-number-div {
+    display: flex;
+    position: relative;
+    top: -168px;
+    right: -300px;
+    /*border: 2px solid black;*/
+}
+
+.user-introduce-detail-div {
+    display: flex;
+    position: relative;
+    right: -300px;
+    top: -160px;
+    width: 920px;
+    height: 184px;
+}
+
+.user-introduce-detail-text {
+    display: flex;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: auto;
+}
+
+.user-introduce-detail-text::-webkit-scrollbar {
+    width: 0px;
+}
+
+.user-hyperlink-div {
+    display: flex;
+    position: relative;
+    right: -24px;
+    top: -8px;
+}
+
+.facebook-icon-div,
+.twitter-icon-div,
+.youtube-icon-div,
+.other-icon-div {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+
+.nav-tabs .nav-link {
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 240px;
+    height: 80px;
+}
+
+.nav-tabs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.nav-tabs .nav-link.active {
+    color: #d88d4f;
+}

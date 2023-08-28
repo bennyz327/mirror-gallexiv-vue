@@ -18,12 +18,12 @@ const routes = [
         component: () => import("../views/TagSearch.vue"),
     },
     {
-        path: '/HomepageTest',
+        path: '/homepagetest',
         name: 'HomepageTest',
-        component: () => import("../views/HomepageTest.vue"),
+        component: () => import("../views/neverUsed/HomepageTest.vue"),
     },
     {
-        path: '/postViewPage',
+        path: '/postviewpage',
         name: 'PostView',
         component: () => import("../views/PostViewPage.vue"),
     },
@@ -33,9 +33,14 @@ const routes = [
         component: () => import("../views/LoginAndRegisterPage.vue"),
     },
     {
+        path: '/userpage',
+        name: 'Userpage',
+        component: () => import("../views/UserPersonalPage.vue"),
+    },
+    {
         path: '/testpage',
         name: 'Testpage',
-        component: () => import(""),
+        component: () => import("../views/neverUsed/LoginPage_test.vue"),
     },
 ];
 

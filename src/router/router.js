@@ -32,6 +32,16 @@ const routes = [
         name: 'Userpage',
         component: () => import("../views/UserPersonalPage.vue"),
     },
+    {
+        path: '/testpage',
+        name: 'Testpage',
+        component: () => import("../views/neverUsed/LoginPage_test.vue"),
+    },
+    {
+        path: '/testconfig',
+        name: 'Testconfig',
+        component: () => import("../views/TestConfig.vue"),
+    }
 ];
 
 const router = createRouter({

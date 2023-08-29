@@ -51,7 +51,7 @@ const nextPage = () => {
 
       <div class="control-button">
         <button class="btn btn-link" @click="prevPage" :disabled="currentPage === 1">
-          <i class="fa-solid fa-arrow-right fa-rotate-180 fa-lg"></i>
+          <i class="fa-solid fa-arrow-right fa-rotate-180 fa-lg" style="color:#d88d4f"></i>
         </button>
       </div>
 
@@ -61,7 +61,7 @@ const nextPage = () => {
              style="margin: 16px; background-color:#ffffff ">
           <router-link :to="'/tags/' + tag.tagId" class="text-decoration-none" v-for="(tag, index) in paginatedTags"
                        :key="index">
-            <button variant="outlined" class="tagname-block">
+            <button class="tag-name-button btn btn-outline-danger">
               #{{ tag.tagName }}
             </button>
           </router-link>
@@ -71,7 +71,7 @@ const nextPage = () => {
       <!-- 右側按鈕 -->
       <div class="control-button">
         <button class="btn btn-link" @click="nextPage" :disabled="currentPage === totalPages">
-          <i class="fa-solid fa-arrow-right fa-lg"></i>
+          <i class="fa-solid fa-arrow-right fa-lg" style="color:#d88d4f"></i>
         </button>
       </div>
 
@@ -91,15 +91,14 @@ const nextPage = () => {
 }
 
 .control-button :hover {
-  background-color: #e6e6fa;
+  background-color: #eee8aa;
 }
 
-.tagname-block {
-  border: 1px solid black;
+.tag-name-button {
   padding-left: 16px;
   padding-right: 16px;
   font-size: 24px;
-  color:black ;
+  font-color: #d88d4f;
 
   margin: 8px;
   border-radius: 8px;

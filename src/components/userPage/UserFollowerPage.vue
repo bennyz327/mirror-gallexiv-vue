@@ -99,7 +99,7 @@ onMounted(() => {
 
 .follower-block {
 //display: flex; //position: relative; //left:160px; justify-content: center;
-  margin-top: 8px;
+  margin-top: 24px;
 }
 
 .single-follower-block{
@@ -149,7 +149,13 @@ onMounted(() => {
 .users-follow-button-div {
   display: inline-block;
   position: relative;
+  right: 24px;
   top: -24px;
 }
+
+.users-follow-button-div button{
+  width: 120px;
+}
+
 
 </style>

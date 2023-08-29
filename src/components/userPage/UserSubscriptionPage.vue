@@ -14,7 +14,7 @@ const items = reactive(props.subscriptionList);
 
 <template>
 
-  <div class="album py-5">
+  <div class="album py-3">
     <div class="container py-3">
       <main>
         <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
@@ -41,25 +41,25 @@ const items = reactive(props.subscriptionList);
                 <h4 class="my-4 fw-normal">{{ item.subscriptionName }}</h4>
 
                 <!-- 方案價格 -->
-                <h1 class="card-title pricing-card-title">NT${{item.subscriptionPrice}}<small
+                <h3 class="card-title pricing-card-title">NT${{item.subscriptionPrice}}<small
                     class="text-muted fw-light">/mo</small>
-                </h1>
+                </h3>
 
                 <!-- 方案內容按鈕 -->
                 <ul class="list-unstyled mt-3 mb-4">
                   <div class="accordion accordion-flush" id="accordionFlushExample">
                     <div class="accordion-item">
-                      <h2 class="accordion-header" id="heading1">
+                      <h3 class="accordion-header">
                         <button class="accordion-button collapsed" type="button"
-                                data-bs-toggle="collapse" data-bs-target="#collapse1"
-                                aria-expanded="false" aria-controls="collapse1">
-                          方案內容
+                                data-bs-toggle="collapse" :data-bs-target="'#collapse'+index"
+                                aria-expanded="false" :aria-controls="'collapse'+index">
+                          <h5>方案內容</h5>
                         </button>
-                      </h2>
+                      </h3>
 
                       <!-- 方案敘述 -->
-                      <div id="collapse1" class="accordion-collapse collapse"
-                           aria-labelledby="heading1" data-bs-parent="#accordion1">
+                      <div :id="'collapse'+index" class="accordion-collapse collapse"
+                           :aria-labelledby="'heading'+index" :data-bs-parent="'#accordion'+index">
                         <div class="accordion-body">
                           {{ item.subscriptionDetail }}
                         </div>
@@ -69,7 +69,7 @@ const items = reactive(props.subscriptionList);
                 </ul>
 
                 <!--TODO 訂閱按鈕(傳遞參數到不同頁面) -->
-                <button :id="'subscribeEnterId' + index" type="button" class="w-100 btn btn-outline-secondary">Subscribe</button>
+                <button :id="'subscribeEnterId' + index" type="button" class="w-100 btn btn-outline-secondary">訂閱</button>
               </div>
             </div>
           </div>
@@ -85,4 +85,7 @@ const items = reactive(props.subscriptionList);
 
 <style scoped>
 
+.btn-outline-secondary{
+  height: 64px;
+}
 </style>

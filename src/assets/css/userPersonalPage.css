@@ -10,7 +10,7 @@
 }
 
 .background-div {
-    max-height: 300px;
+    max-height: 240px;
     overflow: auto;
     border-radius: 16px;
 }

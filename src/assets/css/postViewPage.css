@@ -14,8 +14,8 @@
     align-items: center;
 }
 
-.message-block{
-    position:relative;
+.message-block {
+    position: relative;
 }
 
 .like-and-collect-block {
@@ -24,8 +24,8 @@
     float: right;
 }
 
-.favorite-button-block button{
- width: 80px;
+.favorite-button-block button {
+    width: 120px;
 }
 
 .message-user-avatar-block {
@@ -42,7 +42,8 @@
     float: right;
     width: 480px;
     border-radius: 16px;
-//margin: 8px; //box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+/ / margin: 8 px;
+/ / box-shadow: 0 px 0 px 10 px rgba(0, 0, 0, 1);
 }
 
 .container-button-block {
@@ -69,7 +70,9 @@
 
 .author-introduce-block {
     display: flex;
-//align-items: center; flex-direction: column;
+    padding-left: 8px;
+    /*align-items: center;*/
+    flex-direction: column;
 }
 
 .author-icon-block {
@@ -84,7 +87,8 @@
     width: 420px;
     height: 80px;
     line-height: 80px;
-//text-overflow: ellipsis; padding: 8px;
+/ / text-overflow: ellipsis;
+    padding: 8px;
 }
 
 .picture-description-block {

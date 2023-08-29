@@ -4,7 +4,8 @@ import Navbar from "../components/Navbar.vue";
 import PostViewCarousel from "../components/PostViewCarousel.vue";
 import InputTextBox from "../components/InputTextBox.vue";
 import axios from "axios";
-import {ref, onMounted, reactive, computed} from 'vue';
+import { ref, onMounted, reactive, computed } from 'vue';
+import Message from "../components/MessageArea.vue";
 
 
 // 圖片區假資料
@@ -25,7 +26,7 @@ const imgDataReference = ref([
 
 // 匯入資料到carousel
 const imgDataImportToCarousel = reactive(
-    imgDataReference.value.map(item => item.imgPath)
+  imgDataReference.value.map(item => item.imgPath)
 );
 
 // 其他區域假資料
@@ -99,7 +100,6 @@ const heartClass = computed(() => {
 </script>
 
 <template>
-
   <!-- Navbar -->
 
   <Navbar></Navbar>
@@ -120,23 +120,15 @@ const heartClass = computed(() => {
           <!--愛心及收藏功能-->
           <div class="like-and-collect-block">
             <div class="like-button-block" style="margin-right: 5px">
-              <button
-                  type="button"
-                  class="btn"
-                  @click="toggleLike"
-                  @mouseenter="hovered = true"
-                  @mouseleave="hovered = false"
-              >
+              <button type="button" class="btn" @click="toggleLike" @mouseenter="hovered = true"
+                @mouseleave="hovered = false">
                 <i :class="heartClass" style="color: #da2b2b;"></i>
               </button>
             </div>
 
             <div class="favorite-button-block">
-              <button
-                  :class="collected ? 'btn btn-primary' : 'btn btn-outline-secondary'"
-                  type="button"
-                  @click="toggleCollect"
-              >
+              <button :class="collected ? 'btn btn-primary' : 'btn btn-outline-secondary'" type="button"
+                @click="toggleCollect">
                 <span v-text="collected ? '已收藏' : '收藏'"></span>
               </button>
             </div>
@@ -148,13 +140,14 @@ const heartClass = computed(() => {
             <div class="message-user-avatar-block">
               <div class="rounded-circle" style="display:flex">
                 <img :src="testData.userImageURL" alt="User" width="64" height="64" class="rounded-circle"
-                     style="object-fit:contain;"/>
+                  style="object-fit:cover;" />
               </div>
             </div>
 
             <!-- 輸入框區塊 -->
             <div class="message-input-block">
-              <input-text-box label-id="messageInsert" labelText="留下您的留言" type-id="text" is-required="false"></input-text-box>
+              <input-text-box label-id="messageInsert" labelText="留下您的留言" type-id="text"
+                is-required="false"></input-text-box>
             </div>
 
           </div>
@@ -186,71 +179,71 @@ const heartClass = computed(() => {
             </div>
 
           </div>
-      </div>
-    </div>
-
-    <!--------------------------------右半部區塊----------------------------------------->
-    <div class="container-right-block">
-
-      <div class="whole-picture-name-block">
-
-        <!-- 標題名稱 -->
-        <div class="picture-name-block">
-
-          <div class="picture-name-div">
-            <h4 class="ellipsis" id="mainPostPicName">{{ testData.postTitle }}</h4>
-          </div>
-
-          <div class="menu-block">
-            <i class="fa-solid fa-bars fa-xl" style="color: #d88d4f;"></i>
-          </div>
-
         </div>
+      </div>
 
-        <!--------------------------------圖片名稱  作者內容分隔線----------------------------------------->
-        <div class="whole-author-introduce-block">
+      <!--------------------------------右半部區塊----------------------------------------->
+      <div class="container-right-block">
 
-          <div class="author-introduce-block">
+        <div class="whole-picture-name-block">
 
-            <!-- 頭像 -->
-            <div class="author-icon-block">
-              <div class="rounded-circle" style="display:flex">
-                <img :src="testData.postUserImageURL" alt="User" width="64" height="64" class="rounded-circle"
-                     style="object-fit:contain;"/>
-              </div>
+          <!-- 標題名稱 -->
+          <div class="picture-name-block">
 
-              <!-- 名稱 -->
-              <div class="author-name-block">
-                <h6 class="ellipsis" id="mainPostUserName">
-                  {{ testData.postUserName }}
-                </h6>
-                <br>
-              </div>
+            <div class="picture-name-div">
+              <h4 class="ellipsis" id="mainPostPicName">{{ testData.postTitle }}</h4>
             </div>
 
-            <!-- 圖片敘述 -->
-            <div class="picture-description-block">
-              <div class="description-block">
-                <p id="descriptionText" style="display:none">{{ testData.postDescription }}</p>
-                <a href="javascript:"
-                   onclick="descriptionText.style.display=descriptionText.style.display=='none'?'':'none'"><i
-                    class="fa-solid fa-crop-simple fa-bounce" style="color: #d88d4f;">顯示/隱藏敘述</i></a>
-                <!-- 可容納300字元左右 -->
-              </div>
+            <div class="menu-block">
+              <i class="fa-solid fa-bars fa-xl" style="color: #d88d4f;"></i>
             </div>
 
           </div>
+
+          <!--------------------------------圖片名稱  作者內容分隔線----------------------------------------->
+          <div class="whole-author-introduce-block">
+
+            <div class="author-introduce-block">
+
+              <!-- 頭像 -->
+              <div class="author-icon-block">
+                <div class="rounded-circle" style="display:flex">
+                  <img :src="testData.postUserImageURL" alt="User" width="64" height="64" class="rounded-circle"
+                    style="object-fit:contain;" />
+                </div>
+
+                <!-- 名稱 -->
+                <div class="author-name-block">
+                  <h6 class="ellipsis" id="mainPostUserName">
+                    {{ testData.postUserName }}
+                  </h6>
+                  <br>
+                </div>
+              </div>
+
+              <!-- 圖片敘述 -->
+              <div class="picture-description-block">
+                <div class="description-block">
+                  <p id="descriptionText" style="display:none">{{ testData.postDescription }}</p>
+                  <a href="javascript:"
+                    onclick="descriptionText.style.display=descriptionText.style.display=='none'?'':'none'"><i
+                      class="fa-solid fa-crop-simple fa-bounce" style="color: #d88d4f;">顯示/隱藏敘述</i></a>
+                  <!-- 可容納300字元左右 -->
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>
+
+      <!--------------------------------底部區塊----------------------------------------->
+
+      <div class="container-button-block">
+
+      </div>
+
     </div>
-
-    <!--------------------------------底部區塊----------------------------------------->
-
-    <div class="container-button-block">
-
-    </div>
-
-  </div>
 
   </div>
 
@@ -260,6 +253,4 @@ const heartClass = computed(() => {
   <!--        </div>-->
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

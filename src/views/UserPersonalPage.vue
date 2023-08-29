@@ -1,35 +1,43 @@
 <script setup>
+import css from "../assets/css/userPersonalPage.css"
+
 import Navbar from "../components/Navbar.vue";
 import UserHomePage from "../components/userPage/UserHomePage.vue";
-import css from "../assets/css/userPersonalPage.css"
-import {onMounted, ref} from "vue";
+import UserSubscriptionPage from "../components/userPage/UserSubscriptionPage.vue";
+import UserSubscribePicturePage from "../components/userPage/UserSubscribePage.vue";
 import TagFunction from "../components/TagFunction.vue";
-import jsonFile from "../assets/tag.json"
+import FollowerPage from "../components/userPage/UserFollowerPage.vue"
 
-// 其他區域假資料
+import userHomePageJsonFile from "../assets/userHomePage.json"
+import tagHomepageJsonFile from "../assets/tag.json"
+import tagSubscribePageJsonFile from "../assets/tagSub.json"
+import imgJsonFile from "../assets/imgList.json"
+import subscriptionJsonFile from "../assets/subscriptionList.json"
+import subscribePictureJsonFile from "../assets/imgListForSubscription.json"
+import followerJsonFile from "../assets/followerList.json"
 
+import {onMounted, reactive, ref} from "vue";
+
+// 追隨按鈕功能(以及發送到後端)
+const followed = ref(false);
+
+const toggleFollow = () => {
+  followed.value = !followed.value;
+  sendDataToBackend(userData.value.postData);
+}
+
+
+// HomePageTag 假資料
+const tagHomePageJson = ref(tagHomepageJsonFile)
+
+// SubscribePageTag 假資料
+const jsonDataImportTagPage = ref(tagSubscribePageJsonFile)
+
+// UserPage 假資料
 const testData = ref(null);
-const json = ref(jsonFile)
-
 const fetchData = async () => {
   try {
-
-    const fakeUserData = {
-      "backgroundPictureSrc": "https://cdn.discordapp.com/attachments/620257710537179147/1133097816588292158/99331431_p0.jpg",
-      "postUserImageURL": "https://i.imgur.com/6rpzbog.gif",
-      "userName": "Benny",
-      "followerNums": "87",
-      "introduceDetail": "ブクマやコメントして下さる方、誠にありがとうございます！\n" +
-          "\n" +
-          "私の描いた絵に対し、稀に「○○に使用させて下さい」と仰ってくれる人が居ます。私的利用であれば（第三者を不快にする用途でない限り）お好きに御利用下さい。\n" +
-          "\n" +
-          "とはいえ、やはり無断で利用されるよりも一言もらえた方が嬉しいので、出来る限り御連絡お願い致します。\n" +
-          "常識の範囲内で私的利用される分にはお断りしませんので、気軽にお声がけ下さい！",
-      "facebookLink": "https://www.facebook.com/benny.chou.73",
-      "twitterLink": "https://twitter.com/home?lang=zh-tw",
-      "youtubeLink": "https://www.youtube.com/",
-    };
-
+    const fakeUserData = userHomePageJsonFile[0];
 
     setTimeout(() => {
       testData.value = fakeUserData;
@@ -42,6 +50,27 @@ const fetchData = async () => {
 onMounted(() => {
   fetchData();
 });
+
+// HomePage 假資料
+const imgDataReference = ref(imgJsonFile);
+
+const imgDataImportToHomePage = reactive(
+    imgDataReference.value.map(item => item.imgPath)
+)
+
+// SubscribePicturePage 假資料
+const imgDataSubscribeReference = ref(subscribePictureJsonFile);
+
+const jsonDataImportSubscribePage = reactive(
+    imgDataSubscribeReference.value.map(item => item.imgPath)
+)
+
+// SubscriptionPage 假資料
+const jsonDataImportSubscriptionPage = ref(subscriptionJsonFile);
+
+// FolllowerPage 假資料
+
+const jsonDataImportFollowerPage = ref(followerJsonFile);
 
 </script>
 
@@ -77,10 +106,10 @@ onMounted(() => {
             <!--文字介紹區塊-->
             <div class="user-name-div">
               <h3>{{ testData.userName }}</h3>
+              <h6 class="account-text">@{{testData.userAccount}}</h6>
             </div>
             <div class="user-follower-number-div">
               <h5>{{ testData.followerNums }} 個追蹤者</h5>
-
               <!--TODO 外部連結部分內容(網址判斷圖示)-->
               <div class="user-hyperlink-div">
                 <div class="facebook-icon-div">
@@ -109,6 +138,14 @@ onMounted(() => {
             <p class="user-introduce-detail-text">{{ testData.introduceDetail }}</p>
           </div>
 
+          <!--追隨按鈕-->
+          <div class="follow-button-div">
+            <button :class="followed ? 'btn btn-primary' : 'btn btn-outline-secondary'" type="button"
+                    @click="toggleFollow">
+              <span v-text="followed ? '已追隨' : '追隨'"></span>
+            </button>
+          </div>
+
         </div>
       </div>
 
@@ -134,36 +171,58 @@ onMounted(() => {
 
         <!--首頁呈現頁面-->
         <div class="tab-content" id="nav-tabContent">
+
           <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
 
-            <!--Home Menu頁面-->
+            <!--Home Menu頁面區塊-->
             <div class="menu-home-page-block">
 
               <div class="menu-home-page-tag-div">
-                <TagFunction :tagjson="json"></TagFunction>
+                <TagFunction :tagjson="tagHomePageJson"></TagFunction>
               </div>
 
               <div class="menu-home-page-picture-div">
-                <UserHomePage></UserHomePage>
+                <UserHomePage :imgUrlList="imgDataImportToHomePage"></UserHomePage>
               </div>
 
             </div>
-
           </div>
 
           <!--專屬內容呈現頁面-->
-          <div class="tab-pane fade" id="nav-fans" role="tabpanel" aria-labelledby="nav-fans-tab">2</div>
+          <div class="tab-pane fade" id="nav-fans" role="tabpanel" aria-labelledby="nav-fans-tab">
 
+            <!--專屬內容頁面區塊-->
+            <div class="menu-subscribe-img-page-block">
+
+              <div class="menu-subscribe-img-page-tag-div">
+                <TagFunction :tagjson="jsonDataImportTagPage"></TagFunction>
+              </div>
+
+              <div class="menu-subscribe-img-page-picture-div">
+                <UserSubscribePicturePage :imgUrlList="jsonDataImportSubscribePage"></UserSubscribePicturePage>
+              </div>
+
+            </div>
+          </div>
 
           <!--追蹤者呈現頁面-->
-          <div class="tab-pane fade" id="nav-followers" role="tabpanel" aria-labelledby="nav-followers-tab">3</div>
+          <div class="tab-pane fade" id="nav-followers" role="tabpanel" aria-labelledby="nav-followers-tab">
+            <FollowerPage :followerData="jsonDataImportFollowerPage"></FollowerPage>
+          </div>
+
+
           <!--可訂閱呈現頁面-->
-          <div class="tab-pane fade" id="nav-subscribe" role="tabpanel" aria-labelledby="nav-subscribe-tab">4</div>
+          <div class="tab-pane fade" id="nav-subscribe" role="tabpanel" aria-labelledby="nav-subscribe-tab">
+
+            <!--可訂閱頁面區塊-->
+            <div class="subscription-block">
+              <UserSubscriptionPage :subscription-list="jsonDataImportSubscriptionPage"></UserSubscriptionPage>
+            </div>
+
+          </div>
         </div>
 
       </div>
-
-
     </div>
   </div>
 </template>

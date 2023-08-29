@@ -41,9 +41,17 @@
 .user-name-div {
     display: flex;
     position: relative;
+    margin-bottom: 16px;
     top: -168px;
     right: -300px;
     /*border: 2px solid yellow;*/
+}
+
+.account-text{
+    position: relative;
+    right: -16px;
+    top:16px;
+    color: #71767B;
 }
 
 .user-follower-number-div {
@@ -80,6 +88,18 @@
     right: -24px;
     top: -8px;
 }
+
+.follow-button-div{
+    display: flex;
+    position: relative;
+    right: -1080px;
+    top:-424px;
+}
+
+.follow-button-div button{
+    width: 120px;
+}
+
 
 .facebook-icon-div,
 .twitter-icon-div,

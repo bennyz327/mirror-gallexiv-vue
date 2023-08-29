@@ -26,4 +26,9 @@ import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 //套件匯入區
 
 
+//設置port
+const port = 3000
+
+//vue利用port開啟app
+
 createApp(App).use(router).use(vuetify).mount('#app')

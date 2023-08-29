@@ -42,6 +42,11 @@ const routes = [
         name: 'Testpage',
         component: () => import("../views/neverUsed/LoginPage_test.vue"),
     },
+    {
+        path: '/testconfig',
+        name: 'Testconfig',
+        component: () => import("../views/TestConfig.vue"),
+    }
 ];
 
 const router = createRouter({

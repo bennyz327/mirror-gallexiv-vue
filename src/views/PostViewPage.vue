@@ -1,5 +1,5 @@
 <script setup>
-import css from "../assets/css/postViewPage.css";
+import '@/assets/css/postViewPage.css';
 import Navbar from "../components/Navbar.vue";
 import PostViewCarousel from "../components/PostViewCarousel.vue";
 import InputTextBox from "../components/InputTextBox.vue";
@@ -226,7 +226,7 @@ const heartClass = computed(() => {
                 <div class="description-block">
                   <p id="descriptionText" style="display:none">{{ testData.postDescription }}</p>
                   <a href="javascript:"
-                    onclick="descriptionText.style.display=descriptionText.style.display=='none'?'':'none'"><i
+                    onclick="descriptionText.style.display=descriptionText.style.display==='none'?'':'none'"><i
                       class="fa-solid fa-crop-simple fa-bounce" style="color: #d88d4f;">顯示/隱藏敘述</i></a>
                   <!-- 可容納300字元左右 -->
                 </div>
@@ -253,4 +253,5 @@ const heartClass = computed(() => {
   <!--        </div>-->
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>

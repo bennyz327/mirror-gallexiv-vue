@@ -1,10 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router';
-// import Homepage from "../views/Homepage.vue";
-// import HomepageTest from "../views/HomepageTest.vue";
-// import TagSearch from "../views/TagSearch.vue";
-// import RegisterPage from "../views/LoginAndRegisterPage.vue";
-// import TestPage from "../views/TestPage.vue";
-// import PostViewPage from "../views/PostViewPage.vue";
+
+const component404 = import('@/components/Page404.vue')
 
 const routes = [
     {
@@ -32,7 +28,23 @@ const routes = [
         name: 'Userpage',
         component: () => import("../views/UserPersonalPage.vue"),
     },
+    {
+        path: '/testconfig',
+        name: 'Testconfig',
+        component: () => import("../views/TestConfig.vue"),
+    },
+    //找不到頁面處理
+    {
+        path: '/404',
+        name: '404',
+        component: () => component404,
+    },
+    {
+        path: '/:pathMatch(.*)',
+        redirect: '/404'
+    }
 ];
+
 
 const router = createRouter({
     history: createWebHistory(),

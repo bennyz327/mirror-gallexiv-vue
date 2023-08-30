@@ -32,4 +32,7 @@ import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 //套件匯入區
 
 
-createApp(App).use(router).use(vuetify).use(naive).mount('#app')
+//vue利用port開啟app
+
+createApp(App).use(router).use(vuetify).mount('#app')
+//原本的 createApp(App).use(router).use(vuetify).use(naive).mount('#app')

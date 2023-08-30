@@ -1,10 +1,4 @@
 import {createRouter, createWebHistory} from 'vue-router';
-// import Homepage from "../views/Homepage.vue";
-// import HomepageTest from "../views/HomepageTest.vue";
-// import TagSearch from "../views/TagSearch.vue";
-// import RegisterPage from "../views/LoginAndRegisterPage.vue";
-// import TestPage from "../views/TestPage.vue";
-// import PostViewPage from "../views/PostViewPage.vue";
 
 const routes = [
     {
@@ -31,11 +25,6 @@ const routes = [
         path: '/userpage',
         name: 'Userpage',
         component: () => import("../views/UserPersonalPage.vue"),
-    },
-    {
-        path: '/testpage',
-        name: 'Testpage',
-        component: () => import("../views/neverUsed/LoginPage_test.vue"),
     },
     {
         path: '/testconfig',

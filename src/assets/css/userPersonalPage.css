@@ -1,0 +1,149 @@
+@font-face {
+    font-family: 'applegothic';
+    src: url('fonts/applegothic.ttf') format('truetype');
+}
+
+.user-block {
+    display: block;
+    /*height: 600px;*/
+    max-height: 600px;
+    /*border: 2px solid red;*/
+}
+
+.background-div {
+    max-height: 240px;
+    overflow: auto;
+    border-radius: 16px;
+}
+
+.background-div::-webkit-scrollbar {
+    width: 0px;
+}
+
+.background-picture-src {
+    max-width: 100%;
+}
+
+.user-introduce-block{
+    display: flex;
+}
+
+.user-icon-div{
+    width: 22%;
+}
+
+.user-icon-src-div{
+    position: relative;
+    right: -88px;
+    top:-88px;
+}
+
+.name-sub-count-link-div{
+    width: 60%;
+}
+
+.user-name-account-div{
+    display: flex;
+    padding: 8px;
+    /*border: 2px solid yellow;*/
+}
+
+.user-name-text{
+}
+
+.user-account-text{
+    margin-left: 12px;
+    padding-top: 12px;
+}
+
+.user-follower-hyperlink-div{
+    display: flex;
+    max-height: 160px;
+    padding-left:8px;
+    /*width: 1280px;*/
+    /*border: 2px solid black;*/
+}
+
+.user-hyperlink-div {
+    display: flex;
+    position: relative;
+    right: -24px;
+    top: -8px;
+}
+
+.facebook-icon-div,
+.twitter-icon-div,
+.youtube-icon-div,
+.other-icon-div {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.follow-button-div{
+    width: 18%;
+    position: relative;
+    justify-content: center;
+    text-align: center;
+    top: 32px;
+}
+
+.follow-button-div button{
+    width: 60%;
+}
+
+.user-introduce-second-line-block{
+    display: flex;
+}
+
+.user-reserve-div-left{
+    width: 15%;
+}
+
+.user-reserve-div-right{
+    width: 15%;
+}
+
+.user-description-container-div{
+    width: 70%;
+}
+
+.user-description-detail-div {
+    /*display: flex;*/
+    position: relative;
+    /*right: -300px;*/
+    top: -32px;
+    /*width: 80%;*/
+    /*height: 184px;*/
+}
+
+.user-introduce-detail-text {
+    display: flex;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: auto;
+}
+
+.user-introduce-detail-text::-webkit-scrollbar {
+    width: 0px;
+}
+
+
+.nav-tabs .nav-link {
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 240px;
+    height: 64px;
+}
+
+.nav-tabs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.nav-tabs .nav-link.active {
+    color: #d88d4f;
+}

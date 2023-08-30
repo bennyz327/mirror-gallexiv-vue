@@ -62,7 +62,7 @@ const slideTo = (val) => {
 }
 
 .carousel-top img {
-  max-height: 480px;
+  max-height: 400px;
 }
 
 .carousel-down img {

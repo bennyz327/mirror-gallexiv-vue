@@ -7,6 +7,7 @@ import UserSubscriptionPage from "../components/userPage/UserSubscriptionPage.vu
 import UserSubscribePicturePage from "../components/userPage/UserSubscribePage.vue";
 import TagFunction from "../components/TagFunction.vue";
 import FollowerPage from "../components/userPage/UserFollowerPage.vue"
+import DescriptionArea from "../components/CollapseFunction.vue"
 
 import userHomePageJsonFile from "../assets/userHomePage.json"
 import tagHomepageJsonFile from "../assets/tag.json"
@@ -68,8 +69,7 @@ const jsonDataImportSubscribePage = reactive(
 // SubscriptionPage 假資料
 const jsonDataImportSubscriptionPage = ref(subscriptionJsonFile);
 
-// FolllowerPage 假資料
-
+// FollowerPage 假資料
 const jsonDataImportFollowerPage = ref(followerJsonFile);
 
 </script>
@@ -89,27 +89,39 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
           <img :src="testData.backgroundPictureSrc" class="background-picture-src">
         </div>
 
-        <!--個人介紹大區塊(height=300px)-->
+        <!--個人介紹大區塊(切割頭像/名稱/帳號/連結/跟隨按鈕)-->
         <div class="user-introduce-block">
 
-          <!--個人介紹區塊(頭像以及名稱)-->
-          <div class="user-name-follower-div">
+          <!--頭像(左半區塊)-->
+          <div class="user-icon-div">
 
-            <!--個人頭像區塊-->
             <div class="user-icon-src-div">
               <div class="rounded-circle" style="display:flex">
                 <img :src="testData.postUserImageURL" alt="User" width="176" height="176" class="rounded-circle"
                      style="object-fit: cover;"/>
               </div>
             </div>
+          </div>
 
-            <!--文字介紹區塊-->
-            <div class="user-name-div">
-              <h3>{{ testData.userName }}</h3>
-              <h6 class="account-text">@{{testData.userAccount}}</h6>
+          <!--名稱及帳號名稱/跟隨數(中間區塊)-->
+          <div class="name-sub-count-link-div">
+
+            <!--名稱及帳號名稱-->
+            <div class="user-name-account-div">
+              <div class="user-name-text">
+                <h3>{{ testData.userName }}</h3>
+              </div>
+              <div class="user-account-text">
+                <h6>@{{ testData.userAccount }}</h6>
+              </div>
             </div>
-            <div class="user-follower-number-div">
-              <h5>{{ testData.followerNums }} 個追蹤者</h5>
+
+            <!--跟隨數-->
+            <div class="user-follower-hyperlink-div">
+              <div class="user-follower-number-text">
+                <h5>{{ testData.followerNums }} 個追蹤者</h5>
+              </div>
+
               <!--TODO 外部連結部分內容(網址判斷圖示)-->
               <div class="user-hyperlink-div">
                 <div class="facebook-icon-div">
@@ -129,16 +141,10 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
                                                                      style="color: #d88d4f; font-size: 32px;"></i></a>
                 </div>
               </div>
-
             </div>
           </div>
 
-          <!--自我介紹內容-->
-          <div class="user-introduce-detail-div">
-            <p class="user-introduce-detail-text">{{ testData.introduceDetail }}</p>
-          </div>
-
-          <!--追隨按鈕-->
+          <!--追隨按鈕(右邊區塊)-->
           <div class="follow-button-div">
             <button :class="followed ? 'btn btn-primary' : 'btn btn-outline-secondary'" type="button"
                     @click="toggleFollow">
@@ -149,79 +155,99 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
         </div>
       </div>
 
-      <!--切換menu選項-->
-      <div class="menu-bar-block">
+      <!--第二行區塊預留分割(左右)以及自我介紹部分-->
+      <div class="user-introduce-second-line-block">
 
-        <nav>
-          <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
-                    type="button" role="tab" aria-controls="nav-home" aria-selected="true">首頁
-            </button>
-            <button class="nav-link" id="nav-fans-tab" data-bs-toggle="tab" data-bs-target="#nav-fans" type="button"
-                    role="tab" aria-controls="nav-profile" aria-selected="false">專屬內容
-            </button>
-            <button class="nav-link" id="nav-followers-tab" data-bs-toggle="tab" data-bs-target="#nav-followers"
-                    type="button" role="tab" aria-controls="nav-profile" aria-selected="false">追蹤者
-            </button>
-            <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-subscribe"
-                    type="button" role="tab" aria-controls="nav-contact" aria-selected="false">可訂閱項目
-            </button>
-          </div>
-        </nav>
+        <div class="user-reserve-div-left"></div>
 
-        <!--首頁呈現頁面-->
-        <div class="tab-content" id="nav-tabContent">
-
-          <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-
-            <!--Home Menu頁面區塊-->
-            <div class="menu-home-page-block">
-
-              <div class="menu-home-page-tag-div">
-                <TagFunction :tagjson="tagHomePageJson"></TagFunction>
-              </div>
-
-              <div class="menu-home-page-picture-div">
-                <UserHomePage :imgUrlList="imgDataImportToHomePage"></UserHomePage>
-              </div>
-
-            </div>
-          </div>
-
-          <!--專屬內容呈現頁面-->
-          <div class="tab-pane fade" id="nav-fans" role="tabpanel" aria-labelledby="nav-fans-tab">
-
-            <!--專屬內容頁面區塊-->
-            <div class="menu-subscribe-img-page-block">
-
-              <div class="menu-subscribe-img-page-tag-div">
-                <TagFunction :tagjson="jsonDataImportTagPage"></TagFunction>
-              </div>
-
-              <div class="menu-subscribe-img-page-picture-div">
-                <UserSubscribePicturePage :imgUrlList="jsonDataImportSubscribePage"></UserSubscribePicturePage>
-              </div>
-
-            </div>
-          </div>
-
-          <!--追蹤者呈現頁面-->
-          <div class="tab-pane fade" id="nav-followers" role="tabpanel" aria-labelledby="nav-followers-tab">
-            <FollowerPage :followerData="jsonDataImportFollowerPage"></FollowerPage>
-          </div>
-
-
-          <!--可訂閱呈現頁面-->
-          <div class="tab-pane fade" id="nav-subscribe" role="tabpanel" aria-labelledby="nav-subscribe-tab">
-
-            <!--可訂閱頁面區塊-->
-            <div class="subscription-block">
-              <UserSubscriptionPage :subscription-list="jsonDataImportSubscriptionPage"></UserSubscriptionPage>
-            </div>
-
+        <!--自我介紹內容-->
+        <div class="user-description-container-div">
+          <div class="user-description-detail-div">
+            <DescriptionArea :descriptionText="testData.introduceDetail"></DescriptionArea>
           </div>
         </div>
 
+        <div class="user-reserve-div-right"></div>
+
+      </div>
+
+
+
+
+      <div class="menu-block">
+        <!--切換menu選項-->
+        <div class="menu-bar-block">
+
+          <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+              <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
+                      type="button" role="tab" aria-controls="nav-home" aria-selected="true">首頁
+              </button>
+              <button class="nav-link" id="nav-fans-tab" data-bs-toggle="tab" data-bs-target="#nav-fans" type="button"
+                      role="tab" aria-controls="nav-profile" aria-selected="false">專屬內容
+              </button>
+              <button class="nav-link" id="nav-followers-tab" data-bs-toggle="tab" data-bs-target="#nav-followers"
+                      type="button" role="tab" aria-controls="nav-profile" aria-selected="false">追蹤者
+              </button>
+              <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-subscribe"
+                      type="button" role="tab" aria-controls="nav-contact" aria-selected="false">可訂閱項目
+              </button>
+            </div>
+          </nav>
+
+          <!--首頁呈現頁面-->
+          <div class="tab-content" id="nav-tabContent">
+
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+              <!--Home Menu頁面區塊-->
+              <div class="menu-home-page-block">
+
+                <div class="menu-home-page-tag-div">
+                  <TagFunction :tagjson="tagHomePageJson"></TagFunction>
+                </div>
+
+                <div class="menu-home-page-picture-div">
+                  <UserHomePage :imgUrlList="imgDataImportToHomePage"></UserHomePage>
+                </div>
+
+              </div>
+            </div>
+
+            <!--專屬內容呈現頁面-->
+            <div class="tab-pane fade" id="nav-fans" role="tabpanel" aria-labelledby="nav-fans-tab">
+
+              <!--專屬內容頁面區塊-->
+              <div class="menu-subscribe-img-page-block">
+
+                <div class="menu-subscribe-img-page-tag-div">
+                  <TagFunction :tagjson="jsonDataImportTagPage"></TagFunction>
+                </div>
+
+                <div class="menu-subscribe-img-page-picture-div">
+                  <UserSubscribePicturePage :imgUrlList="jsonDataImportSubscribePage"></UserSubscribePicturePage>
+                </div>
+
+              </div>
+            </div>
+
+            <!--追蹤者呈現頁面-->
+            <div class="tab-pane fade" id="nav-followers" role="tabpanel" aria-labelledby="nav-followers-tab">
+              <FollowerPage :followerData="jsonDataImportFollowerPage"></FollowerPage>
+            </div>
+
+
+            <!--可訂閱呈現頁面-->
+            <div class="tab-pane fade" id="nav-subscribe" role="tabpanel" aria-labelledby="nav-subscribe-tab">
+
+              <!--可訂閱頁面區塊-->
+              <div class="subscription-block">
+                <UserSubscriptionPage :subscription-list="jsonDataImportSubscriptionPage"></UserSubscriptionPage>
+              </div>
+
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

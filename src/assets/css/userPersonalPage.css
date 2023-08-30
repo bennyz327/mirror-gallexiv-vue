@@ -4,7 +4,8 @@
 }
 
 .user-block {
-    height: 600px;
+    display: block;
+    /*height: 600px;*/
     max-height: 600px;
     /*border: 2px solid red;*/
 }
@@ -23,52 +24,96 @@
     max-width: 100%;
 }
 
-
-.user-introduce-block {
-    height: 300px;
-    max-height: 300px;
-    /*border: 2px solid blue;*/
+.user-introduce-block{
+    display: flex;
 }
 
-.user-icon-src-div {
-    display: flex;
+.user-icon-div{
+    width: 22%;
+}
+
+.user-icon-src-div{
     position: relative;
-    top: -88px;
     right: -88px;
-    /*border: 2px solid gray;*/
+    top:-88px;
 }
 
-.user-name-div {
+.name-sub-count-link-div{
+    width: 60%;
+}
+
+.user-name-account-div{
     display: flex;
-    position: relative;
-    margin-bottom: 16px;
-    top: -168px;
-    right: -300px;
+    padding: 8px;
     /*border: 2px solid yellow;*/
 }
 
-.account-text{
-    position: relative;
-    right: -16px;
-    top:16px;
-    color: #71767B;
+.user-name-text{
 }
 
-.user-follower-number-div {
+.user-account-text{
+    margin-left: 12px;
+    padding-top: 12px;
+}
+
+.user-follower-hyperlink-div{
     display: flex;
-    position: relative;
-    top: -168px;
-    right: -300px;
+    max-height: 160px;
+    padding-left:8px;
+    /*width: 1280px;*/
     /*border: 2px solid black;*/
 }
 
-.user-introduce-detail-div {
+.user-hyperlink-div {
     display: flex;
     position: relative;
-    right: -300px;
-    top: -160px;
-    width: 920px;
-    height: 184px;
+    right: -24px;
+    top: -8px;
+}
+
+.facebook-icon-div,
+.twitter-icon-div,
+.youtube-icon-div,
+.other-icon-div {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.follow-button-div{
+    width: 18%;
+    position: relative;
+    justify-content: center;
+    text-align: center;
+    top: 32px;
+}
+
+.follow-button-div button{
+    width: 60%;
+}
+
+.user-introduce-second-line-block{
+    display: flex;
+}
+
+.user-reserve-div-left{
+    width: 15%;
+}
+
+.user-reserve-div-right{
+    width: 15%;
+}
+
+.user-description-container-div{
+    width: 70%;
+}
+
+.user-description-detail-div {
+    /*display: flex;*/
+    position: relative;
+    /*right: -300px;*/
+    top: -32px;
+    /*width: 80%;*/
+    /*height: 184px;*/
 }
 
 .user-introduce-detail-text {
@@ -82,33 +127,6 @@
     width: 0px;
 }
 
-.user-hyperlink-div {
-    display: flex;
-    position: relative;
-    right: -24px;
-    top: -8px;
-}
-
-.follow-button-div{
-    display: flex;
-    position: relative;
-    right: -1080px;
-    top:-424px;
-}
-
-.follow-button-div button{
-    width: 120px;
-}
-
-
-.facebook-icon-div,
-.twitter-icon-div,
-.youtube-icon-div,
-.other-icon-div {
-    margin-left: 8px;
-    margin-right: 8px;
-}
-
 
 .nav-tabs .nav-link {
     color: black;
@@ -116,7 +134,7 @@
     justify-content: center;
     align-items: center;
     width: 240px;
-    height: 80px;
+    height: 64px;
 }
 
 .nav-tabs {

@@ -40,7 +40,7 @@ const routes = [
     {
         path: '/testpage',
         name: 'Testpage',
-        component: () => import("../views/UserPersonalPageTest.vue"),
+        component: () => import(""),
     },
 ];
 

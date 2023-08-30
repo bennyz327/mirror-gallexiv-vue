@@ -124,6 +124,7 @@ const heartClass = computed(() => {
 
 }
 
+
 .picture-text-div {
 //background-color: #F0EEFA; max-width: 264px;
   height: 32px;
@@ -136,22 +137,26 @@ const heartClass = computed(() => {
 
 .picture-item-user-div {
   display: flex;
+  width: 224px;
+}
+
+.picture-item-user-icon-div{
+  width: 20%;
 }
 
 .picture-item-user-name-div {
-  margin-left: 8px;
-  max-width: 240px;
+  width: 65%;
+  max-width: 100%;
   height: 32px;
   text-align: left;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  padding-top: 8px;
 }
 
 .like-button-div{
-  position: relative;
-  right:-80px;
-  top: -8px;
+  width: 15%;
 }
 
 .text-center {

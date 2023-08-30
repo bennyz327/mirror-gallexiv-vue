@@ -93,6 +93,15 @@ onMounted(() => {
     </div>
   </div>
 
+  <div class="text-center">
+    <v-pagination
+        v-model="page"
+        :length="10"
+        prev-icon="mdi-menu-left"
+        next-icon="mdi-menu-right"
+    ></v-pagination>
+  </div>
+
 </template>
 
 <style scoped>

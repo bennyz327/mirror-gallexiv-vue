@@ -1,7 +1,7 @@
 <script setup>
 import {props} from "vue-slick-carousel/src/defaultProps.js";
 
-defineProps(['labelId','labelText','typeId','isRequired'])
+defineProps(['labelId', 'labelText', 'typeId', 'isRequired'])
 
 // ,'$emit(\'blur\')','$emit(\'input\', $event)'
 
@@ -33,20 +33,20 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  //background: linear-gradient(-135deg, #c850c0, #4158d0);
+//background: linear-gradient(-135deg, #c850c0, #4158d0);
 }
 
 .wrapper {
   width: 100%;
   background-color: #fff;
-  padding: 30px;
+  padding: 15px 30px;
   margin: 0;
 
 }
 
-.wrapper .input-data{
+.wrapper .input-data {
   width: 80%;
-  height: 40px;
+  height: 48px;
   position: relative;
 }
 
@@ -59,7 +59,7 @@ body {
 }
 
 .input-data input:focus ~ label,
-.input-data input:valid ~ label{
+.input-data input:valid ~ label {
   transform: translateY(-20px);
   font-size: 15px;
   color: #4158d0;

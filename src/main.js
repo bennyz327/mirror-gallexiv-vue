@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from "./router/router.js";
 
 
-//試用
+//vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
@@ -13,6 +13,12 @@ const vuetify = createVuetify({
     directives,
 })
 
+// Naive UI
+import {create, NButton} from 'naive-ui'
+
+const naive = create({
+    components: [NButton]
+})
 
 // 基本匯入區(vue頁面)
 
@@ -26,4 +32,4 @@ import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 //套件匯入區
 
 
-createApp(App).use(router).use(vuetify).mount('#app')
+createApp(App).use(router).use(vuetify).use(naive).mount('#app')

@@ -39,7 +39,6 @@ const json = ref(jsonFile)
 
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
-
         <div class="col">
           <div class="card shadow-sm" style="object-fit: contain">
             <img src="../assets/Picture/mika.png" alt="Image Description"

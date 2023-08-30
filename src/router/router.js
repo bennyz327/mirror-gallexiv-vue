@@ -18,11 +18,6 @@ const routes = [
         component: () => import("../views/TagSearch.vue"),
     },
     {
-        path: '/homepagetest',
-        name: 'HomepageTest',
-        component: () => import("../views/neverUsed/HomepageTest.vue"),
-    },
-    {
         path: '/postviewpage',
         name: 'PostView',
         component: () => import("../views/PostViewPage.vue"),
@@ -36,11 +31,6 @@ const routes = [
         path: '/userpage',
         name: 'Userpage',
         component: () => import("../views/UserPersonalPage.vue"),
-    },
-    {
-        path: '/testpage',
-        name: 'Testpage',
-        component: () => import(""),
     },
 ];
 

@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'applegothic';
-    src: url('../applegothic.ttf') format('truetype');
+    src: url('fonts/applegothic.ttf') format('truetype');
 }
 
 .user-block {

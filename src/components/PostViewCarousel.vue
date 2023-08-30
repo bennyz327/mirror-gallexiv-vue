@@ -1,3 +1,24 @@
+<script setup>
+import {ref, reactive} from 'vue'
+import {Carousel, Slide} from 'vue3-carousel'
+
+import 'vue3-carousel/dist/carousel.css'
+const currentSlide = ref(0);
+
+// 傳回物件
+const props = defineProps({
+  imgUrlList: Array,
+})
+
+// 將物件(圖片陣列:僅有url不包含任何key)
+const items = reactive(props.imgUrlList);
+
+const slideTo = (val) => {
+  currentSlide.value = val;
+};
+
+</script>
+
 <template>
   <div class="carousel-block">
     <div class="carousel-top">
@@ -26,30 +47,6 @@
     </div>
   </div>
 </template>
-
-
-<script setup>
-import {ref, reactive} from 'vue'
-import {Carousel, Slide} from 'vue3-carousel'
-
-import 'vue3-carousel/dist/carousel.css'
-const currentSlide = ref(0);
-
-// 傳回物件
-const props = defineProps({
-  imgUrlList: Array,
-})
-
-// 將物件(圖片陣列:僅有url不包含任何key)
-const items = reactive(props.imgUrlList);
-
-const slideTo = (val) => {
-  currentSlide.value = val;
-};
-
-
-</script>
-
 
 <style scoped>
 

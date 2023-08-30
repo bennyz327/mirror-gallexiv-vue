@@ -126,8 +126,8 @@ export default {
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
               <!-- 下拉選單 -->
-              <router-link to="userpage" class="dropdown-item" >個人資料</router-link>
-              <router-link to="login" class="dropdown-item" >登入</router-link>
+              <router-link to="/userpage" class="dropdown-item" >個人資料</router-link>
+              <router-link to="/login" class="dropdown-item" >登入</router-link>
               <a class="dropdown-item" href="#">設定</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#" @click="logout">登出</a>

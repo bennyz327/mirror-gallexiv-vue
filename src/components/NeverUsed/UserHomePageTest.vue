@@ -21,9 +21,7 @@ const items = reactive(props.imgUrlList);
           class="d-flex child-flex"
           cols="3"
       >
-        <v-card>
-          <a :href="/">
-          <v-img
+        <v-img
             :src="item"
             :lazy-src="item"
             aspect-ratio="1"
@@ -43,9 +41,8 @@ const items = reactive(props.imgUrlList);
               ></v-progress-circular>
             </v-row>
           </template>
+
         </v-img>
-          </a>
-        </v-card>
       </v-col>
     </v-row>
 

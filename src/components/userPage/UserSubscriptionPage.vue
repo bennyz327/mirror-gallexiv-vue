@@ -6,7 +6,6 @@ import {reactive} from "vue";
 const props = defineProps({
   subscriptionList: Array,
 })
-
 // 將物件取出
 const items = reactive(props.subscriptionList);
 

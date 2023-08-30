@@ -108,9 +108,11 @@ function getCaptcha() {
 <template>
 
   <div class="navbar-block">
-    <v-btn block class="navbar-brand" a href="/">
-      回到Gallexiv首頁
-    </v-btn>
+    <router-link to="/">
+     <button style="background-color: #A596F4; border: white ; width: 360px">
+       回到Gallexiv首頁
+     </button>
+    </router-link>
   </div>
 
   <div class="container" :class="{ 'right-panel-active': isRightPanelActive }" id="container">
@@ -204,10 +206,19 @@ function getCaptcha() {
   src: url('../assets/fonts/applegothic.ttf') format('truetype');
 }
 
-.navbar-brand {
-  position: relative;
-  border-radius: 8px;
-  bottom: -8px;
+.navbar-block{
+  display: flex;
+  justify-content:center;
+
+}
+
+.navbar-brand{
+  border: #0dcaf0;
+  background-color: #0dcaf0;
+}
+
+.navbar-brand font :hover{
+  color: white;
 }
 
 * {

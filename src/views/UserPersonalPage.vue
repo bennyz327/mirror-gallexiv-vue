@@ -27,7 +27,6 @@ const toggleFollow = () => {
   sendDataToBackend(userData.value.postData);
 }
 
-
 // HomePageTag 假資料
 const tagHomePageJson = ref(tagHomepageJsonFile)
 
@@ -53,18 +52,10 @@ onMounted(() => {
 });
 
 // HomePage 假資料
-const imgDataReference = ref(imgJsonFile);
-
-const imgDataImportToHomePage = reactive(
-    imgDataReference.value.map(item => item.imgPath)
-)
+const imgDataImportHomePage = ref(imgJsonFile);
 
 // SubscribePicturePage 假資料
-const imgDataSubscribeReference = ref(subscribePictureJsonFile);
-
-const jsonDataImportSubscribePage = reactive(
-    imgDataSubscribeReference.value.map(item => item.imgPath)
-)
+const imgDataImportSubscribePage = ref(subscribePictureJsonFile);
 
 // SubscriptionPage 假資料
 const jsonDataImportSubscriptionPage = ref(subscriptionJsonFile);
@@ -208,7 +199,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
                 </div>
 
                 <div class="menu-home-page-picture-div">
-                  <UserHomePage :imgUrlList="imgDataImportToHomePage"></UserHomePage>
+                  <UserHomePage :imgUrlList="imgDataImportHomePage"></UserHomePage>
                 </div>
 
               </div>
@@ -225,7 +216,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
                 </div>
 
                 <div class="menu-subscribe-img-page-picture-div">
-                  <UserSubscribePicturePage :imgUrlList="jsonDataImportSubscribePage"></UserSubscribePicturePage>
+                  <UserSubscribePicturePage :imgUrlList="imgDataImportSubscribePage"></UserSubscribePicturePage>
                 </div>
 
               </div>
@@ -371,18 +362,6 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
   /*width: 80%;*/
   /*height: 184px;*/
 }
-
-.user-introduce-detail-text {
-  display: flex;
-  word-wrap: break-word;
-  word-break: break-all;
-  overflow: auto;
-}
-
-.user-introduce-detail-text::-webkit-scrollbar {
-  width: 0px;
-}
-
 
 .nav-tabs .nav-link {
   color: black;

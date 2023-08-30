@@ -1,6 +1,4 @@
 <script setup>
-// import css from "../assets/css/loginPage.css"
-import navbar from "../components/Navbar.vue";
 import InputTextBox from "../components/InputTextBox.vue";
 import {ref, watch} from "vue";
 import qs from "querystring";

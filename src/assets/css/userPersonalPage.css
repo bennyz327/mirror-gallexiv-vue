@@ -1,7 +1,7 @@
-@font-face {
-    font-family: 'applegothic';
-    src: url('fonts/applegothic.ttf') format('truetype');
-}
+/*@font-face {*/
+/*    font-family: 'applegothic';*/
+/*    src: url('fonts/applegothic.ttf') format('truetype');*/
+/*}*/
 
 .user-block {
     display: block;
@@ -17,7 +17,7 @@
 }
 
 .background-div::-webkit-scrollbar {
-    width: 0px;
+    width: 0;
 }
 
 .background-picture-src {
@@ -124,7 +124,7 @@
 }
 
 .user-introduce-detail-text::-webkit-scrollbar {
-    width: 0px;
+    width: 0;
 }
 
 

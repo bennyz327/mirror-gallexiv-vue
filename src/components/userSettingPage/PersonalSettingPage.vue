@@ -48,7 +48,7 @@ import SettingPageInputTextComponent from "@/components/userSettingPage/SettingP
 
 .personal-setting-div-right {
   width: 70%;
-  border: 3px solid blue
+  //border: 3px solid blue
 }
 
 </style>

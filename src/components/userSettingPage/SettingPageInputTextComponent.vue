@@ -137,10 +137,6 @@ const submit = handleSubmit(values => {
 
 }
 
-.form-email-text{
-
-}
-
 .nickname-form-div {
   justify-content: center;
   align-items: center;
@@ -148,7 +144,7 @@ const submit = handleSubmit(values => {
 }
 
 .form-nickname-text {
-  width: 360px;
+  width:480px;
 }
 
 .form-countries-select {

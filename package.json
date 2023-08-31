@@ -18,16 +18,18 @@
     "daterangepicker": "^3.1.0",
     "flexslider": "^2.7.2",
     "font-awesome": "^4.7.0",
+    "naive-ui": "^2.34.4",
     "perfect-scrollbar": "^1.5.5",
     "select2": "^4.1.0-rc.0",
+    "vee-validate": "^4.11.3",
     "vue": "^3.3.4",
     "vue-carousel": "^0.18.0",
+    "vue-cropper": "^0.6.2",
     "vue-router": "^4.2.4",
     "vue-slick": "^1.2.0",
     "vue-slick-carousel": "^1.0.6",
     "vue3-carousel": "^0.3.1",
-    "vuetify": "^3.3.14",
-    "naive-ui": "^2.34.4"
+    "vuetify": "^3.3.14"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.12.3",

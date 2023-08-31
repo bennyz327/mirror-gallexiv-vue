@@ -15,7 +15,7 @@ export default defineConfig(
             //是否開啟https
             https: false,
             //跨域設定
-            cors: true,
+            //cors: true,
             /*
             //回傳如下結構可以設定cors的規則
             // {

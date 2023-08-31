@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router';
 
-const component404 = import('@/components/Page404.vue')
+const component404 = import('@/components/functionComponents/Page404.vue')
 
 const routes = [
     {
@@ -29,6 +29,11 @@ const routes = [
         component: () => import("../views/UserPersonalPage.vue"),
     },
     {
+        path: '/setting',
+        name: 'Setting',
+        component: () => import("../views/UserSettingPage.vue"),
+    },
+    {
         path: '/testconfig',
         name: 'Testconfig',
         component: () => import("../views/TestConfig.vue"),
@@ -44,7 +49,6 @@ const routes = [
         redirect: '/404'
     }
 ];
-
 
 const router = createRouter({
     history: createWebHistory(),

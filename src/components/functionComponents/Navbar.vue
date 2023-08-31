@@ -1,6 +1,8 @@
 <script>
 import {ref, watch} from 'vue';
+import {NBackTop} from "naive-ui";
 export default {
+  components: {NBackTop},
   setup() {
     // 使用 ref 創建響應式vue
     const selectedOption = ref('作品名稱');
@@ -44,6 +46,12 @@ export default {
   <!-- 整個Navbar的容器大小 -->
 
   <div class="container justify-content-center">
+
+    <div class="back-top-button">
+      <template>
+        <n-back-top :right="80" style=""/>
+      </template>
+    </div>
 
     <!--  標題列  -->
 
@@ -113,7 +121,7 @@ export default {
                 aria-expanded="false"
             >
               <img
-                  src="../assets/Picture/UserIcon.gif"
+                  src="../../assets/Picture/UserIcon.gif"
               alt="User"
               width="50"
               height="50"
@@ -128,7 +136,7 @@ export default {
               <!-- 下拉選單 -->
               <router-link to="/userpage" class="dropdown-item" >個人資料</router-link>
               <router-link to="/login" class="dropdown-item" >登入</router-link>
-              <a class="dropdown-item" href="#">設定</a>
+              <router-link to="/setting" class="dropdown-item" >設定</router-link>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#" @click="logout">登出</a>
             </div>

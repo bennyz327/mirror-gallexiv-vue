@@ -1,13 +1,13 @@
 <script setup>
 // import css from "../assets/css/userPersonalPage.css"
 
-import Navbar from "../components/Navbar.vue";
+import Navbar from "../components/functionComponents/Navbar.vue";
 import UserHomePage from "../components/userPage/UserHomePage.vue";
 import UserSubscriptionPage from "../components/userPage/UserSubscriptionPage.vue";
 import UserSubscribePicturePage from "../components/userPage/UserSubscribePage.vue";
-import TagFunction from "../components/TagFunction.vue";
+import TagFunction from "../components/functionComponents/TagFunction.vue";
 import FollowerPage from "../components/userPage/UserFollowerPage.vue"
-import DescriptionArea from "../components/CollapseFunction.vue"
+import DescriptionArea from "../components/functionComponents/CollapseFunction.vue"
 
 import userHomePageJsonFile from "../assets/userHomePage.json"
 import tagHomepageJsonFile from "../assets/tag.json"
@@ -247,7 +247,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 <style scoped>
 @font-face {
   font-family: 'applegothic';
-  src: url('../applegothic.ttf') format('truetype');
+  src: url('../assets/fonts/applegothic.ttf') format('truetype');
 }
 
 .user-block {

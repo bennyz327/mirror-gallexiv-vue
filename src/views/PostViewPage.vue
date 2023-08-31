@@ -1,11 +1,11 @@
 <script setup>
 import '@/assets/css/postViewPage.css';
-import Navbar from "../components/Navbar.vue";
-import PostViewCarousel from "../components/PostViewCarousel.vue";
-import InputTextBox from "../components/InputTextBox.vue";
+import Navbar from "../components/functionComponents/Navbar.vue";
+import PostViewCarousel from "../components/functionComponents/PostViewCarousel.vue";
+import InputTextBox from "../components/functionComponents/InputTextBox.vue";
 import axios from "axios";
 import { ref, onMounted, reactive, computed } from 'vue';
-import Message from "../components/MessageArea.vue";
+import Message from "../components/functionComponents/MessageArea.vue";
 
 
 // 圖片區假資料

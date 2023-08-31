@@ -1,8 +1,8 @@
 <script setup>
 import {ref, computed, onMounted} from 'vue';
 import axios from 'axios';
-import Navbar from "../components/Navbar.vue";
-import TagFunction from "../components/TagFunction.vue";
+import Navbar from "../components/functionComponents/Navbar.vue";
+import TagFunction from "../components/functionComponents/TagFunction.vue";
 import jsonFile from "../assets/tag.json"
 
 const json = ref(jsonFile)

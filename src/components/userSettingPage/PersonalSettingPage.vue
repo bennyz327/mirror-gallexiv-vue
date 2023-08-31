@@ -34,7 +34,7 @@ import SettingPageInputTextComponent from "@/components/userSettingPage/SettingP
 .personal-setting-block {
   display: flex;
   width: 100%;
-  height: 540px;
+  height: 640px;
   padding: 16px;
 //border: 3px solid red;
 }

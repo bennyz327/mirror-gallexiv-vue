@@ -1,6 +1,6 @@
 <script setup>
 
-import Navbar from "../components/functionComponents/Navbar.vue";
+import Navbar from "../components/Navbar.vue";
 import PersonalSettingPage from "../components/userSettingPage/PersonalSettingPage.vue";
 import PersonalHomeAndSearchSettingPage from "../components/userSettingPage/PersonalHomeAndSearchSettingPage.vue";
 import PersonalSubscriptionPage from "../components/userSettingPage/PersonalSubscriptionPage.vue";
@@ -96,12 +96,11 @@ import UploadIconFunction from "../components/functionComponents/UploadIconFunct
 }
 
 .tab-content{
-  height: 540px;
+  height: 640px;
   border-width: 0px 1px 1px 1px;
   border-style: solid;
   border-color: #ccc;
 }
-
 
 .nav-tabs .nav-link {
   color: black;

@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router';
 
-const component404 = import('@/components/functionComponents/Page404.vue')
+const component404 = import('@/components/Page404.vue')
 
 const routes = [
     {

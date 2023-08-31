@@ -1,5 +1,5 @@
 <script setup>
-import Navbar from "../components/functionComponents/Navbar.vue";
+import Navbar from "../components/Navbar.vue";
 import InputTextBox from "../components/functionComponents/InputTextBox.vue";
 </script>
 

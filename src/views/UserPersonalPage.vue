@@ -1,7 +1,7 @@
 <script setup>
 // import css from "../assets/css/userPersonalPage.css"
 
-import Navbar from "../components/functionComponents/Navbar.vue";
+import Navbar from "../components/Navbar.vue";
 import UserHomePage from "../components/userPage/UserHomePage.vue";
 import UserSubscriptionPage from "../components/userPage/UserSubscriptionPage.vue";
 import UserSubscribePicturePage from "../components/userPage/UserSubscribePage.vue";

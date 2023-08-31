@@ -82,7 +82,7 @@ const signUpButton = async () => {
       }),
     });
 
-    if (response.ok) {
+    if (response.data.code=200) {
       // 若註冊成功的話應該要怎麼做
     } else {
       // 註冊失敗處理
@@ -94,6 +94,7 @@ const signUpButton = async () => {
     signUpErrorMsg.value = '發生了一個錯誤，請稍後再試';
   }
 };
+
 
 // function getCaptcha() {
 //   this.$axios.get('/captcha').then(res => {
@@ -154,7 +155,7 @@ getCaptcha();
               </div>
               <div class="verification-picture-div">
                 <img class="captchaImg" :src="captchaImg" @click="getCaptcha" style="position: relative; right: 32px; top:8px" alt="載入失敗">
-              <span>{{UUID}}</span>
+<!--              <span>{{UUID}}</span>-->
               </div>
             </div>
           </div>

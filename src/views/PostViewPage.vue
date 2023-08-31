@@ -1,6 +1,6 @@
 <script setup>
 import '@/assets/css/postViewPage.css';
-import Navbar from "../components/functionComponents/Navbar.vue";
+import Navbar from "../components/Navbar.vue";
 import PostViewCarousel from "../components/functionComponents/PostViewCarousel.vue";
 import InputTextBox from "../components/functionComponents/InputTextBox.vue";
 import axios from "axios";

@@ -77,7 +77,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 
         <!--個人背景圖片-->
         <div class="background-div">
-          <img :src="testData.backgroundPictureSrc" class="background-picture-src">
+          <img :src="testData.backgroundPictureSrc" class="background-picture-src" alt="">
         </div>
 
         <!--個人介紹大區塊(切割頭像/名稱/帳號/連結/跟隨按鈕)-->
@@ -264,7 +264,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 }
 
 .background-div::-webkit-scrollbar {
-  width: 0px;
+  width: 0;
 }
 
 .background-picture-src {
@@ -315,7 +315,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
   display: flex;
   position: relative;
   right: -24px;
-  top: -8px;
+  //top: -8px;
 }
 
 .facebook-icon-div,

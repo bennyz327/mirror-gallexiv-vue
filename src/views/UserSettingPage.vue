@@ -4,7 +4,6 @@ import Navbar from "../components/Navbar.vue";
 import PersonalSettingPage from "../components/userSettingPage/PersonalSettingPage.vue";
 import PersonalHomeAndSearchSettingPage from "../components/userSettingPage/PersonalHomeAndSearchSettingPage.vue";
 import PersonalSubscriptionPage from "../components/userSettingPage/PersonalSubscriptionPage.vue";
-import UploadIconFunction from "../components/functionComponents/UploadIconFunction.vue";
 
 
 
@@ -13,7 +12,6 @@ import UploadIconFunction from "../components/functionComponents/UploadIconFunct
 <template>
 
   <Navbar></Navbar>
-<UploadIconFunction></UploadIconFunction>
 
   <div class="container">
 
@@ -97,7 +95,7 @@ import UploadIconFunction from "../components/functionComponents/UploadIconFunct
 
 .tab-content{
   height: 640px;
-  border-width: 0px 1px 1px 1px;
+  border-width: 0 1px 1px 1px;
   border-style: solid;
   border-color: #ccc;
 }

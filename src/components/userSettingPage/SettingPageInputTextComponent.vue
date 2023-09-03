@@ -120,8 +120,6 @@ const submit = handleSubmit(values => {
 
 <style scoped>
 
-
-
 .edit-personal-data-div {
   width: 100%;
   display: flex;

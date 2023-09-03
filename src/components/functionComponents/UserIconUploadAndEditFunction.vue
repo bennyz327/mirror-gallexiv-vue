@@ -53,15 +53,15 @@ const removePhoto = () => {
       </div>
 
       <div class="upload-button-div">
-        <button class="btn btn-outline-secondary" type="button" @click="changeCropperVisibility" style="width: 160px">
+        <v-btn type="button" @click="changeCropperVisibility" style="width: 160px">
           上傳頭像
-        </button>
+        </v-btn>
       </div>
 
       <div class="delete-button-div">
-        <button class="btn btn-outline-secondary" v-if="user.avatar" type="button" @click="removePhoto" style="width: 160px">
+        <v-btn v-if="user.avatar" type="button" @click="removePhoto" style="width: 160px">
           刪除照片
-        </button>
+        </v-btn>
       </div>
 
     </div>

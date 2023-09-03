@@ -12,6 +12,7 @@ import 'vuetify/styles';
 import { create, NButton } from 'naive-ui'
 
 // 引入 Element Plus CSS
+import 'element-plus'
 import 'element-plus/dist/index.css'
 
 // 引入 Bootstrap CSS 和 JS
@@ -27,7 +28,7 @@ const app = createApp(App)
 // 使用 Vue Router
 app.use(router)
 
-// 使用 Element Plus
+// 使用 vuetify
 const vuetify = createVuetify({
     components,
     directives,

@@ -1,13 +1,12 @@
 <script setup>
 import Navbar from "../components/Navbar.vue";
-
-import userIconUploadAndEditFunction from "../components/functionComponents/UserIconUploadAndEditFunction.vue";
+import TagFunctionTest from "@/components/functionComponents/TagFunctionTest.vue";
 
 </script>
 
 <template>
   <navbar></navbar>
-  <user-icon-upload-and-edit-function></user-icon-upload-and-edit-function>
+  <TagFunctionTest></TagFunctionTest>
 
 </template>
 

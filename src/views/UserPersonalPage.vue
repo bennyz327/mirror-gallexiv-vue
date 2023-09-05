@@ -2,7 +2,7 @@
 // import css from "../assets/css/userPersonalPage.css"
 
 import Navbar from "../components/Navbar.vue";
-import UserHomePage from "../components/userPage/UserHomePage.vue";
+import UserHomePage from "../components/PostPictureView.vue";
 import UserSubscriptionPage from "../components/userPage/UserSubscriptionPage.vue";
 import UserSubscribePicturePage from "../components/userPage/UserSubscribePage.vue";
 import TagFunction from "../components/functionComponents/TagFunction.vue";

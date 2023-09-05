@@ -61,9 +61,9 @@ const nextPage = () => {
              style="margin: 16px; background-color:#ffffff ">
           <router-link :to="'/tags/' + tag.tagId" class="text-decoration-none" v-for="(tag, index) in paginatedTags"
                        :key="index">
-            <button class="tag-name-button btn btn-outline-danger">
+            <v-btn style="color: #0c4128;margin-left: 8px;">
               #{{ tag.tagName }}
-            </button>
+            </v-btn>
           </router-link>
         </div>
       </div>

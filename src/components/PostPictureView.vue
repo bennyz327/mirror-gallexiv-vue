@@ -49,18 +49,24 @@ const heartClass = computed(() => {
               <p>{{ item.pictureName }}</p>
             </div>
 
-            <div class="picture-item-user-div">
 
+            <div class="picture-item-user-div">
               <div class="picture-item-user-icon-div">
+                <router-link :to="'/user/' + item.userId">
                 <img :src="item.userImg" alt="User" width="32" height="32" class="rounded-circle"
-                     style="object-fit: cover;border: 1px solid #ccc"/>
+                     style="object-fit: cover;border: 1px solid #ccc;"/>
+                </router-link>
               </div>
+
               <div class="picture-item-user-name-div">
+                <router-link :to="'/user/' + item.userId" style="text-decoration:none; color:inherit; float: left">
                 <p>{{ item.userName }}</p>
+                </router-link>
               </div>
+
               <div class="like-button-div">
                 <button type="button" class="btn" @click="toggleLike(index)" @mouseenter="hovered[index] = true"
-                        @mouseleave="hovered[index] = false">
+                        @mouseleave="hovered[index] = false" style="padding: 0">
                   <i :class="heartClass(index)" style="color: #da2b2b;"></i>
                 </button>
               </div>
@@ -124,7 +130,6 @@ const heartClass = computed(() => {
 
 }
 
-
 .picture-text-div {
 //background-color: #F0EEFA; max-width: 264px;
   height: 32px;
@@ -152,11 +157,11 @@ const heartClass = computed(() => {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding-top: 8px;
 }
 
 .like-button-div{
   width: 15%;
+  padding-left: 8px;
 }
 
 .text-center {

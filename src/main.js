@@ -9,7 +9,7 @@ import * as directives from 'vuetify/directives'
 import 'vuetify/styles';
 
 // 引入 Naive UI
-import { create, NButton } from 'naive-ui'
+import {create, NButton, NDynamicTags, NUpload} from 'naive-ui'
 
 // 引入 Element Plus CSS
 import 'element-plus'
@@ -18,6 +18,9 @@ import 'element-plus/dist/index.css'
 // 引入 Bootstrap CSS 和 JS
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap.bundle.js'
+
+// 引入 Bootstrap-Icons
+import './assets/css/bootstrap-icons.min.css'
 
 // 引入 Vue Slick Carousel CSS
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
@@ -39,9 +42,10 @@ app.use(vuetify)
 
 // 使用 Naive UI
 const naive = create({
-    components: [NButton]
+    components: [NButton, NDynamicTags, NUpload]
 })
 app.use(naive)
+
 
 // 掛載到 #app 元素
 app.mount('#app')

@@ -82,7 +82,9 @@ export default {
         <div class="d-flex align-content-center flex-wrap">
 
           <div class="d-flex flex-wrap align-items-center justify-content-center">
+            <router-link to="/post/create">
             <button type="button" class="btn btn-outline-info me-2">發文</button>
+            </router-link>
           </div>
 
           <form class="d-flex">

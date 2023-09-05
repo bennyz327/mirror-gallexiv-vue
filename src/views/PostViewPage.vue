@@ -1,13 +1,13 @@
 <script setup>
 import '@/assets/css/postViewPage.css';
+import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import PostViewCarousel from "../components/functionComponents/PostViewCarousel.vue";
 import InputTextBox from "../components/functionComponents/InputTextBox.vue";
-import axios from "axios";
-import { ref, onMounted, reactive, computed } from 'vue';
-import Message from "../components/functionComponents/MessageArea.vue";
+import DescriptionArea from "@/components/functionComponents/CollapseFunction.vue";
 
-
+import {ref, onMounted, reactive, computed} from 'vue';
+import MessageArea from "@/components/functionComponents/MessageArea.vue";
 // 圖片區假資料
 const imgDataReference = ref([
   {
@@ -26,11 +26,10 @@ const imgDataReference = ref([
 
 // 匯入資料到carousel
 const imgDataImportToCarousel = reactive(
-  imgDataReference.value.map(item => item.imgPath)
+    imgDataReference.value.map(item => item.imgPath)
 );
 
 // 其他區域假資料
-
 const testData = ref(null);
 
 const fetchData = async () => {
@@ -39,6 +38,7 @@ const fetchData = async () => {
     const fakeUserData = {
       "postUserName": "Aosora",
       "postDescription": "夏萊的老師有無窮的包容力  還有無限的地下室",
+      "postDate": "2022-10-02",
       "postTitle": "Fbi Open UP",
       "userImageURL": "https://i.imgur.com/6rpzbog.gif",
       "postUserImageURL": "https://media.discordapp.net/attachments/782068953899335710/1138768475754598420/83E0E2EE11DE10FD3314E2FE2D1EBDAE.gif",
@@ -115,20 +115,22 @@ const heartClass = computed(() => {
         </div>
 
         <!--------------------------------Carousel 分隔區 / 收藏按鈕區塊----------------------------------------->
+        <div></div>
+
         <div class="message-block">
 
           <!--愛心及收藏功能-->
           <div class="like-and-collect-block">
             <div class="like-button-block" style="margin-right: 5px">
               <button type="button" class="btn" @click="toggleLike" @mouseenter="hovered = true"
-                @mouseleave="hovered = false">
+                      @mouseleave="hovered = false">
                 <i :class="heartClass" style="color: #da2b2b;"></i>
               </button>
             </div>
 
             <div class="favorite-button-block">
               <button :class="collected ? 'btn btn-primary' : 'btn btn-outline-secondary'" type="button"
-                @click="toggleCollect">
+                      @click="toggleCollect">
                 <span v-text="collected ? '已收藏' : '收藏'"></span>
               </button>
             </div>
@@ -140,45 +142,23 @@ const heartClass = computed(() => {
             <div class="message-user-avatar-block">
               <div class="rounded-circle" style="display:flex">
                 <img :src="testData.userImageURL" alt="User" width="64" height="64" class="rounded-circle"
-                  style="object-fit:cover;" />
+                     style="object-fit:cover;"/>
               </div>
             </div>
 
             <!-- 輸入框區塊 -->
             <div class="message-input-block">
               <input-text-box label-id="messageInsert" labelText="留下您的留言" type-id="text"
-                is-required="false"></input-text-box>
+                              is-required="false"></input-text-box>
             </div>
 
           </div>
 
           <!-- 底部留言區塊 -->
           <div class="message-show-block">
-            <!-- 單人留言區塊(v-for區塊) -->
-            <div class="single-message-block">
-
-              <div class="single-message-div">
-                <!-- 留言者頭像 -->
-                <div class="single-message-user-icon-div">
-
-                </div>
-
-                <!-- userName -->
-                <div class="single-message-userName-div">
-                </div>
-
-                <!-- userContext -->
-                <div class="single-message-userContext-div">
-                </div>
-
-                <!-- userContextTime -->
-                <div class="single-message-userContextTime-div">
-                </div>
-
-              </div>
-            </div>
-
+            <MessageArea></MessageArea>
           </div>
+
         </div>
       </div>
 
@@ -194,8 +174,21 @@ const heartClass = computed(() => {
               <h4 class="ellipsis" id="mainPostPicName">{{ testData.postTitle }}</h4>
             </div>
 
+            <!--Menu按鈕區塊-->
             <div class="menu-block">
-              <i class="fa-solid fa-bars fa-xl" style="color: #d88d4f;"></i>
+              <v-menu
+                  open-on-click
+              >
+                <template v-slot:activator="{ props }">
+                  <button
+                      v-bind="props"
+                  >
+                    <i class="fa-solid fa-bars fa-xl" style="color: #d88d4f;"></i>
+                  </button>
+                </template>
+                <v-btn>聯絡作者</v-btn>
+                <v-btn>檢舉</v-btn>
+              </v-menu>
             </div>
 
           </div>
@@ -209,7 +202,7 @@ const heartClass = computed(() => {
               <div class="author-icon-block">
                 <div class="rounded-circle" style="display:flex">
                   <img :src="testData.postUserImageURL" alt="User" width="64" height="64" class="rounded-circle"
-                    style="object-fit:contain;" />
+                       style="object-fit:contain;"/>
                 </div>
 
                 <!-- 名稱 -->
@@ -221,15 +214,13 @@ const heartClass = computed(() => {
                 </div>
               </div>
 
+              <div class="picture-date-div">
+                <p>上傳日期：{{ testData.postDate }}</p>
+              </div>
+
               <!-- 圖片敘述 -->
               <div class="picture-description-block">
-                <div class="description-block">
-                  <p id="descriptionText" style="display:none">{{ testData.postDescription }}</p>
-                  <a href="javascript:"
-                    onclick="descriptionText.style.display=descriptionText.style.display==='none'?'':'none'"><i
-                      class="fa-solid fa-crop-simple fa-bounce" style="color: #d88d4f;">顯示/隱藏敘述</i></a>
-                  <!-- 可容納300字元左右 -->
-                </div>
+                  <DescriptionArea :descriptionText="testData.postDescription"></DescriptionArea>
               </div>
 
             </div>

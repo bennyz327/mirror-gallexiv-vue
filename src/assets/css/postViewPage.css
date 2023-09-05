@@ -9,6 +9,11 @@
     margin-right: 16px;
 }
 
+.carousel-block{
+    position: relative;
+    right: -1px;
+}
+
 .post-message-block {
     display: flex;
     align-items: center;
@@ -52,7 +57,12 @@
 }
 
 .whole-picture-name-block {
-    background-color: #FCFAF1;
+    box-shadow: -1px 5px 10px rgba(0, 0, 0, 0.1);
+    /*background-color: #FCFAF1;*/
+}
+
+.menu-block :hover{
+    background-color: #F8F9FA;
 }
 
 .picture-name-block {
@@ -91,11 +101,20 @@
     padding: 8px;
 }
 
+.picture-date-div{
+    display: flex;
+    float: right;
+    text-align: left;
+    margin-top: 16px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
 .picture-description-block {
     display: flex;
     float: right;
     text-align: left;
-    height: 480px;
+    height: 440px;
     padding-left: 16px;
     padding-right: 16px;
 }

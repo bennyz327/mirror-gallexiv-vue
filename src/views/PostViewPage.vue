@@ -96,6 +96,9 @@ const heartClass = computed(() => {
 //
 // };
 
+//
+
+
 
 </script>
 
@@ -153,32 +156,8 @@ const heartClass = computed(() => {
           </div>
 
           <!-- 底部留言區塊 -->
-          <div class="message-show-block">
-            <!-- 單人留言區塊(v-for區塊) -->
-            <div class="single-message-block">
+          <Message/>
 
-              <div class="single-message-div">
-                <!-- 留言者頭像 -->
-                <div class="single-message-user-icon-div">
-
-                </div>
-
-                <!-- userName -->
-                <div class="single-message-userName-div">
-                </div>
-
-                <!-- userContext -->
-                <div class="single-message-userContext-div">
-                </div>
-
-                <!-- userContextTime -->
-                <div class="single-message-userContextTime-div">
-                </div>
-
-              </div>
-            </div>
-
-          </div>
         </div>
       </div>
 

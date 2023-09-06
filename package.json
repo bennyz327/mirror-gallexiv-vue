@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.2",
+    "@yaireo/tagify": "^4.17.9",
     "@zakerxa/vue-multiple-image-upload": "^1.0.8",
     "animate": "^1.0.0",
     "animsition": "^4.0.2",
@@ -31,6 +32,7 @@
     "select2": "^4.1.0-rc.0",
     "tailwindcss": "^3.3.3",
     "vee-validate": "^4.11.3",
+    "vue": "^3.3.4",
     "vue-avatar-cropper": "^6.0.9",
     "vue-carousel": "^0.18.0",
     "vue-croppie": "^2.0.2",

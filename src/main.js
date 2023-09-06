@@ -9,7 +9,7 @@ import * as directives from 'vuetify/directives'
 import 'vuetify/styles';
 
 // 引入 Naive UI
-import {create, NButton, NDynamicTags, NUpload} from 'naive-ui'
+import {create, NButton, NDynamicTags, NUpload, NRadio, NSpace} from 'naive-ui'
 
 // 引入 Element Plus CSS
 import 'element-plus'
@@ -42,7 +42,7 @@ app.use(vuetify)
 
 // 使用 Naive UI
 const naive = create({
-    components: [NButton, NDynamicTags, NUpload]
+    components: [NButton, NDynamicTags, NUpload, NRadio, NSpace]
 })
 app.use(naive)
 

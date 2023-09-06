@@ -1,7 +1,12 @@
 <script setup>
 import Navbar from "@/components/Navbar.vue";
-import PictureUploadFunction from "@/components/functionComponents/PictureUploadFunction.vue";
 import PostCreateForm from "@/components/postCreatePage/PostCreateForm.vue";
+
+// 避免上傳工具 載入不完全
+window.addEventListener('load', function() {
+  setTimeout(function() {
+  }, 3000);
+});
 
 
 </script>
@@ -11,27 +16,20 @@ import PostCreateForm from "@/components/postCreatePage/PostCreateForm.vue";
   <Navbar></Navbar>
 
   <div class="container">
-
-    <div class="upload-picture-block">
-      <PictureUploadFunction></PictureUploadFunction>
+    <div class="text-div">
+      <h3>新增文章</h3>
     </div>
-
-    <div class="input-form-block">
+    <div class="create-form-block">
       <PostCreateForm></PostCreateForm>
     </div>
-
   </div>
 
 
 </template>
 
 <style scoped>
-.upload-picture-block {
-  width: 100%;
 
-}
-
-.input-form-block {
+.create-form-block {
   width: 100%;
 
 }

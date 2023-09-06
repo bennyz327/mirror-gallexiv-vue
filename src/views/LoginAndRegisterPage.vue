@@ -9,6 +9,9 @@ const VpasswordId = ref('');
 const VsignUpNickNameId = ref('');
 const VsignUpAccountId = ref('');
 const VsignUpPasswordId = ref('');
+const VsignInCodeId = ref('');
+const VsignUpCodeId = ref('');
+
 const loginErrorMsg = ref('');
 const signUpErrorMsg = ref('');
 const captchaImg = ref('');
@@ -176,6 +179,16 @@ getCaptcha();
                           is-required="true"/>
           <input-text-box v-model="VpasswordId" label-id="passwordId" labelText="密碼" type-id="password"
                           is-required="true"/>
+        </div>
+        <div class="verification-div" style="display:flex;position: relative;right: 48px">
+          <div class="verification-input-div">
+            <input-text-box v-model="VsignInCodeId" label-id="VsignInCodeId" labelText="驗證碼" type-id="text"
+                            is-required="true" @blur="VsignInCodeId" style="width: 160px;"/>
+          </div>
+          <div class="verification-picture-div">
+            <img class="captchaImg" :src="captchaImg" @click="getCaptcha" style="position: relative; right: 32px; top:8px" alt="載入失敗">
+            <!--              <span>{{UUID}}</span>-->
+          </div>
         </div>
         <div class="erromsg-block" style="margin: 0;border: 0;height: 24px;color: #e51313">
           <span>{{ loginErrorMsg }}</span>

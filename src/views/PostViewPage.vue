@@ -1,5 +1,4 @@
 <script setup>
-import '@/assets/css/postViewPage.css';
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import PostViewCarousel from "../components/functionComponents/PostViewCarousel.vue";
@@ -245,4 +244,135 @@ const heartClass = computed(() => {
 </template>
 
 <style scoped>
+.container-postViewPageStyle {
+  display: flex;
+  overflow: hidden;
+}
+
+.container-left-block {
+  float: left;
+  width: auto;
+  margin-right: 16px;
+}
+
+.carousel-block {
+  position: relative;
+  right: -1px;
+}
+
+.post-message-block {
+  display: flex;
+  align-items: center;
+}
+
+.message-block {
+  position: relative;
+}
+
+.like-and-collect-block {
+  display: flex;
+  margin-top: 16px;
+  float: right;
+}
+
+.favorite-button-block button {
+  width: 120px;
+}
+
+.message-user-avatar-block {
+  display: inline-block;
+}
+
+.message-input-block {
+  display: inline-block;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.container-right-block {
+  float: right;
+  width: 480px;
+  border-radius: 16px;
+  margin: 8px;
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 1);
+}
+
+.container-button-block {
+  float: none;
+  height: 80px;
+}
+
+.menu-block :hover {
+  background-color: #F8F9FA;
+}
+
+.picture-name-block {
+  display: flex;
+  width: 480px;
+  text-overflow: ellipsis;
+  align-items: center;
+  padding: 16px;
+}
+
+.picture-name-div {
+  width: 424px;
+  max-width: 416px;
+}
+
+.author-introduce-block {
+  display: flex;
+  padding-left: 8px;
+  /*align-items: center;*/
+  flex-direction: column;
+}
+
+.author-icon-block {
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.author-name-block {
+  display: flex;
+  width: 420px;
+  height: 80px;
+  line-height: 80px;
+  text-overflow: ellipsis;
+  padding: 8px;
+}
+
+.picture-date-div {
+  display: flex;
+  float: right;
+  text-align: left;
+  margin-top: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.picture-description-block {
+  display: flex;
+  float: right;
+  text-align: left;
+  height: 440px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.ellipsis {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+a.link-color-avoid {
+  text-decoration: none;
+  color: black;
+
+}
+
 </style>

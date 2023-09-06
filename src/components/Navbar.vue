@@ -82,9 +82,10 @@ export default {
         <div class="d-flex align-content-center flex-wrap">
 
           <div class="d-flex flex-wrap align-items-center justify-content-center">
-            <router-link to="/post/create">
-            <button type="button" class="btn btn-outline-info me-2">發文</button>
-            </router-link>
+            <!--TODO 此頁面的js檔案為匯入方法，所以在使用router-link的時候沒有辦法正常的載入功能-->
+            <a href="/post/create">
+              <button type="button" class="btn btn-outline-info me-2">發文</button>
+            </a>
           </div>
 
           <form class="d-flex">
@@ -171,4 +172,7 @@ export default {
   display: none;
 }
 
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
 </style>

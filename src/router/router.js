@@ -39,6 +39,11 @@ const routes = [
         component: () => import("../views/PostCreatePage.vue"),
     },
     {
+        path: '/post/upload',
+        name: 'upload',
+        component: () => import("../views/upload.vue"),
+    },
+    {
         path: '/testpage',
         name: 'Testpage',
         component: () => import("../views/TestPage.vue"),
@@ -65,4 +70,10 @@ const router = createRouter({
     routes
 });
 
+router.beforeEach((to, from, next) => {
+    // 每次路由切換時就重新加載javascript
+    next()
+})
+
 export default router;
+

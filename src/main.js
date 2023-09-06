@@ -25,6 +25,9 @@ import './assets/css/bootstrap-icons.min.css'
 // 引入 Vue Slick Carousel CSS
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
 
+// 引入上傳圖片組件
+
+
 // 創建 Vue 應用程式實例
 const app = createApp(App)
 
@@ -46,6 +49,18 @@ const naive = create({
 })
 app.use(naive)
 
+// app.config.globalProperties.$formatSize = function(size) {
+//     if (size > 1024 * 1024 * 1024 * 1024) {
+//         return (size / 1024 / 1024 / 1024 / 1024).toFixed(2) + ' TB'
+//     } else if (size > 1024 * 1024 * 1024) {
+//         return (size / 1024 / 1024 / 1024).toFixed(2) + ' GB'
+//     } else if (size > 1024 * 1024) {
+//         return (size / 1024 / 1024).toFixed(2) + ' MB'
+//     } else if (size > 1024) {
+//         return (size / 1024).toFixed(2) + ' KB'
+//     }
+//     return size.toString() + ' B'
+// }
 
 // 掛載到 #app 元素
 app.mount('#app')

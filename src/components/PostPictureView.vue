@@ -1,4 +1,6 @@
 <script setup>
+import {computed, reactive, ref} from "vue";
+import axios from "axios";
 import {computed, onBeforeMount, onBeforeUpdate, onMounted, onUpdated, reactive, ref} from "vue";
 
 
@@ -6,10 +8,33 @@ import {computed, onBeforeMount, onBeforeUpdate, onMounted, onUpdated, reactive,
 const props = defineProps({
   imgUrlList: Object
 })
+// 將物件取出
+const items = reactive(props.imgUrlList);
 
+const datas  = reactive({
+  imgPath: "",
+  postName:"",
+  userImg:"",
+  userName:"",
+  likeId:0,
+  postId:""
+})
 
+const URL =  import.meta.env.VITE_API_Post
 const liked = ref([]);
 const hovered = ref([]);
+
+const loadAllPost = async () => {
+  try{
+    const response = await axios.get(URL)
+    console.log(response.data)
+    datas.postName = response.data.postName
+    console.log(datas.postName)
+    datas.postId = response.data.postId
+  }catch (error){
+    console.error('加载本地 JSON 文件失败：', error);
+  }
+};
 
 const toggleLike = (index) => {
   liked.value[index] = !liked.value[index];
@@ -26,12 +51,13 @@ const heartClass = computed(() => {
     }
   };
 });
+loadAllPost();
 
 </script>
 
 <template>
 
-  <div>
+  <div v-if="datas">
 
     <div class="galley-middle-block">
       <div class="picture-galley-block">
@@ -70,6 +96,8 @@ const heartClass = computed(() => {
                   <i :class="heartClass(index)" style="color: #da2b2b;"></i>
                 </button>
               </div>
+
+
             </div>
           </div>
         </div>

@@ -1,22 +1,23 @@
 <script setup>
-import {ref, computed, onMounted} from 'vue';
-
-const props = defineProps({
-  tagjson: Array
-});
+import {ref, computed, onMounted, reactive} from 'vue';
+import axios from "axios";
 
 // Tag匯入及分頁功能
-const tags = ref([]);
+let tags = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 5;
-const loadPopularTags = () => {
-  try {
-    // 導入數據
-    tags.value = props.tagjson;
-  } catch (error) {
-    console.error('加载本地 JSON 文件失败：', error);
-  }
-};
+const URL = import.meta.env.VITE_API_TAG
+
+  const loadPopularTags = async () => {
+    try {
+      // 導入數據
+      const response =await axios.get(URL)
+      tags.value = response.data.data;
+      // console.log(response.data.data);
+    } catch (error) {
+      console.error('加载本地 JSON 文件失败：', error);
+    }
+  };
 
 onMounted(() => {
   loadPopularTags();

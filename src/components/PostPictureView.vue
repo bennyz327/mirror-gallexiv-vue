@@ -1,16 +1,38 @@
 <script setup>
 import {computed, reactive, ref} from "vue";
+import axios from "axios";
 
 // 傳回物件
 const props = defineProps({
   imgUrlList: Array,
 })
-
 // 將物件取出
 const items = reactive(props.imgUrlList);
 
+const datas  = reactive({
+  imgPath: "",
+  postName:"",
+  userImg:"",
+  userName:"",
+  likeId:0,
+  postId:""
+})
+
+const URL =  import.meta.env.VITE_API_Post
 const liked = ref([]);
 const hovered = ref([]);
+
+const loadAllPost = async () => {
+  try{
+    const response = await axios.get(URL)
+    console.log(response.data)
+    datas.postName = response.data.postName
+    console.log(datas.postName)
+    datas.postId = response.data.postId
+  }catch (error){
+    console.error('加载本地 JSON 文件失败：', error);
+  }
+};
 
 const toggleLike = (index) => {
   liked.value[index] = !liked.value[index];
@@ -27,17 +49,18 @@ const heartClass = computed(() => {
     }
   };
 });
+loadAllPost();
 
 </script>
 
 <template>
 
-  <div v-if="items">
+  <div v-if="datas">
 
     <div class="galley-middle-block">
       <div class="picture-galley-block">
-        <div class="picture-item-div" v-for="(item, index) in items" :key="index">
-          <a target="_blank" :href="'/post/' + item.pictureId">
+        <div class="picture-item-div" v-for="(item, index) in datas" :key="index">
+          <a target="_blank" :href="'/post/' + item.postId">
             <img :src="item.imgPath" alt="pic"
                  style="width: 240px; height: 240px; object-fit: cover; border-radius: 8px;"
                  class="picure-div">
@@ -46,13 +69,13 @@ const heartClass = computed(() => {
           <div class="picture-item-text-button-div">
 
             <div class="picture-text-div">
-              <p>{{ item.pictureName }}</p>
+              <p>{{ datas.postName }}</p>
             </div>
 
 
             <div class="picture-item-user-div">
               <div class="picture-item-user-icon-div">
-                <router-link :to="'/user/' + item.userId">
+                <router-link :to="'/user/' + item.postId">
                 <img :src="item.userImg" alt="User" width="32" height="32" class="rounded-circle"
                      style="object-fit: cover;border: 1px solid #ccc;"/>
                 </router-link>
@@ -60,7 +83,7 @@ const heartClass = computed(() => {
 
               <div class="picture-item-user-name-div">
                 <router-link :to="'/user/' + item.userId" style="text-decoration:none; color:inherit; float: left">
-                <p>{{ item.userName }}</p>
+                <p>{{ datas.userName }}</p>
                 </router-link>
               </div>
 

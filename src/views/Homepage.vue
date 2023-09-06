@@ -9,14 +9,30 @@ const {isLogin,token,name} = useUserStore()
 
 let decodeName = eval("'"+name+"'")
 
-import jsonFile from "../assets/tag.json"
+// import jsonFile from "../assets/tag.json"
 import imgJsonFile from "../assets/imgList.json"
 import TagFunctionTest from "@/components/functionComponents/TagFunctionTest.vue";
 
-const json = ref(jsonFile)
+// const json = ref(jsonFile)
+const json = ref([])
 
 // HomePage 假資料
 const imgDataImportHomePage = ref(imgJsonFile);
+const URL =  import.meta.env.VITE_API_Post
+const postDatas  = ref([])
+
+const loadAllPost = async () => {
+  try{
+    const response = await axios.get(URL)
+    console.log(response.data.data)
+    postDatas.value = response.data;
+
+  }catch (error){
+    console.error('加载本地 JSON 文件失败：', error);
+  }
+};
+
+loadAllPost();
 
 // 圖片功能
 

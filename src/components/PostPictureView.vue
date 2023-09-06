@@ -28,7 +28,6 @@ const heartClass = computed(() => {
   };
 });
 
-
 </script>
 
 <template>

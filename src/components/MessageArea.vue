@@ -1,15 +1,14 @@
 <script setup>
 import axios from "axios";
 import { ref, onMounted } from 'vue';
-import dayjs from 'dayjs';
 const postId = 1;
 
 //依 postId 找到 userName, commentTest, commentTime
 const comments = ref([]);
-const URL = import.meta.env.VITE_API_COMMENT;
+const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
 const loadComments = async () => {
   try {
-    const response = await axios.get(`${URL}/findByPostId?postId=${postId}`);
+    const response = await axios.get(`${URL_COMMENT}/findByPostId?postId=${postId}`);
     console.log(response.data);
     comments.value = response.data.data; // 假設返回的數據在 response.data 的 data 屬性中
   } catch (error) {
@@ -63,7 +62,7 @@ function formatTime(times) {
         <!-- userContext -->
         <div class="single-message-userContext-div">
           <!-- <span v-if="comment.commentByParentCommentId">
-            @{{ comment.commentByParentCommentId.userinfoByUserId.userName }}
+            @{{ comment.commentByParentCommentId.userinfoByUserId.userName }}：
           </span> -->
           {{ comment.commentText }}
         </div>

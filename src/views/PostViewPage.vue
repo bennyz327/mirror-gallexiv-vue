@@ -98,6 +98,23 @@ const heartClass = computed(() => {
 
 //
 
+const comment = {
+  "postId": 1,
+  "commentText": "",
+  "parentCommentId": null
+}
+const insertCommnet = async () => {
+  const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
+  try {
+    const resInsertComment = await axios.post(`${URL_COMMENT}/insert`, comment)
+    console.log('Response from server:', resInsertComment.data);
+  } catch (error) {
+    console.error('Error sending comment:', error);
+
+  }
+
+}
+
 
 
 </script>
@@ -148,15 +165,18 @@ const heartClass = computed(() => {
             </div>
 
             <!-- 輸入框區塊 -->
-            <div class="message-input-block">
+            <form action="">
+              <input type="text" v-model="comment.commentText"><button type="button" @click="insertCommnet">Send</button>
+            </form>
+            <!-- <div class="message-input-block">
               <input-text-box label-id="messageInsert" labelText="留下您的留言" type-id="text"
                 is-required="false"></input-text-box>
-            </div>
+            </div> -->
 
           </div>
 
           <!-- 底部留言區塊 -->
-          <Message/>
+          <Message />
 
         </div>
       </div>
@@ -232,5 +252,4 @@ const heartClass = computed(() => {
   <!--        </div>-->
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

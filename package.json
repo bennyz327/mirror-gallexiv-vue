@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.2",
+    "@vee-validate/i18n": "^4.11.3",
+    "@vee-validate/zod": "^4.11.3",
     "@xkeshi/image-compressor": "^0.5.3",
     "@yaireo/tagify": "^4.17.9",
     "animate": "^1.0.0",
@@ -42,7 +44,9 @@
     "vue-slick-carousel": "^1.0.6",
     "vue-upload-component": "^3.1.8",
     "vue3-carousel": "^0.3.1",
-    "vuetify": "^3.3.14"
+    "vuetify": "^3.3.14",
+    "yup": "^1.2.0",
+    "zod": "^3.22.2"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.12.3",

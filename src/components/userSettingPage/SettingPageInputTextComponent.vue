@@ -24,9 +24,9 @@ const {handleSubmit,} = useForm({
 const formattedValue = ref(null);
 const timestamp = ref(null);
 
-// 监听 formattedValue 的变化
+// 監聽 formattedValue 變化
 watch(formattedValue, (newValue) => {
-  // 尝试将格式化的值转换为时间戳
+  // 將格式化的值改為時間
   const date = new Date(newValue);
   if (!isNaN(date)) {
     timestamp.value = date.getTime();

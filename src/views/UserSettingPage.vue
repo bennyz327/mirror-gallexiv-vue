@@ -2,7 +2,7 @@
 
 import Navbar from "../components/Navbar.vue";
 import PersonalSettingPage from "../components/userSettingPage/PersonalSettingPage.vue";
-import PersonalHomeAndSearchSettingPage from "../components/userSettingPage/PersonalHomeAndSearchSettingPage.vue";
+import PersonalHomeAndSearchSettingPage from "../components/userSettingPage/PersonalLinkandSearchSetting.vue";
 import PersonalSubscriptionPage from "../components/userSettingPage/PersonalSubscriptionPage.vue";
 
 

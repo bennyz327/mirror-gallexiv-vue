@@ -39,9 +39,9 @@ const routes = [
         component: () => import("../views/PostCreatePage.vue"),
     },
     {
-        path: '/post/upload',
-        name: 'upload',
-        component: () => import("../views/upload.vue"),
+        path: '/backend',
+        name: 'Backend',
+        component: () => import("../views/BackEndPage.vue"),
     },
     {
         path: '/testpage',

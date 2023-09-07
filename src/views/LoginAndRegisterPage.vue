@@ -1,8 +1,18 @@
 <script setup>
 import InputTextBox from "../components/functionComponents/InputTextBox.vue";
-import {ref, watch} from "vue";
+// 使用vee驗證功能
+import {useForm, configure} from 'vee-validate';
+
+//  TODO 中文化實作
+// import {localize, setLocale } from "@vee-validate/i18n";
+// import zhTW from "@vee-validate/i18n/dist/locale/zh_TW.json";
+import { toTypedSchema } from '@vee-validate/zod';
+import { z } from 'zod';
+
 import qs from "querystring";
 import axios from "axios";
+
+import {ref, watch} from "vue";
 
 const VaccountId = ref('');
 const VpasswordId = ref('');
@@ -64,12 +74,6 @@ const loginButton = async () => {
   }
 };
 
-//TODO 註冊畫面前台驗證(未完成)
-const showNickNameError = ref(false);
-const showAccountIdError = ref(false);
-const showPasswordError = ref(false);
-
-
 // 註冊導向功能
 const signUpButton = async () => {
   try {
@@ -115,6 +119,22 @@ const getCaptcha = async () => {
 }
 getCaptcha();
 
+
+// 註冊驗證功能
+const { errors, defineInputBinds } = useForm({
+  validationSchema: toTypedSchema(
+      z.object({
+        account: z.string().min(1),
+        email: z.string().min(1).email(),
+        password: z.string().min(6),
+      })
+  ),
+});
+const registerAccount = defineInputBinds('account');
+const registerEmail = defineInputBinds('email');
+const registerPwd = defineInputBinds('password');
+
+
 </script>
 
 <template>
@@ -136,19 +156,19 @@ getCaptcha();
         <h4>建立帳號</h4>
         <div class="message-input-block" style="margin-left: 72px;">
           <input-text-box v-model="VsignUpNickNameId" label-id="signUpNickNameId" labelText="帳號名稱" type-id="text"
-                          is-required="true" @blur="validateNickNameId"/>
+                          is-required="true" v-bind="registerAccount"/>
           <div class="error-message-block">
-            <span v-if="showNickNameError">暱稱不能為空</span>
+            <span>{{ errors.account }}</span>
           </div>
           <input-text-box v-model="VsignUpAccountId" label-id="signUpAccountId" labelText="E-mail" type-id="text"
-                          is-required="true" @blur="validateAccountId"/>
+                          is-required="true" v-bind="registerEmail"/>
           <div class="error-message-block">
-            <span v-if="showAccountIdError">E-mail格式不正確</span>
+            <span>{{ errors.email }}</span>
           </div>
           <input-text-box v-model="VsignUpPasswordId" label-id="signUpPasswordId" labelText="密碼" type-id="password"
-                          is-required="true" @blur="validatePassword"/>
+                          is-required="true" v-bind="registerPwd"/>
           <div class="error-message-block">
-            <span v-if="showPasswordError">密碼總長度必須大於6位數</span>
+            <span>{{ errors.password }}</span>
           </div>
           <div>
             <div class="verification-div" style="display:flex">
@@ -179,15 +199,15 @@ getCaptcha();
                           is-required="true"/>
           <input-text-box v-model="VpasswordId" label-id="passwordId" labelText="密碼" type-id="password"
                           is-required="true"/>
-        </div>
-        <div class="verification-div" style="display:flex;position: relative;right: 48px">
-          <div class="verification-input-div">
-            <input-text-box v-model="VsignInCodeId" label-id="VsignInCodeId" labelText="驗證碼" type-id="text"
-                            is-required="true" @blur="VsignInCodeId" style="width: 160px;"/>
-          </div>
-          <div class="verification-picture-div">
-            <img class="captchaImg" :src="captchaImg" @click="getCaptcha" style="position: relative; right: 32px; top:8px" alt="載入失敗">
-            <!--              <span>{{UUID}}</span>-->
+          <div class="verification-div" style="display:flex;max-width: 288px;margin-right: 56px">
+            <div class="verification-input-div">
+              <input-text-box v-model="VsignInCodeId" label-id="VsignInCodeId" labelText="驗證碼" type-id="text"
+                              is-required="true" @blur="VsignInCodeId" style="width: 160px;"/>
+            </div>
+            <div class="verification-picture-div">
+              <img class="captchaImg" :src="captchaImg" @click="getCaptcha" style="position: relative; right: 32px; top:8px" alt="載入失敗">
+              <!--              <span>{{UUID}}</span>-->
+            </div>
           </div>
         </div>
         <div class="erromsg-block" style="margin: 0;border: 0;height: 24px;color: #e51313">
@@ -339,7 +359,7 @@ input {
   overflow: hidden;
   width: 720px;
   max-width: 100%;
-  min-height:540px;
+  min-height:600px;
 }
 
 .form-container {

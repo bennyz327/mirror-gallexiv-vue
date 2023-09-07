@@ -1,5 +1,4 @@
 <script setup>
-import {props} from "vue-slick-carousel/src/defaultProps.js";
 
 defineProps(['labelId', 'labelText', 'typeId', 'isRequired'])
 

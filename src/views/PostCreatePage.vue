@@ -2,13 +2,6 @@
 import Navbar from "@/components/Navbar.vue";
 import PostCreateForm from "@/components/postCreatePage/PostCreateForm.vue";
 
-// 避免上傳工具 載入不完全
-window.addEventListener('load', function() {
-  setTimeout(function() {
-  }, 3000);
-});
-
-
 </script>
 
 <template>

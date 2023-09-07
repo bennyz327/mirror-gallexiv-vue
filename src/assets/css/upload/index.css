@@ -1,5 +1,5 @@
 .img-box{
-	margin: 32px 0;
+	margin: 40px 0;
 }
 
 .img-box .up-p{
@@ -8,10 +8,14 @@
 	/*color: #555;*/
 }
 .z_photo{
-	padding: 18px;
+	padding: 16px;
 	box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
 	/*border:2px dashed #E7E6E6;*/
 	/*padding: 18px;*/
+}
+
+.z_photo upimg-div clear{
+
 }
 .z_photo .z_file{
 	position: relative;

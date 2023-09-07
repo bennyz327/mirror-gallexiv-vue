@@ -2,9 +2,9 @@
 import '../../assets/js/upload/jquery-1.8.3.min.js'
 import '../../assets/css/upload/index.css'
 import '../../assets/css/upload/common.css'
-import '../../assets/js/upload/imgUp.js'
 
-import {ref, watch} from "vue";
+
+import {onMounted, ref, watch} from "vue";
 const postTitle = ref("");
 const postDescription = ref("");
 
@@ -56,6 +56,15 @@ const submitForm = () => {
   console.log('JSON內容： ', postData);
 };
 
+
+function loadLibrary(libraryPath) {
+  let newScript = document.createElement('script')
+  newScript.setAttribute('src', libraryPath)
+  document.head.appendChild(newScript)
+}
+onMounted(() => {
+  loadLibrary("/src/assets/js/upload/imgUp.js")
+});
 
 
 </script>

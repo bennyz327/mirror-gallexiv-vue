@@ -1,98 +1,75 @@
 <script setup>
-import {computed, reactive, ref} from "vue";
-import axios from "axios";
+import {computed, onBeforeMount, onBeforeUpdate, onMounted, onUpdated, reactive, ref} from "vue";
+
 
 // 傳回物件
 const props = defineProps({
-  imgUrlList: Array,
-})
-// 將物件取出
-const items = reactive(props.imgUrlList);
-
-const datas  = reactive({
-  imgPath: "",
-  postName:"",
-  userImg:"",
-  userName:"",
-  likeId:0,
-  postId:""
+    imgUrlList : Object
 })
 
-const URL =  import.meta.env.VITE_API_Post
-const liked = ref([]);
-const hovered = ref([]);
 
-const loadAllPost = async () => {
-  try{
-    const response = await axios.get(URL)
-    console.log(response.data)
-    datas.postName = response.data.postName
-    console.log(datas.postName)
-    datas.postId = response.data.postId
-  }catch (error){
-    console.error('加载本地 JSON 文件失败：', error);
-  }
-};
+  const liked = ref([]);
+  const hovered = ref([]);
 
-const toggleLike = (index) => {
-  liked.value[index] = !liked.value[index];
-};
-
-const heartClass = computed(() => {
-  return (index) => {
-    if (liked.value[index] && hovered.value[index]) {
-      return 'fa-solid fa-heart fa-bounce fa-lg';
-    } else if (!liked.value[index] && hovered.value[index]) {
-      return 'fa-regular fa-heart fa-bounce fa-lg';
-    } else {
-      return liked.value[index] ? 'fa-solid fa-heart fa-lg' : 'fa-regular fa-heart fa-lg';
-    }
+  const toggleLike = (index) => {
+    liked.value[index] = !liked.value[index];
   };
-});
-loadAllPost();
+
+  const heartClass = computed(() => {
+    return (index) => {
+      if (liked.value[index] && hovered.value[index]) {
+        return 'fa-solid fa-heart fa-bounce fa-lg';
+      } else if (!liked.value[index] && hovered.value[index]) {
+        return 'fa-regular fa-heart fa-bounce fa-lg';
+      } else {
+        return liked.value[index] ? 'fa-solid fa-heart fa-lg' : 'fa-regular fa-heart fa-lg';
+      }
+    };
+  });
+
 
 </script>
 
 <template>
 
-  <div v-if="datas">
+  <div>
 
     <div class="galley-middle-block">
       <div class="picture-galley-block">
-        <div class="picture-item-div" v-for="(item, index) in datas" :key="index">
-          <a target="_blank" :href="'/post/' + item.postId">
-            <img :src="item.imgPath" alt="pic"
+        <div class="picture-item-div" v-for="item in imgUrlList.value">
+          <a target="_blank" :href="'/posts/' + item.postId">
+            <img v-if="item.blobUrl" :src="item.blobUrl" alt="pic"
                  style="width: 240px; height: 240px; object-fit: cover; border-radius: 8px;"
-                 class="picure-div">
+                 class="picture-div">
           </a>
           <!-- TODO 吃飽太閒寫hover按鈕浮現功能-->
           <div class="picture-item-text-button-div">
 
             <div class="picture-text-div">
-              <p>{{ datas.postName }}</p>
+              <p>{{ item.postTitle }}</p>
             </div>
 
 
             <div class="picture-item-user-div">
               <div class="picture-item-user-icon-div">
-                <router-link :to="'/user/' + item.postId">
-                <img :src="item.userImg" alt="User" width="32" height="32" class="rounded-circle"
-                     style="object-fit: cover;border: 1px solid #ccc;"/>
+                <router-link :to="'/user/' + item.userId">
+                  <img :src="item.userImg" alt="User" width="32" height="32" class="rounded-circle"
+                       style="object-fit: cover;border: 1px solid #ccc;"/>
                 </router-link>
               </div>
 
               <div class="picture-item-user-name-div">
                 <router-link :to="'/user/' + item.userId" style="text-decoration:none; color:inherit; float: left">
-                <p>{{ datas.userName }}</p>
+                  <p>{{ item.userName }}</p>
                 </router-link>
               </div>
 
-              <div class="like-button-div">
-                <button type="button" class="btn" @click="toggleLike(index)" @mouseenter="hovered[index] = true"
-                        @mouseleave="hovered[index] = false" style="padding: 0">
-                  <i :class="heartClass(index)" style="color: #da2b2b;"></i>
-                </button>
-              </div>
+                            <div class="like-button-div">
+                              <button type="button" class="btn" @click="toggleLike(index)" @mouseenter="hovered[index] = true"
+                                      @mouseleave="hovered[index] = false" style="padding: 0">
+                                <i :class="heartClass(index)" style="color: #da2b2b;"></i>
+                              </button>
+                            </div>
 
 
             </div>
@@ -103,14 +80,14 @@ loadAllPost();
 
     <br>
 
-    <div class="text-center">
-      <v-pagination
-          v-model="page"
-          :length="10"
-          prev-icon="mdi-menu-left"
-          next-icon="mdi-menu-right"
-      ></v-pagination>
-    </div>
+        <div class="text-center">
+          <v-pagination
+              v-model="page"
+              :length="10"
+              prev-icon="mdi-menu-left"
+              next-icon="mdi-menu-right"
+          ></v-pagination>
+        </div>
   </div>
 </template>
 
@@ -154,13 +131,7 @@ loadAllPost();
 }
 
 .picture-text-div {
-//background-color: #F0EEFA; max-width: 264px;
-  height: 32px;
-  text-align: left;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-//text-decoration: underline;
+//background-color: #F0EEFA; max-width: 264px; height: 32px; text-align: left; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; //text-decoration: underline;
 }
 
 .picture-item-user-div {
@@ -168,7 +139,7 @@ loadAllPost();
   width: 224px;
 }
 
-.picture-item-user-icon-div{
+.picture-item-user-icon-div {
   width: 20%;
 }
 
@@ -182,7 +153,7 @@ loadAllPost();
   text-overflow: ellipsis;
 }
 
-.like-button-div{
+.like-button-div {
   width: 15%;
   padding-left: 8px;
 }

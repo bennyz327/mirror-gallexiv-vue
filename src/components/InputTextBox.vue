@@ -1,5 +1,5 @@
 <script setup>
-import {props} from "vue-slick-carousel/src/defaultProps.js";
+import { props } from "vue-slick-carousel/src/defaultProps.js";
 
 defineProps(['labelId', 'labelText', 'typeId', 'isRequired'])
 
@@ -8,19 +8,16 @@ defineProps(['labelId', 'labelText', 'typeId', 'isRequired'])
 </script>
 
 <template>
-
   <div class="wrapper" style="width: 420px">
     <div class="input-data">
-      <input :type="typeId" :required="isRequired" @blur="$emit('blur')" @input="$emit('input', $event)"/>
+      <input :type="typeId" :required="isRequired" @blur="$emit('blur')" @input="$emit('input', $event)" />
       <div class="underline"></div>
       <label :id="labelId">{{ labelText }}</label>
     </div>
   </div>
-
 </template>
 
 <style scoped>
-
 * {
   margin: 0;
   padding: 0;
@@ -33,7 +30,7 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-//background: linear-gradient(-135deg, #c850c0, #4158d0);
+  /* //background: linear-gradient(-135deg, #c850c0, #4158d0); */
 }
 
 .wrapper {
@@ -58,8 +55,8 @@ body {
   font-size: 17px;
 }
 
-.input-data input:focus ~ label,
-.input-data input:valid ~ label {
+.input-data input:focus~label,
+.input-data input:valid~label {
   transform: translateY(-20px);
   font-size: 15px;
   color: #4158d0;
@@ -91,9 +88,8 @@ body {
   transition: transform 0.3s ease;
 }
 
-.input-data input:focus ~ .underline:before,
-input-data input-valid ~ .underline:before {
+.input-data input:focus~.underline:before,
+input-data input-valid~.underline:before {
   transform: scaleX(1);
 }
-
 </style>

@@ -103,17 +103,31 @@ const comment = {
   "commentText": "",
   "parentCommentId": null
 }
-const insertCommnet = async () => {
+const showInsertComment = ref(true);
+async function insertCommnet() {
   const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
   try {
     const resInsertComment = await axios.post(`${URL_COMMENT}/insert`, comment)
+    console.log(resInsertComment.status)
+    // .then(function (response) {
+    //   setTimeout(() => {
+    //     showInsertComment.value = false;
+    //   }, 500);
+    //   if (response.status === 200) {
+    //     showInsertComment.value = true;
+    //   }
+    // })
+    if (resInsertComment.status === 200) {
+      showInsertComment.value = false;
+      setTimeout(() => { showInsertComment.value = true; }, 10);
+    }
+    comment.commentText = ""
     console.log('Response from server:', resInsertComment.data);
   } catch (error) {
     console.error('Error sending comment:', error);
-
   }
-
 }
+
 
 
 
@@ -170,13 +184,13 @@ const insertCommnet = async () => {
             </form>
             <!-- <div class="message-input-block">
               <input-text-box label-id="messageInsert" labelText="留下您的留言" type-id="text"
-                is-required="false"></input-text-box>
+                is-required="false" @keyup.enter=""></input-text-box>
             </div> -->
 
           </div>
 
           <!-- 底部留言區塊 -->
-          <Message />
+          <Message v-if="showInsertComment" />
 
         </div>
       </div>

@@ -62,7 +62,7 @@ loadAllPost();
     <div class="galley-middle-block">
       <div class="picture-galley-block">
         <div class="picture-item-div" v-for="item in imgUrlList.value">
-          <a target="_blank" :href="'/posts/' + item.userinfoByUserId.postId">
+          <a target="_blank" :href="'/posts/' + item.postId">
             <img v-if="item.blobUrl" :src="item.blobUrl" alt="pic"
                  style="width: 240px; height: 240px; object-fit: cover; border-radius: 8px;"
                  class="picture-div">
@@ -77,16 +77,15 @@ loadAllPost();
 
             <div class="picture-item-user-div">
               <div class="picture-item-user-icon-div">
-                <router-link :to="'/user/' + item.userinfoByUserId.userId">
-                  <img :src="item.userinfoByUserId.avatar" alt="User" width="32" height="32" class="rounded-circle"
+                <router-link :to="'/user/' + item.userId">
+                  <img :src="item.userImg" alt="User" width="32" height="32" class="rounded-circle"
                        style="object-fit: cover;border: 1px solid #ccc;"/>
                 </router-link>
               </div>
 
               <div class="picture-item-user-name-div">
-                <router-link :to="'/user/' + item.userinfoByUserId.userId"
-                             style="text-decoration:none; color:inherit; float: left">
-                  <p>{{ item.userinfoByUserId.userName }}</p>
+                <router-link :to="'/user/' + item.userId" style="text-decoration:none; color:inherit; float: left">
+                  <p>{{ item.userName }}</p>
                 </router-link>
               </div>
 

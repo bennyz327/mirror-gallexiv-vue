@@ -35,8 +35,6 @@ watch(formattedValue, (newValue) => {
   }
 });
 
-
-
 const submit = handleSubmit(values => {
   alert(JSON.stringify(values, null, 2))
 })

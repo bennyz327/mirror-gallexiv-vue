@@ -2,20 +2,22 @@
 import 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js';
 import {useField, useForm} from 'vee-validate';
 import {onMounted} from "vue";
+import UserBackgroundUploadAndEditFunction
+  from "@/components/functionComponents/UserBackgroundUploadAndEditFunction.vue";
 
 const facebooklink = useField('facebooklink')
 const youtubelink = useField('youtubelink')
 const twitterlink = useField('twitterlink')
 const otherlink = useField('otherlink')
 
-function loadLibrary(libraryPath) {
-  let newScript = document.createElement('script')
-  newScript.setAttribute('src', libraryPath)
-  document.head.appendChild(newScript)
-}
-onMounted(() => {
-  loadLibrary("/src/assets/js/uploadSinglePicture");
-});
+// function loadLibrary(libraryPath) {
+//   let newScript = document.createElement('script')
+//   newScript.setAttribute('src', libraryPath)
+//   document.head.appendChild(newScript)
+// }
+// onMounted(() => {
+//   loadLibrary("/src/assets/js/uploadSinglePicture");
+// });
 
 
 </script>
@@ -36,7 +38,7 @@ onMounted(() => {
         </div>
         <v-text-field
             v-model="facebooklink.value.value"
-            :counter="20"
+            :counter="300"
             :error-messages="errors"
             label="Facebook連結"
             class="form-facebooklink-text"
@@ -49,7 +51,7 @@ onMounted(() => {
         </div>
         <v-text-field
             v-model="youtubelink.value.value"
-            :counter="20"
+            :counter="300"
             :error-messages="errors"
             label="YouTube連結"
             class="form-youtubelink-text"
@@ -61,8 +63,8 @@ onMounted(() => {
           <h6>Twitter連結</h6>
         </div>
         <v-text-field
-            v-model="youtubelink.value.value"
-            :counter="20"
+            v-model="twitterlink.value.value"
+            :counter="300"
             :error-messages="errors"
             label="Twitter連結"
             class="form-twitterlink-text"
@@ -75,14 +77,22 @@ onMounted(() => {
         </div>
         <v-text-field
             v-model="otherlink.value.value"
-            :counter="20"
+            :counter="300"
             :error-messages="errors"
             label="其他連結"
             class="form-otherlink-text"
             @input="validateOtherLink"
         ></v-text-field>
       </div>
+
+      <div class="submit-button-div" style="display: flex; justify-content: center; margin-top: 16px">
+        <v-btn class="me-4" type="submit">
+          送出修改
+        </v-btn>
+      </div>
+
     </div>
+
 
 
     <div class="global-search-setting-block">
@@ -101,38 +111,37 @@ onMounted(() => {
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="inlineRadioOptions" id="NFSWEnable" value="option1"
                    checked="true">
-            <label class="form-check-label" for="enable">顯示</label>
+            <label class="form-check-label" for="NFSWEnable">顯示</label>
           </div>
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="inlineRadioOptions" id="NFSWDisable" value="option2">
-            <label class="form-check-label" for="disable">隱藏</label>
+            <label class="form-check-label" for="NFSWDisable">隱藏</label>
           </div>
         </div>
       </div>
 
       <div style="display: flex; justify-content: center"><hr style="width: 80%"></div>
 
-      <div class="global-search-text-div" style="margin: 16px">
-        <h4>個人頁面背景圖片</h4>
-      </div>
+      <UserBackgroundUploadAndEditFunction></UserBackgroundUploadAndEditFunction>
 
-      <div class="background-picture-upload-div">
-        <div class="upload-box">
-          <input type="file" accept="image/png,image/jpeg,image/jpg" class="upload-input"/>
-          <div class="upload-action"></div>
-          <div class="preview-box" style="object-fit: cover"></div>
-        </div>
-      </div>
-
-      <div class="submit-button-div" style="display: flex; justify-content: center;">
-        <v-btn class="me-4" type="submit">
-          送出修改
-        </v-btn>
-      </div>
     </div>
 
-
   </div>
+
+
+
+  <!--      舊版上傳功能-->
+  <!--      <div class="global-search-text-div" style="margin: 16px">-->
+  <!--        <h4>個人頁面背景圖片</h4>-->
+  <!--      </div>-->
+
+  <!--      <div class="background-picture-upload-div">-->
+  <!--        <div class="upload-box">-->
+  <!--          <input type="file" accept="image/png,image/jpeg,image/jpg" class="upload-input"/>-->
+  <!--          <div class="upload-action"></div>-->
+  <!--          <div class="preview-box" style="object-fit: cover"></div>-->
+  <!--        </div>-->
+  <!--      </div>-->
 </template>
 
 <style scoped>

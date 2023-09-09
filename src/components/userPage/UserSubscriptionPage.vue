@@ -2,7 +2,7 @@
 
 import {reactive} from "vue";
 
-// 傳回物件
+// 傳回拿到的物件
 const props = defineProps({
   subscriptionList: Array,
 })

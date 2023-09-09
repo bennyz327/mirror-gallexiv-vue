@@ -4,8 +4,11 @@ import Navbar from "../components/Navbar.vue";
 import PersonalSettingPage from "../components/userSettingPage/PersonalSettingPage.vue";
 import PersonalHomeAndSearchSettingPage from "../components/userSettingPage/PersonalLinkandSearchSetting.vue";
 import PersonalSubscriptionPage from "../components/userSettingPage/PersonalSubscriptionPage.vue";
+import {ref} from "vue";
 
-
+// 訂閱設定假資料
+import settingSubscribeJsonFile from "@/assets/settingSubscribe.json";
+const jsonDataImportSubscriptionPage = ref(settingSubscribeJsonFile);
 
 </script>
 
@@ -63,7 +66,7 @@ import PersonalSubscriptionPage from "../components/userSettingPage/PersonalSubs
 
           <!--訂閱相關區塊-->
           <div class="tab-pane fade" id="nav-subscription-setting" role="tabpanel" aria-labelledby="nav-subscription-setting-tab">
-            <PersonalSubscriptionPage></PersonalSubscriptionPage>
+            <PersonalSubscriptionPage :subscribeList="jsonDataImportSubscriptionPage"></PersonalSubscriptionPage>
           </div>
 
 

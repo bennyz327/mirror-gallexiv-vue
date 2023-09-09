@@ -39,6 +39,11 @@ const routes = [
         component: () => import("../views/PostCreatePage.vue"),
     },
     {
+        path: '/subscribe/create',
+        name: 'CreatePlanPage',
+        component: () => import("../views/PlanCreatePage.vue"),
+    },
+    {
         path: '/backend',
         name: 'Backend',
         component: () => import("../views/BackEndPage.vue"),

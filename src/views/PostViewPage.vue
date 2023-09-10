@@ -2,7 +2,6 @@
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import PostViewCarousel from "../components/functionComponents/PostViewCarousel.vue";
-import InputTextBox from "../components/functionComponents/InputTextBox.vue";
 import DescriptionArea from "@/components/functionComponents/CollapseFunction.vue";
 
 import {ref, onMounted, reactive, computed} from 'vue';
@@ -22,6 +21,10 @@ const imgDataReference = ref([
     "imgPath": "https://cdn.discordapp.com/attachments/940525773457072169/1143601111375286352/RABBIT_108010979_p0.jpg",
   }
 ]);
+
+//留言區假資料
+import messageAreaJsonFile from "@/assets/messageArea.json";
+const jsonDataImportMessageAreaVue = ref(messageAreaJsonFile);
 
 // 匯入資料到carousel
 const imgDataImportToCarousel = reactive(
@@ -43,7 +46,6 @@ const fetchData = async () => {
       "postUserImageURL": "https://media.discordapp.net/attachments/782068953899335710/1138768475754598420/83E0E2EE11DE10FD3314E2FE2D1EBDAE.gif",
     };
 
-
     setTimeout(() => {
       testData.value = fakeUserData;
     }, 1000);
@@ -56,6 +58,7 @@ onMounted(() => {
   fetchData();
 });
 
+// 按鈕功能
 const liked = ref(false);
 const collected = ref(false);
 const hovered = ref(false);
@@ -80,6 +83,19 @@ const heartClass = computed(() => {
   }
 });
 
+// 留言區塊限制
+const messageInput = ref("");
+const messageInputRules = [
+  (value) => {
+    if (value && value.length <= 120 && value.trim().length > 0) {
+      return true;
+    } else if (!value || value.trim().length === 0) {
+      return "至少必須輸入1個字元";
+    } else {
+      return "字數不能超過 120 個字";
+    }
+  },
+];
 
 // const testData = reactive({
 //   liked: liked.value,
@@ -138,7 +154,7 @@ const heartClass = computed(() => {
           <!--------------------------------留言功能區塊----------------------------------------->
           <div class="post-message-block">
             <!-- 留言者頭像區塊 -->
-            <div class="message-user-avatar-block">
+            <div class="message-user-avatar-block" style="align-items: center">
               <div class="rounded-circle" style="display:flex">
                 <img :src="testData.userImageURL" alt="User" width="64" height="64" class="rounded-circle"
                      style="object-fit:cover;"/>
@@ -147,15 +163,23 @@ const heartClass = computed(() => {
 
             <!-- 輸入框區塊 -->
             <div class="message-input-block">
-              <input-text-box label-id="messageInsert" labelText="留下您的留言" type-id="text"
-                              is-required="false"></input-text-box>
+              <v-text-field
+                  v-model="messageInput"
+                  :rules="messageInputRules"
+                  :counter="120"
+                  :maxlength="120"
+                  label="留言"
+                  bg-color="white"
+                  style="margin-bottom: 16px;"
+              ></v-text-field>
+              <button class="btn btn-outline-info me-2" style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出</button>
             </div>
 
           </div>
 
           <!-- 底部留言區塊 -->
           <div class="message-show-block">
-            <MessageArea></MessageArea>
+            <MessageArea :messageList="jsonDataImportMessageAreaVue"></MessageArea>
           </div>
 
         </div>
@@ -187,6 +211,9 @@ const heartClass = computed(() => {
                 </template>
                 <v-btn>聯絡作者</v-btn>
                 <v-btn>檢舉</v-btn>
+
+                <!--如果是作者本人的話-->
+                <v-btn v-if="!isOwner">編輯作品</v-btn>
               </v-menu>
             </div>
 
@@ -198,14 +225,14 @@ const heartClass = computed(() => {
             <div class="author-introduce-block">
 
               <!-- 頭像 -->
-              <div class="author-icon-block">
+              <div class="author-icon-div">
                 <div class="rounded-circle" style="display:flex">
                   <img :src="testData.postUserImageURL" alt="User" width="64" height="64" class="rounded-circle"
                        style="object-fit:contain;"/>
                 </div>
 
                 <!-- 名稱 -->
-                <div class="author-name-block">
+                <div class="author-name-div">
                   <h6 class="ellipsis" id="mainPostUserName">
                     {{ testData.postUserName }}
                   </h6>
@@ -218,8 +245,8 @@ const heartClass = computed(() => {
               </div>
 
               <!-- 圖片敘述 -->
-              <div class="picture-description-block">
-                  <DescriptionArea :descriptionText="testData.postDescription"></DescriptionArea>
+              <div class="picture-description-div" style="display: flex;justify-content: center">
+                <DescriptionArea :descriptionText="testData.postDescription"></DescriptionArea>
               </div>
 
             </div>
@@ -272,6 +299,7 @@ const heartClass = computed(() => {
 .like-and-collect-block {
   display: flex;
   margin-top: 16px;
+  padding: 40px 0;
   float: right;
 }
 
@@ -284,9 +312,11 @@ const heartClass = computed(() => {
 }
 
 .message-input-block {
-  display: inline-block;
+  display: flex;
+  width: 60%;
   align-items: center;
-  margin-top: 16px;
+  margin-left: 16px;
+  margin-top: 48px;
 }
 
 .container-right-block {
@@ -326,14 +356,14 @@ const heartClass = computed(() => {
   flex-direction: column;
 }
 
-.author-icon-block {
+.author-icon-div {
   display: flex;
   align-items: center;
   padding-left: 8px;
   padding-right: 8px;
 }
 
-.author-name-block {
+.author-name-div {
   display: flex;
   width: 420px;
   height: 80px;
@@ -351,13 +381,11 @@ const heartClass = computed(() => {
   padding-right: 16px;
 }
 
-.picture-description-block {
+.picture-description-div {
   display: flex;
   float: right;
   text-align: left;
   height: 440px;
-  padding-left: 16px;
-  padding-right: 16px;
 }
 
 .ellipsis {
@@ -374,5 +402,6 @@ a.link-color-avoid {
   color: black;
 
 }
+
 
 </style>

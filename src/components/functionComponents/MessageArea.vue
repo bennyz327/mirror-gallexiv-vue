@@ -46,7 +46,7 @@ const items = reactive(props.messageList);
                   </template>
                   <v-btn>檢舉</v-btn>
                   <!--如果是作者本人的話-->
-                  <v-btn v-if="!isOwner">編輯文字</v-btn>
+                  <v-btn v-if="!isOwner">編輯</v-btn>
                 </v-menu>
               </div>
             </div>

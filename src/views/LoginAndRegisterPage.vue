@@ -6,8 +6,8 @@ import {useForm, configure} from 'vee-validate';
 //  TODO 中文化實作
 // import {localize, setLocale } from "@vee-validate/i18n";
 // import zhTW from "@vee-validate/i18n/dist/locale/zh_TW.json";
-import { toTypedSchema } from '@vee-validate/zod';
-import { z } from 'zod';
+import {toTypedSchema} from '@vee-validate/zod';
+import {z} from 'zod';
 
 import qs from "querystring";
 import axios from "axios";
@@ -35,7 +35,7 @@ const txt = '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';
 const pre = 'data:image/jpeg;base64,';
-const UUID=ref('');
+const UUID = ref('');
 
 // 登入註冊頁面切換功能
 const isRightPanelActive = ref(false);
@@ -89,7 +89,7 @@ const signUpButton = async () => {
       }),
     });
 
-    if (response.data.code=200) {
+    if (response.data.code = 200) {
       // 若註冊成功的話應該要怎麼做
     } else {
       // 註冊失敗處理
@@ -121,7 +121,7 @@ getCaptcha();
 
 
 // 註冊驗證功能
-const { errors, defineInputBinds } = useForm({
+const {errors, defineInputBinds} = useForm({
   validationSchema: toTypedSchema(
       z.object({
         account: z.string().min(1),
@@ -134,6 +134,10 @@ const registerAccount = defineInputBinds('account');
 const registerEmail = defineInputBinds('email');
 const registerPwd = defineInputBinds('password');
 
+// 登入驗證功能
+const loginAccount = defineInputBinds('email');
+const loginPwd = defineInputBinds('password');
+
 
 </script>
 
@@ -141,9 +145,9 @@ const registerPwd = defineInputBinds('password');
 
   <div class="navbar-block">
     <router-link to="/">
-     <button style="background-color: #A596F4; border: white ; width: 360px">
-       回到Gallexiv首頁
-     </button>
+      <button style="background-color: #A596F4; border: white ; width: 360px">
+        回到Gallexiv首頁
+      </button>
     </router-link>
   </div>
 
@@ -154,19 +158,19 @@ const registerPwd = defineInputBinds('password');
 
       <form action="#">
         <h4>建立帳號</h4>
-        <div class="message-input-block" style="margin-left: 72px;">
+        <div class="message-input-block" style="margin-left: 48px;">
           <input-text-box v-model="VsignUpNickNameId" label-id="signUpNickNameId" labelText="帳號名稱" type-id="text"
-                          is-required="true" v-bind="registerAccount"/>
+                          is-required="true" v-bind="registerAccount" class="input-text-box-create"/>
           <div class="error-message-block">
             <span>{{ errors.account }}</span>
           </div>
           <input-text-box v-model="VsignUpAccountId" label-id="signUpAccountId" labelText="E-mail" type-id="text"
-                          is-required="true" v-bind="registerEmail"/>
+                          is-required="true" v-bind="registerEmail" class="input-text-box-create"/>
           <div class="error-message-block">
             <span>{{ errors.email }}</span>
           </div>
           <input-text-box v-model="VsignUpPasswordId" label-id="signUpPasswordId" labelText="密碼" type-id="password"
-                          is-required="true" v-bind="registerPwd"/>
+                          is-required="true" v-bind="registerPwd" class="input-text-box-create"/>
           <div class="error-message-block">
             <span>{{ errors.password }}</span>
           </div>
@@ -177,8 +181,9 @@ const registerPwd = defineInputBinds('password');
                                 is-required="true" @blur="VsignUpCodeId" style="width: 160px;"/>
               </div>
               <div class="verification-picture-div">
-                <img class="captchaImg" :src="captchaImg" @click="getCaptcha" style="position: relative; right: 32px; top:8px" alt="載入失敗">
-<!--              <span>{{UUID}}</span>-->
+                <img class="captchaImg" :src="captchaImg" @click="getCaptcha"
+                     style="position: relative; right: 32px; top:8px" alt="載入失敗">
+                <!--              <span>{{UUID}}</span>-->
               </div>
             </div>
           </div>
@@ -194,18 +199,25 @@ const registerPwd = defineInputBinds('password');
     <div class="form-container sign-in-container">
       <form action="#">
         <h5>登入以使用更多服務</h5>
-        <div class="message-input-block" style="margin-left: 72px;">
-          <input-text-box v-model="VaccountId" label-id="accountId" labelText="E-mail" type-id="email"
-                          is-required="true"/>
+        <div class="message-input-block" style="margin-left: 56px;">
+          <input-text-box v-model="VaccountId" label-id="accountId" labelText="E-mail" type-id="text"
+                          is-required="true" v-bind="loginAccount" class="input-text-box-login"/>
+          <div class="error-message-block">
+            <span>{{ errors.email }}</span>
+          </div>
           <input-text-box v-model="VpasswordId" label-id="passwordId" labelText="密碼" type-id="password"
-                          is-required="true"/>
+                          is-required="true" v-bind="loginPwd" class="input-text-box-login"/>
+          <div class="error-message-block">
+            <span>{{ errors.password }}</span>
+          </div>
           <div class="verification-div" style="display:flex;max-width: 288px;margin-right: 56px">
             <div class="verification-input-div">
               <input-text-box v-model="VsignInCodeId" label-id="VsignInCodeId" labelText="驗證碼" type-id="text"
                               is-required="true" @blur="VsignInCodeId" style="width: 160px;"/>
             </div>
             <div class="verification-picture-div">
-              <img class="captchaImg" :src="captchaImg" @click="getCaptcha" style="position: relative; right: 32px; top:8px" alt="載入失敗">
+              <img class="captchaImg" :src="captchaImg" @click="getCaptcha"
+                   style="position: relative; right: 32px; top:8px" alt="載入失敗">
               <!--              <span>{{UUID}}</span>-->
             </div>
           </div>
@@ -249,18 +261,18 @@ const registerPwd = defineInputBinds('password');
   src: url('../assets/fonts/applegothic.ttf') format('truetype');
 }
 
-.navbar-block{
+.navbar-block {
   display: flex;
-  justify-content:center;
+  justify-content: center;
 
 }
 
-.navbar-brand{
+.navbar-brand {
   border: #0dcaf0;
   background-color: #0dcaf0;
 }
 
-.navbar-brand font :hover{
+.navbar-brand font :hover {
   color: white;
 }
 
@@ -357,9 +369,9 @@ input {
   0 10px 10px rgba(0, 0, 0, 0.22);
   position: relative;
   overflow: hidden;
-  width: 720px;
+  width: 840px;
   max-width: 100%;
-  min-height:600px;
+  min-height: 720px;
 }
 
 .form-container {
@@ -496,6 +508,13 @@ input {
   color: #e51313;
 }
 
+.input-text-box-create {
+  max-width: 360px;
+}
+
+.input-text-box-login {
+  max-width: 360px;
+}
 
 
 </style>

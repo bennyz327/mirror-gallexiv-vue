@@ -213,7 +213,7 @@ const messageInputRules = [
                 <v-btn>檢舉</v-btn>
 
                 <!--如果是作者本人的話-->
-                <v-btn v-if="!isOwner">編輯作品</v-btn>
+                <v-btn v-if="!isOwner"><router-link to="/post/edit" style="text-decoration:none;color:black;">編輯作品</router-link></v-btn>
               </v-menu>
             </div>
 

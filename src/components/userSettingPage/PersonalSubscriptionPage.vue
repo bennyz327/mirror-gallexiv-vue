@@ -51,7 +51,9 @@ const items = reactive(props.subscribeList);
 
                       <!--TODO 編輯設定按鈕 -->
                       <button :id="'subscribeSettingId' + index" type="button" class="w-100 btn btn-outline-secondary">
+                        <router-link to="/subscribe/edit" style="text-decoration:none;color:black;">
                         編輯
+                        </router-link>
                       </button>
                     </div>
                   </div>

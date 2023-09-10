@@ -33,9 +33,34 @@
 }
 
 .message-input-block {
+    
     display: inline-block;
     align-items: center;
     margin-top: 16px;
+    margin-left: 10px;
+}
+.message-input-area{
+    margin: 10px;
+    width: 300px;
+    height: 45px;
+    border:1px solid rgb(161, 161, 161);
+    border-radius: 5px;
+}
+.message-input-send-button{
+    margin-right: 10px;
+    padding: 10px;
+    /* background-color: rgb(178, 234, 255); */
+    border-radius: 5px;
+    border: 1px solid rgb(100, 201, 237);
+    color:rgb(67, 112, 156)
+}
+.message-input-resert-button{
+    margin-right: 10px;
+    padding: 10px;
+    /* background-color: rgb(178, 234, 255); */
+    border-radius: 5px;
+    border: 1px solid rgb(190, 190, 190);
+    color:rgb(151, 151, 151)
 }
 
 .container-right-block {

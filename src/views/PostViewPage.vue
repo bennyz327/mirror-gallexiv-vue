@@ -109,14 +109,7 @@ async function insertCommnet() {
   try {
     const resInsertComment = await axios.post(`${URL_COMMENT}/insert`, comment)
     console.log(resInsertComment.status)
-    // .then(function (response) {
-    //   setTimeout(() => {
-    //     showInsertComment.value = false;
-    //   }, 500);
-    //   if (response.status === 200) {
-    //     showInsertComment.value = true;
-    //   }
-    // })
+
     if (resInsertComment.status === 200) {
       showInsertComment.value = false;
       setTimeout(() => { showInsertComment.value = true; }, 10);
@@ -180,7 +173,20 @@ async function insertCommnet() {
 
             <!-- 輸入框區塊 -->
             <form action="">
-              <input type="text" v-model="comment.commentText"><button type="button" @click="insertCommnet">Send</button>
+              <!-- <div class="wrapper" style="width: 420px">
+                <div class="input-data">
+                  <textarea :type="typeId" :required="isRequired" @blur="$emit('blur')" @input="$emit('input', $event)" />
+                  <div class="underline"></div>
+                  <label :id="labelId">{{ labelText }}</label>
+                </div>
+              </div> -->
+
+              <div class="message-input-block">
+                <input class="message-input-area" v-model="comment.commentText"
+                  style="margin-right: 10px; width: 300px; height: 45px;"><button class="message-input-send-button"
+                  type="button" @click="insertCommnet">送出</button><button class="message-input-resert-button"
+                  type="reset">取消</button>
+              </div>
             </form>
             <!-- <div class="message-input-block">
               <input-text-box label-id="messageInsert" labelText="留下您的留言" type-id="text"

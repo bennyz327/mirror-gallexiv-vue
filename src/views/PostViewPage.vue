@@ -121,6 +121,23 @@ async function insertCommnet() {
   loadComments();
 }
 
+
+//刪除留言
+const deleteComment = async (commentId) => {
+  if (window.confirm("真的要刪除嗎?")) {
+    console.log("delect ID：", commentId)
+    const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
+    try {
+      const resDeleteComment = await axios.delete(`${URL_COMMENT}/delete?commentId=${commentId}`);
+      console.log(resDeleteComment.status)
+      console.log('Response from server:', resDeleteComment.data);
+    } catch (error) {
+      console.error('Error sending comment:', error);
+    }
+  }
+  loadComments();
+}
+
 //格式化 commentTime
 function formatTime(times) {
   const now = new Date();
@@ -219,7 +236,8 @@ function formatTime(times) {
                 <a class="single-message-userName-div" href="">@{{ comment.userinfoByUserId.userName }}</a>
 
                 <!-- userContextTime -->
-                <p class="single-message-userContextTime-div">{{ formatTime(comment.commentTime) }}</p>
+                <p class="single-message-userContextTime-div">{{ formatTime(comment.commentTime) }}<button type="button"
+                    @click="deleteComment(comment.commentId)" style="margin-left: 10px;">刪除</button></p>
                 <!-- userContext -->
                 <div class="single-message-userContext-div">
                   <p>{{ comment.commentText }}</p>

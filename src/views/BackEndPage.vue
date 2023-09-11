@@ -7,14 +7,14 @@ const jsonDataImportBackendVue = ref(backEndJsonFile);
 
 const items = ref(jsonDataImportBackendVue);
 
-const editPost = (item) => {
-  // 在这里执行编辑帖子的逻辑，可以使用 item.post
-  // 例如，发送后端请求来编辑帖子
-  console.log("编辑帖子", item);
+const editPost = (postId) => {
+  // 發送編輯請求
+  console.log("編輯ID", postId);
 };
 
 const deletePost = (postId) => {
-  console.log("删除帖子", postId);
+  // 發送刪除請求
+  console.log("刪除ID", postId);
 };
 </script>
 
@@ -53,13 +53,17 @@ const deletePost = (postId) => {
         <td>{{ item.isPublic }}</td>
         <td>{{ item.isNFSW }}</td>
         <td>
-          <v-tooltip :text="item.postTag">
+          <v-tooltip
+              :text="item.postTag.join(', ')"
+              activator="parent"
+              location="bottom">
             <template v-slot:activator="{ props }">
               <v-btn v-bind="props">詳細</v-btn>
             </template>
-          </v-tooltip></td>
+          </v-tooltip>
+        </td>
         <td>
-          <v-btn @click="editPost(item)">編輯</v-btn>
+          <v-btn @click="editPost(item.postId)">編輯</v-btn>
         </td>
         <td>
           <v-btn @click="deletePost(item.postId)">刪除</v-btn>

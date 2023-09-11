@@ -24,7 +24,7 @@ function onHide() {
   <div id="introduceBlock" v-if="content">
     <template v-if="isHide">
       <div class="hideIntroduce" :class="{ 'show': !isHide }" :ref="hideIntroduceRef">
-        <p class="summary">{{ content }}</p>
+        <p class="summary" v-html="content"></p>
         <div class="showBtn">
           <a href="#" @click.stop.prevent="onShow">展開內容</a>
         </div>
@@ -32,7 +32,7 @@ function onHide() {
     </template>
     <template v-else>
       <div class="showIntroduce">
-        <p>{{ content }}</p>
+        <p  v-html="content"></p>
         <div class="hideBtn">
           <a href="#" @click.stop.prevent="onHide">收起</a>
         </div>

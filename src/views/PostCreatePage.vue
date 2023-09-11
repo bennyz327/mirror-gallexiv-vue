@@ -48,14 +48,16 @@ const nsfw = ref(true);
 const isPublic = ref(true);
 
 const submitForm = () => {
+  const formattedDescription = postDescription.value.replace(/\n/g, '<br/>');
   const postData = {
     title: postTitle.value,
-    description: postDescription.value,
+    description: formattedDescription.value,
     nsfw: nsfw.value,
     isPublic: isPublic.value,
     tags: tags.value,
   };
 
+  console.log("自我介紹内容：", formattedDescription);
   console.log('JSON內容： ', postData);
 };
 
@@ -125,6 +127,7 @@ onMounted(() => {
                     :rules="postDescriptionRules"
                     :counter="250"
                     :maxlength="250"
+                    placeholder
                     label="敘述你的圖片或相關內容"
                     no-resize
                     style="width:600px"/>

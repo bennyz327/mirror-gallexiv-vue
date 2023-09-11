@@ -2,10 +2,17 @@
 import {ref, computed, onMounted} from 'vue';
 import axios from 'axios';
 import Navbar from "../components/Navbar.vue";
-import TagFunction from "../components/TagFunction.vue";
+import TagFunction from "../components/functionComponents/TagFunction.vue";
+import UserHomePage from "@/components/PostPictureView.vue";
+
 import jsonFile from "../assets/tag.json"
+import imgJsonFile from "../assets/imgList.json"
+import TagFunctionTest from "@/components/functionComponents/TagFunctionTest.vue";
 
 const json = ref(jsonFile)
+
+// HomePage 假資料
+const imgDataImportHomePage = ref(imgJsonFile);
 
 // 圖片功能
 
@@ -35,30 +42,8 @@ const json = ref(jsonFile)
 
     <!-- 呈現圖片內容 -->
 
-    <div class="album py-5 bg-light">
+    <UserHomePage :imgUrlList="imgDataImportHomePage"></UserHomePage>
 
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-
-        <div class="col">
-          <div class="card shadow-sm" style="object-fit: contain">
-            <img src="../assets/Picture/mika.png" alt="Image Description"
-                 style="object-fit: cover; width: 100%; height: 225px;">
-            <div class="card-body">
-              <p class="card-text">MikaSheep</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn- btn-outline-secondary">
-                    &hearts;
-                  </button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">收藏</button>
-                </div>
-                <small class="text-muted">9 分鐘</small>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
 </template>
@@ -88,17 +73,5 @@ const json = ref(jsonFile)
   background-color: #e6e6fa;
 }
 
-.tagname-block {
-  background-color: #e6e6fa;
-  padding-left: 16px;
-  padding-right: 16px;
-  margin: 8px;
-  border-radius: 8px;
-  max-height: 48px;
-  max-width: 144px;
 
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
 </style>

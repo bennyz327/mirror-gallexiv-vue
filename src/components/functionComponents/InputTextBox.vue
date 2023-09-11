@@ -1,5 +1,4 @@
 <script setup>
-import {props} from "vue-slick-carousel/src/defaultProps.js";
 
 defineProps(['labelId', 'labelText', 'typeId', 'isRequired'])
 
@@ -39,13 +38,11 @@ body {
 .wrapper {
   width: 100%;
   background-color: #fff;
-  padding: 15px 30px;
-  margin: 0;
-
+  padding: 36px 12px;
 }
 
 .wrapper .input-data {
-  width: 80%;
+  width: 100%;
   height: 48px;
   position: relative;
 }

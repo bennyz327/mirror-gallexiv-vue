@@ -1,13 +1,11 @@
 <script setup>
-import '@/assets/css/postViewPage.css';
-import Navbar from "../components/Navbar.vue";
-import PostViewCarousel from "../components/PostViewCarousel.vue";
-import InputTextBox from "../components/InputTextBox.vue";
 import axios from "axios";
-import { ref, onMounted, reactive, computed } from 'vue';
-import Message from "../components/MessageArea.vue";
+import Navbar from "../components/Navbar.vue";
+import PostViewCarousel from "../components/functionComponents/PostViewCarousel.vue";
+import DescriptionArea from "@/components/functionComponents/CollapseFunction.vue";
 
-
+import {ref, onMounted, reactive, computed} from 'vue';
+import MessageArea from "@/components/functionComponents/MessageArea.vue";
 // 圖片區假資料
 const imgDataReference = ref([
   {
@@ -24,13 +22,16 @@ const imgDataReference = ref([
   }
 ]);
 
+//留言區假資料
+import messageAreaJsonFile from "@/assets/messageArea.json";
+const jsonDataImportMessageAreaVue = ref(messageAreaJsonFile);
+
 // 匯入資料到carousel
 const imgDataImportToCarousel = reactive(
-  imgDataReference.value.map(item => item.imgPath)
+    imgDataReference.value.map(item => item.imgPath)
 );
 
 // 其他區域假資料
-
 const testData = ref(null);
 
 const fetchData = async () => {
@@ -39,11 +40,11 @@ const fetchData = async () => {
     const fakeUserData = {
       "postUserName": "Aosora",
       "postDescription": "夏萊的老師有無窮的包容力  還有無限的地下室",
+      "postDate": "2022-10-02",
       "postTitle": "Fbi Open UP",
       "userImageURL": "https://i.imgur.com/6rpzbog.gif",
       "postUserImageURL": "https://media.discordapp.net/attachments/782068953899335710/1138768475754598420/83E0E2EE11DE10FD3314E2FE2D1EBDAE.gif",
     };
-
 
     setTimeout(() => {
       testData.value = fakeUserData;
@@ -57,6 +58,7 @@ onMounted(() => {
   fetchData();
 });
 
+// 按鈕功能
 const liked = ref(false);
 const collected = ref(false);
 const hovered = ref(false);
@@ -81,6 +83,19 @@ const heartClass = computed(() => {
   }
 });
 
+// 留言區塊限制
+const messageInput = ref("");
+const messageInputRules = [
+  (value) => {
+    if (value && value.length <= 120 && value.trim().length > 0) {
+      return true;
+    } else if (!value || value.trim().length === 0) {
+      return "至少必須輸入1個字元";
+    } else {
+      return "字數不能超過 120 個字";
+    }
+  },
+];
 
 // const testData = reactive({
 //   liked: liked.value,
@@ -104,7 +119,7 @@ const heartClass = computed(() => {
 
   <Navbar></Navbar>
 
-  <div class="container" v-if="testData">
+  <div class="container-sm" v-if="testData">
     <div class="container-postViewPageStyle">
 
       <!--------------------------------左半部區塊----------------------------------------->
@@ -115,20 +130,22 @@ const heartClass = computed(() => {
         </div>
 
         <!--------------------------------Carousel 分隔區 / 收藏按鈕區塊----------------------------------------->
+        <div></div>
+
         <div class="message-block">
 
           <!--愛心及收藏功能-->
           <div class="like-and-collect-block">
             <div class="like-button-block" style="margin-right: 5px">
               <button type="button" class="btn" @click="toggleLike" @mouseenter="hovered = true"
-                @mouseleave="hovered = false">
+                      @mouseleave="hovered = false">
                 <i :class="heartClass" style="color: #da2b2b;"></i>
               </button>
             </div>
 
             <div class="favorite-button-block">
               <button :class="collected ? 'btn btn-primary' : 'btn btn-outline-secondary'" type="button"
-                @click="toggleCollect">
+                      @click="toggleCollect">
                 <span v-text="collected ? '已收藏' : '收藏'"></span>
               </button>
             </div>
@@ -137,48 +154,34 @@ const heartClass = computed(() => {
           <!--------------------------------留言功能區塊----------------------------------------->
           <div class="post-message-block">
             <!-- 留言者頭像區塊 -->
-            <div class="message-user-avatar-block">
+            <div class="message-user-avatar-block" style="align-items: center">
               <div class="rounded-circle" style="display:flex">
                 <img :src="testData.userImageURL" alt="User" width="64" height="64" class="rounded-circle"
-                  style="object-fit:cover;" />
+                     style="object-fit:cover;"/>
               </div>
             </div>
 
             <!-- 輸入框區塊 -->
             <div class="message-input-block">
-              <input-text-box label-id="messageInsert" labelText="留下您的留言" type-id="text"
-                is-required="false"></input-text-box>
+              <v-text-field
+                  v-model="messageInput"
+                  :rules="messageInputRules"
+                  :counter="120"
+                  :maxlength="120"
+                  label="留言"
+                  bg-color="white"
+                  style="margin-bottom: 16px;"
+              ></v-text-field>
+              <button class="btn btn-outline-info me-2" style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出</button>
             </div>
 
           </div>
 
           <!-- 底部留言區塊 -->
           <div class="message-show-block">
-            <!-- 單人留言區塊(v-for區塊) -->
-            <div class="single-message-block">
-
-              <div class="single-message-div">
-                <!-- 留言者頭像 -->
-                <div class="single-message-user-icon-div">
-
-                </div>
-
-                <!-- userName -->
-                <div class="single-message-userName-div">
-                </div>
-
-                <!-- userContext -->
-                <div class="single-message-userContext-div">
-                </div>
-
-                <!-- userContextTime -->
-                <div class="single-message-userContextTime-div">
-                </div>
-
-              </div>
-            </div>
-
+            <MessageArea :messageList="jsonDataImportMessageAreaVue"></MessageArea>
           </div>
+
         </div>
       </div>
 
@@ -194,8 +197,24 @@ const heartClass = computed(() => {
               <h4 class="ellipsis" id="mainPostPicName">{{ testData.postTitle }}</h4>
             </div>
 
+            <!--Menu按鈕區塊-->
             <div class="menu-block">
-              <i class="fa-solid fa-bars fa-xl" style="color: #d88d4f;"></i>
+              <v-menu
+                  open-on-click
+              >
+                <template v-slot:activator="{ props }">
+                  <button
+                      v-bind="props"
+                  >
+                    <i class="fa-solid fa-bars fa-xl" style="color: #d88d4f;"></i>
+                  </button>
+                </template>
+                <v-btn>聯絡作者</v-btn>
+                <v-btn>檢舉</v-btn>
+
+                <!--如果是作者本人的話-->
+                <v-btn v-if="!isOwner"><router-link to="/post/edit" style="text-decoration:none;color:black;">編輯作品</router-link></v-btn>
+              </v-menu>
             </div>
 
           </div>
@@ -206,14 +225,14 @@ const heartClass = computed(() => {
             <div class="author-introduce-block">
 
               <!-- 頭像 -->
-              <div class="author-icon-block">
+              <div class="author-icon-div">
                 <div class="rounded-circle" style="display:flex">
                   <img :src="testData.postUserImageURL" alt="User" width="64" height="64" class="rounded-circle"
-                    style="object-fit:contain;" />
+                       style="object-fit:contain;"/>
                 </div>
 
                 <!-- 名稱 -->
-                <div class="author-name-block">
+                <div class="author-name-div">
                   <h6 class="ellipsis" id="mainPostUserName">
                     {{ testData.postUserName }}
                   </h6>
@@ -221,15 +240,13 @@ const heartClass = computed(() => {
                 </div>
               </div>
 
+              <div class="picture-date-div">
+                <p>上傳日期：{{ testData.postDate }}</p>
+              </div>
+
               <!-- 圖片敘述 -->
-              <div class="picture-description-block">
-                <div class="description-block">
-                  <p id="descriptionText" style="display:none">{{ testData.postDescription }}</p>
-                  <a href="javascript:"
-                    onclick="descriptionText.style.display=descriptionText.style.display==='none'?'':'none'"><i
-                      class="fa-solid fa-crop-simple fa-bounce" style="color: #d88d4f;">顯示/隱藏敘述</i></a>
-                  <!-- 可容納300字元左右 -->
-                </div>
+              <div class="picture-description-div" style="display: flex;justify-content: center">
+                <DescriptionArea :descriptionText="testData.postDescription"></DescriptionArea>
               </div>
 
             </div>
@@ -254,4 +271,137 @@ const heartClass = computed(() => {
 </template>
 
 <style scoped>
+.container-postViewPageStyle {
+  display: flex;
+  overflow: hidden;
+}
+
+.container-left-block {
+  float: left;
+  width: auto;
+  margin-right: 16px;
+}
+
+.carousel-block {
+  position: relative;
+  right: -1px;
+}
+
+.post-message-block {
+  display: flex;
+  align-items: center;
+}
+
+.message-block {
+  position: relative;
+}
+
+.like-and-collect-block {
+  display: flex;
+  margin-top: 16px;
+  padding: 40px 0;
+  float: right;
+}
+
+.favorite-button-block button {
+  width: 120px;
+}
+
+.message-user-avatar-block {
+  display: inline-block;
+}
+
+.message-input-block {
+  display: flex;
+  width: 60%;
+  align-items: center;
+  margin-left: 16px;
+  margin-top: 48px;
+}
+
+.container-right-block {
+  float: right;
+  width: 480px;
+  border-radius: 16px;
+  margin: 8px;
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 1);
+}
+
+.container-button-block {
+  float: none;
+  height: 80px;
+}
+
+.menu-block :hover {
+  background-color: #F8F9FA;
+}
+
+.picture-name-block {
+  display: flex;
+  width: 480px;
+  text-overflow: ellipsis;
+  align-items: center;
+  padding: 16px;
+}
+
+.picture-name-div {
+  width: 424px;
+  max-width: 416px;
+}
+
+.author-introduce-block {
+  display: flex;
+  padding-left: 8px;
+  /*align-items: center;*/
+  flex-direction: column;
+}
+
+.author-icon-div {
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.author-name-div {
+  display: flex;
+  width: 420px;
+  height: 80px;
+  line-height: 80px;
+  text-overflow: ellipsis;
+  padding: 8px;
+}
+
+.picture-date-div {
+  display: flex;
+  float: right;
+  text-align: left;
+  margin-top: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.picture-description-div {
+  display: flex;
+  float: right;
+  text-align: left;
+  height: 440px;
+}
+
+.ellipsis {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+a.link-color-avoid {
+  text-decoration: none;
+  color: black;
+
+}
+
+
 </style>

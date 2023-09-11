@@ -2,12 +2,12 @@
 // import css from "../assets/css/userPersonalPage.css"
 
 import Navbar from "../components/Navbar.vue";
-import UserHomePage from "../components/userPage/UserHomePage.vue";
+import UserHomePage from "../components/PostPictureView.vue";
 import UserSubscriptionPage from "../components/userPage/UserSubscriptionPage.vue";
 import UserSubscribePicturePage from "../components/userPage/UserSubscribePage.vue";
-import TagFunction from "../components/TagFunction.vue";
+import TagFunction from "../components/functionComponents/TagFunction.vue";
 import FollowerPage from "../components/userPage/UserFollowerPage.vue"
-import DescriptionArea from "../components/CollapseFunction.vue"
+import DescriptionArea from "../components/functionComponents/CollapseFunction.vue"
 
 import userHomePageJsonFile from "../assets/userHomePage.json"
 import tagHomepageJsonFile from "../assets/tag.json"
@@ -26,7 +26,6 @@ const toggleFollow = () => {
   followed.value = !followed.value;
   sendDataToBackend(userData.value.postData);
 }
-
 
 // HomePageTag 假資料
 const tagHomePageJson = ref(tagHomepageJsonFile)
@@ -53,18 +52,10 @@ onMounted(() => {
 });
 
 // HomePage 假資料
-const imgDataReference = ref(imgJsonFile);
-
-const imgDataImportToHomePage = reactive(
-    imgDataReference.value.map(item => item.imgPath)
-)
+const imgDataImportHomePage = ref(imgJsonFile);
 
 // SubscribePicturePage 假資料
-const imgDataSubscribeReference = ref(subscribePictureJsonFile);
-
-const jsonDataImportSubscribePage = reactive(
-    imgDataSubscribeReference.value.map(item => item.imgPath)
-)
+const imgDataImportSubscribePage = ref(subscribePictureJsonFile);
 
 // SubscriptionPage 假資料
 const jsonDataImportSubscriptionPage = ref(subscriptionJsonFile);
@@ -86,7 +77,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 
         <!--個人背景圖片-->
         <div class="background-div">
-          <img :src="testData.backgroundPictureSrc" class="background-picture-src">
+          <img :src="testData.backgroundPictureSrc" class="background-picture-src" alt="">
         </div>
 
         <!--個人介紹大區塊(切割頭像/名稱/帳號/連結/跟隨按鈕)-->
@@ -208,7 +199,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
                 </div>
 
                 <div class="menu-home-page-picture-div">
-                  <UserHomePage :imgUrlList="imgDataImportToHomePage"></UserHomePage>
+                  <UserHomePage :imgUrlList="imgDataImportHomePage"></UserHomePage>
                 </div>
 
               </div>
@@ -225,7 +216,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
                 </div>
 
                 <div class="menu-subscribe-img-page-picture-div">
-                  <UserSubscribePicturePage :imgUrlList="jsonDataImportSubscribePage"></UserSubscribePicturePage>
+                  <UserSubscribePicturePage :imgUrlList="imgDataImportSubscribePage"></UserSubscribePicturePage>
                 </div>
 
               </div>
@@ -256,7 +247,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 <style scoped>
 @font-face {
   font-family: 'applegothic';
-  src: url('../applegothic.ttf') format('truetype');
+  src: url('../assets/fonts/applegothic.ttf') format('truetype');
 }
 
 .user-block {
@@ -273,7 +264,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 }
 
 .background-div::-webkit-scrollbar {
-  width: 0px;
+  width: 0;
 }
 
 .background-picture-src {
@@ -324,7 +315,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
   display: flex;
   position: relative;
   right: -24px;
-  top: -8px;
+  //top: -8px;
 }
 
 .facebook-icon-div,
@@ -371,18 +362,6 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
   /*width: 80%;*/
   /*height: 184px;*/
 }
-
-.user-introduce-detail-text {
-  display: flex;
-  word-wrap: break-word;
-  word-break: break-all;
-  overflow: auto;
-}
-
-.user-introduce-detail-text::-webkit-scrollbar {
-  width: 0px;
-}
-
 
 .nav-tabs .nav-link {
   color: black;

@@ -29,6 +29,41 @@ const routes = [
         component: () => import("../views/UserPersonalPage.vue"),
     },
     {
+        path: '/setting',
+        name: 'Setting',
+        component: () => import("../views/UserSettingPage.vue"),
+    },
+    {
+        path: '/post/create',
+        name: 'PostCreate',
+        component: () => import("../views/PostCreatePage.vue"),
+    },
+    {
+        path: '/post/edit',
+        name: 'PostEdit',
+        component: () => import("../views/PostEditPage.vue"),
+    },
+    {
+        path: '/subscribe/create',
+        name: 'CreatePlanPage',
+        component: () => import("../views/PlanCreatePage.vue"),
+    },
+    {
+        path: '/subscribe/edit',
+        name: 'EditPlanPage',
+        component: () => import("../views/PlanEditPage.vue"),
+    },
+    {
+        path: '/backend',
+        name: 'Backend',
+        component: () => import("../views/BackEndPage.vue"),
+    },
+    {
+        path: '/testpage',
+        name: 'Testpage',
+        component: () => import("../views/TestPage.vue"),
+    },
+    {
         path: '/testconfig',
         name: 'Testconfig',
         component: () => import("../views/TestConfig.vue"),
@@ -45,10 +80,15 @@ const routes = [
     }
 ];
 
-
 const router = createRouter({
     history: createWebHistory(),
     routes
 });
 
+router.beforeEach((to, from, next) => {
+    // 每次路由切換時就重新加載javascript
+    next()
+})
+
 export default router;
+

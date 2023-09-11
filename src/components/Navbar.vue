@@ -1,6 +1,9 @@
 <script>
 import {ref, watch} from 'vue';
+import {NBackTop} from "naive-ui";
+
 export default {
+  components: {NBackTop},
   setup() {
     // 使用 ref 創建響應式vue
     const selectedOption = ref('作品名稱');
@@ -41,114 +44,135 @@ export default {
 
 <template>
 
-  <!-- 整個Navbar的容器大小 -->
+  <div class="navbar-container">
 
-  <div class="container justify-content-center">
+    <!-- 整個Navbar的容器大小 -->
 
-    <!--  標題列  -->
+    <div class="container justify-content-center">
 
-    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-xl-start">
-<!--      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">-->
-<!--        <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">-->
-<!--          <use xlink:href="#bootstrap"></use>-->
-<!--        </svg>-->
-<!--      </a>-->
-      <router-link to="/" class="navbar-brand" style="margin-right: 36px; font-size: 30px;">Gallexiv</router-link>
-      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-        <li>
-          <router-link to="" class="nav-link px-2 link-secondary">創作者</router-link>
-        </li>
-        <li>
-          <router-link to="/postviewpage" class="nav-link px-2 link-secondary">單頁</router-link>
-        </li>
-        <li>
-          <router-link to="" class="nav-link px-2 link-secondary">會員相關</router-link>
-        </li>
-      </ul>
+      <div class="back-top-button">
+        <template>
+          <n-back-top :right="80" style=""/>
+        </template>
+      </div>
 
-      <!-- 搜尋表單 -->
+      <!--  標題列  -->
 
-      <div class="d-flex align-content-center flex-wrap">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-xl-start">
+        <!--      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">-->
+        <!--        <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">-->
+        <!--          <use xlink:href="#bootstrap"></use>-->
+        <!--        </svg>-->
+        <!--      </a>-->
+        <router-link to="/" class="navbar-brand" style="margin-right: 36px; font-size: 30px;">Gallexiv</router-link>
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+          <li>
+            <router-link to="" class="nav-link px-2 link-secondary">創作者</router-link>
+          </li>
+          <li>
+            <router-link to="/postviewpage" class="nav-link px-2 link-secondary">單頁</router-link>
+          </li>
+          <li>
+            <router-link to="" class="nav-link px-2 link-secondary">會員相關</router-link>
+          </li>
+        </ul>
 
-        <div class="d-flex flex-wrap align-items-center justify-content-center">
-          <button type="button" class="btn btn-outline-info me-2">發文</button>
-        </div>
+        <!-- 搜尋表單 -->
 
-        <form class="d-flex">
-
-          <div class="d-flex flex-wrap align-items-center justify-content-center">
-            <input type="search" class="form-control me-2" placeholder="Search" aria-label="Search">
-          </div>
+        <div class="d-flex align-content-center flex-wrap">
 
           <div class="d-flex flex-wrap align-items-center justify-content-center">
-            <select v-model="selectedOption" class="form-select form-select" aria-label=".form-select-lg example">
-              <option value="作品名稱">作品名稱</option>
-              <option value="1">創作者名稱</option>
-              <option value="2">標籤搜尋</option>
-            </select>
+            <router-link to="/post/create" >
+              <button type="button" class="btn btn-outline-info me-2">發文</button>
+            </router-link>
           </div>
 
+          <form class="d-flex">
+
+            <div class="d-flex flex-wrap align-items-center justify-content-center">
+              <input type="search" class="form-control me-2" placeholder="Search" aria-label="Search">
+            </div>
+
+            <div class="d-flex flex-wrap align-items-center justify-content-center">
+              <select v-model="selectedOption" class="form-select form-select" aria-label=".form-select-lg example">
+                <option value="作品名稱">作品名稱</option>
+                <option value="1">創作者名稱</option>
+                <option value="2">標籤搜尋</option>
+              </select>
+            </div>
+
+            <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">
+              <button @click="searchPosts" type="button" class="btn btn-outline-secondary">搜尋</button>
+            </div>
+
+          </form>
+
+          <!-- 登入按鈕 -->
           <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">
-            <button @click="searchPosts" type="button" class="btn btn-outline-secondary">搜尋</button>
-          </div>
 
-        </form>
+            <!-- 登入前狀態 -->
+            <button v-if="isLoggedIn" @click="login" class="btn btn-outline-secondary">登入</button>
 
-        <!-- 登入按鈕 -->
-        <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">
+            <!-- 登入後狀態 -->
+            <div class="dropdown align-self-start" v-if="!isLoggedIn">
 
-          <!-- 登入前狀態 -->
-          <button v-if="isLoggedIn" @click="login" class="btn btn-outline-secondary">登入</button>
+              <!-- 觸發下拉 -->
+              <button
+                  class="btn btn-link dropdown-toggle rounded-circle"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+              >
+                <img
+                    src="../assets/Picture/UserIcon.gif"
+                    alt="User"
+                    width="50"
+                    height="50"
+                    class="rounded-circle"
+                    style="object-fit:cover;"
+                />
+              </button>
 
-          <!-- 登入後狀態 -->
-          <div class="dropdown align-self-start" v-if="!isLoggedIn">
+              <!-- 下拉區塊 -->
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
-            <!-- 觸發下拉 -->
-            <button
-                class="btn btn-link dropdown-toggle rounded-circle"
-                type="button"
-                id="dropdownMenuButton"
-                data-bs-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-            >
-              <img
-                  src="../assets/Picture/UserIcon.gif"
-              alt="User"
-              width="50"
-              height="50"
-              class="rounded-circle"
-                  style="object-fit:contain;"
-              />
-            </button>
+                <!-- 下拉選單 -->
+                <router-link to="/userpage" class="dropdown-item">個人資料</router-link>
+                <router-link to="/login" class="dropdown-item">登入</router-link>
+                <router-link to="/setting" class="dropdown-item">設定</router-link>
+                <router-link to="/backend" class="dropdown-item">後台</router-link>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" @click="logout">登出</a>
+              </div>
 
-            <!-- 下拉區塊 -->
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-              <!-- 下拉選單 -->
-              <router-link to="userpage" class="dropdown-item" >個人資料</router-link>
-              <router-link to="login" class="dropdown-item" >登入</router-link>
-              <a class="dropdown-item" href="#">設定</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#" @click="logout">登出</a>
             </div>
 
           </div>
-
         </div>
-
       </div>
-
     </div>
-
   </div>
   <router-view></router-view>
 </template>
 
 <style scoped>
 
+.navbar-container {
+  margin-bottom: 16px;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
 .dropdown-toggle::after {
   display: none;
 }
 
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
 </style>

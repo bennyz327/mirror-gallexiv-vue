@@ -138,6 +138,36 @@ const deleteComment = async (commentId) => {
   loadComments();
 }
 
+//更新留言
+// 添加用于编辑评论的状态和存储当前编辑的评论的变量
+const editingCommentId = ref(null); // 存储当前正在编辑的评论ID
+const editedCommentText = ref(''); // 存储编辑后的评论文本
+const originalCommentText = ref(''); // 存储原始评论文本
+
+// 进入编辑模式
+const editComment = (commentId) => {
+  editingCommentId.value = commentId;
+  originalCommentText.value = comments.value.find(c => c.commentId === commentId).commentText;
+  editedCommentText.value = originalCommentText.value; // 将原始评论文本设置为编辑文本的初始值
+};
+
+// 保存编辑后的评论文本
+const updateComment = async (commentId) => {
+  console.log("commentId: ", commentId);
+  const commentText = editedCommentText.value;
+  console.log("commentText: ", commentText);
+  const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
+  const resupdateComment = await axios.put(`${URL_COMMENT}/update?commentId=${commentId}&commentText=${commentText}`);
+  // 此处应根据您的后端逻辑进行修改
+  console.log('Saving edited comment:', resupdateComment.value);
+
+  // 清空编辑状态
+  editingCommentId.value = null;
+  originalCommentText.value = '';
+  editedCommentText.value = '';
+  loadComments();
+};
+
 //格式化 commentTime
 function formatTime(times) {
   const now = new Date();
@@ -237,17 +267,25 @@ function formatTime(times) {
 
                 <!-- userContextTime -->
                 <p class="single-message-userContextTime-div">{{ formatTime(comment.commentTime) }}<button type="button"
+                    @click="editComment(comment.commentId)" style="margin-left: 10px;">更新</button><button type="button"
                     @click="deleteComment(comment.commentId)" style="margin-left: 10px;">刪除</button></p>
+
                 <!-- userContext -->
                 <div class="single-message-userContext-div">
-                  <p>{{ comment.commentText }}</p>
-                  <!-- <form action="" class="reply-form">
+                  <template v-if="editingCommentId === comment.commentId">
+                    <input class="sub-comment-input" v-model="editedCommentText">
+                    <button class="sub-comment-send" type="button" @click="updateComment(comment.commentId)">保存</button>
+                  </template>
+                  <template v-else>
+                    <p>{{ comment.commentText }}</p>
+                  </template>
+                  <form action="" class="reply-form">
                     <div class="">
                       <input class="sub-comment-input" v-model="comment.replyText">
                       <button class="sub-comment-send" type="button" @click="insertSubComment(comment)">送出</button>
                       <button class="sub-comment-reset" type="reset">取消</button>
                     </div>
-                  </form> -->
+                  </form>
                 </div>
 
                 <br>

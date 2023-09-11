@@ -1,8 +1,13 @@
 import axios from "axios";
 
 const instance = axios.create({
-    baseURL: 'http://localhost:8080/posts/person',
-    headers: { Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5NDQzMDc0NCwiZXhwIjoxNjk0NDMyNTQ0fQ.NwvHy-q-J9ppGCeirZHvuX9A2CRd74EsXdc_MZSXGKo' }
+    baseURL: 'http://localhost:8080/',
+    headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS, HEAD',
+        'Access-Control-Allow-Headers': 'Origin, Content-Type, Authorization'
+    }
 })
 
-export default instance
+export default instance;

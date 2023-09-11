@@ -121,6 +121,26 @@ async function insertCommnet() {
   loadComments();
 }
 
+//新增子留言
+const insertSubComment = async (commentId, subCommentText) => {
+  const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
+  try {
+    console.log(comment.value);
+    const commentDto = {
+      postId: comment.postId,
+      commentText: subCommentText,
+      parentCommentId: commentId,
+    }
+    const resSubComment = await axios.post(`${URL_COMMENT}/insert`, commentDto)
+    console.log(resSubComment.status);
+    comment.subCommentText = ""
+    console.log('Response from server:', resSubComment.data);
+  } catch (error) {
+    console.error('Error sending comment:', error);
+  }
+  loadComments();
+}
+
 
 //刪除留言
 const deleteComment = async (commentId) => {
@@ -138,35 +158,32 @@ const deleteComment = async (commentId) => {
   loadComments();
 }
 
-//更新留言
-// 添加用于编辑评论的状态和存储当前编辑的评论的变量
-const editingCommentId = ref(null); // 存储当前正在编辑的评论ID
-const editedCommentText = ref(''); // 存储编辑后的评论文本
-const originalCommentText = ref(''); // 存储原始评论文本
-
-// 进入编辑模式
+//------------更新留言-----------------//
+//取得初始值
+const editingCommentId = ref(null); // 取得要編輯的 commentId
+const originalCommentText = ref(''); // 取得原本的 commentText 
+const editedCommentText = ref(''); // 取得編輯過的 commentId
+// 點擊‘更新’後進入編輯
 const editComment = (commentId) => {
   editingCommentId.value = commentId;
-  originalCommentText.value = comments.value.find(c => c.commentId === commentId).commentText;
-  editedCommentText.value = originalCommentText.value; // 将原始评论文本设置为编辑文本的初始值
+  originalCommentText.value = comments.value.find(c => c.commentId === commentId).commentText;//確認 commentId 一致
+  editedCommentText.value = originalCommentText.value; // 將原本的 commentText 設為初始值
 };
-
-// 保存编辑后的评论文本
+// 將編輯後的 commentText 傳到後端
 const updateComment = async (commentId) => {
   console.log("commentId: ", commentId);
-  const commentText = editedCommentText.value;
+  const commentText = editedCommentText.value;// 取得新commentText
   console.log("commentText: ", commentText);
   const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
-  const resupdateComment = await axios.put(`${URL_COMMENT}/update?commentId=${commentId}&commentText=${commentText}`);
-  // 此处应根据您的后端逻辑进行修改
-  console.log('Saving edited comment:', resupdateComment.value);
-
-  // 清空编辑状态
+  const resUpdateComment = await axios.put(`${URL_COMMENT}/update?commentId=${commentId}&commentText=${commentText}`);
+  console.log('Saving edited comment:', resUpdateComment.value);
+  // 清空初始值
   editingCommentId.value = null;
   originalCommentText.value = '';
   editedCommentText.value = '';
   loadComments();
 };
+//---------------------------------------------//
 
 //格式化 commentTime
 function formatTime(times) {
@@ -266,9 +283,12 @@ function formatTime(times) {
                 <a class="single-message-userName-div" href="">@{{ comment.userinfoByUserId.userName }}</a>
 
                 <!-- userContextTime -->
-                <p class="single-message-userContextTime-div">{{ formatTime(comment.commentTime) }}<button type="button"
-                    @click="editComment(comment.commentId)" style="margin-left: 10px;">更新</button><button type="button"
-                    @click="deleteComment(comment.commentId)" style="margin-left: 10px;">刪除</button></p>
+                <p class="single-message-userContextTime-div">{{ formatTime(comment.commentTime) }}<button
+                    class="update-button" type="button" @click="editComment(comment.commentId)"
+                    style="margin-left: 10px; box-sizing: border-box; border: 1px solid gainsboro; padding: 2px; border-radius: 5px;">更新</button><button
+                    class="delete-button" type="button" @click="deleteComment(comment.commentId)"
+                    style="margin-left: 10px; box-sizing: border-box; border: 1px solid gainsboro; padding: 2px; border-radius: 5px;">刪除</button>
+                </p>
 
                 <!-- userContext -->
                 <div class="single-message-userContext-div">
@@ -281,31 +301,13 @@ function formatTime(times) {
                   </template>
                   <form action="" class="reply-form">
                     <div class="">
-                      <input class="sub-comment-input" v-model="comment.replyText">
-                      <button class="sub-comment-send" type="button" @click="insertSubComment(comment)">送出</button>
+                      <input class="sub-comment-input" v-model="comment.subCommentText">
+                      <button class="sub-comment-send" type="button"
+                        @click="insertSubComment(comment.commentId, comment.subCommentText)">送出</button>
                       <button class="sub-comment-reset" type="reset">取消</button>
                     </div>
                   </form>
                 </div>
-
-                <br>
-
-                <!-- 子留言 input -->
-
-
-                <!-- 子留言內容 -->
-                <!-- <div class="single-message-block sub-comment" v-for="subComment in comment.subComments"
-                  :key="subComment.commentId">
-                  <a class="single-message-userName-div" href="">@{{ subComment.userinfoByUserId.userName }}</a>
-                  <p class="single-message-userContextTime-div">{{ formatTime(subComment.commentTime) }}</p>
-                  <div class="single-message-userContext-div">
-                    <p>{{ subComment.commentText }}</p> -->
-                <!-- 这里也需要使用 subComment.subReplyText -->
-                <!-- <input class="sub-comment-input" v-model="subComment.subReplyText">
-                    <button class="sub-comment-send" type="button" @click="insertSubComment(subComment)">送出</button>
-                    <button class="sub-comment-reset" type="reset">取消</button>
-                  </div>
-                </div> -->
               </div>
             </div>
           </div>
@@ -420,6 +422,11 @@ function formatTime(times) {
   color: rgb(130, 130, 130);
   padding: 5px;
   margin-top: 10px;
+}
+
+.update-button {
+  box-sizing: border-box;
+  border: 1px, solid, gainsboro;
 }
 
 .sub-comment-input {

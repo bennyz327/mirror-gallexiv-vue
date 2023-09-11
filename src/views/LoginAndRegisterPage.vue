@@ -143,14 +143,6 @@ const loginPwd = defineInputBinds('password');
 
 <template>
 
-  <div class="navbar-block">
-    <router-link to="/">
-      <button style="background-color: #A596F4; border: white ; width: 360px">
-        回到Gallexiv首頁
-      </button>
-    </router-link>
-  </div>
-
   <div class="container" :class="{ 'right-panel-active': isRightPanelActive }" id="container">
 
     <!--註冊表單-->
@@ -241,6 +233,11 @@ const loginPwd = defineInputBinds('password');
           <h1>Gallexiv</h1>
           <p>已有帳號嗎?</p>
           <button class="ghost" id="signIn" @click="showSignInPanel">登入</button>
+          <router-link to="/">
+            <button class="ghost">
+              回到Gallexiv首頁
+            </button>
+          </router-link>
         </div>
         <div class="overlay-panel overlay-right">
           <h1>Gallexiv</h1>
@@ -248,6 +245,11 @@ const loginPwd = defineInputBinds('password');
           <h2>歡迎! 朋友</h2>
           <p>創作&nbsp;&nbsp;與世界分享您的作品</p>
           <button class="ghost" id="signUp" @click="showSignUpPanel">註冊</button>
+          <router-link to="/">
+            <button class="ghost">
+              回到Gallexiv首頁
+            </button>
+          </router-link>
         </div>
       </div>
     </div>
@@ -259,17 +261,6 @@ const loginPwd = defineInputBinds('password');
 @font-face {
   font-family: 'applegothic';
   src: url('../assets/fonts/applegothic.ttf') format('truetype');
-}
-
-.navbar-block {
-  display: flex;
-  justify-content: center;
-
-}
-
-.navbar-brand {
-  border: #0dcaf0;
-  background-color: #0dcaf0;
 }
 
 .navbar-brand font :hover {
@@ -288,7 +279,7 @@ body {
   flex-direction: column;
   font-family: 'Montserrat', sans-serif;
   height: 100vh;
-  margin: -20px 0 50px;
+  margin: -25px 0 50px;
 }
 
 h1 {

@@ -1,11 +1,15 @@
 <script setup>
 import Navbar from "@/components/Navbar.vue";
-import { ref } from 'vue';
+import {onMounted, ref} from 'vue';
+import axiosInstance from './api/api.js'
 
 import backEndJsonFile from "@/assets/backendPage.json";
+import axios from "axios";
+
 const jsonDataImportBackendVue = ref(backEndJsonFile);
 
-const items = ref(jsonDataImportBackendVue);
+// const items = ref('');
+
 
 const editPost = (postId) => {
   // 發送編輯請求
@@ -16,6 +20,39 @@ const deletePost = (postId) => {
   // 發送刪除請求
   console.log("刪除ID", postId);
 };
+
+
+// onMounted(() => {
+  function loadPersonPost() {
+    // const config = {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5NDQyNjAzNiwiZXhwIjoxNjk0NDI3ODM2fQ.ci4vgyLtaw338kvs9-'
+    //   }
+    // }
+    const url = 'http://localhost:8080/posts/person'
+    //
+    // const res = axios.get(url,config)
+    //     .then((response) => {
+    //       console.log(response.data.data);
+    //       const items = ref(response.data.data);
+    //     })
+    //     .catch((error) => {
+    //       console.error('There was a problem with the GET request:', error);
+    //     });
+    axiosInstance.post(url)
+        .then((response) => {
+          console.log(response.data.data);
+          const items = ref(response.data.data);
+        })
+        .catch((error) => {
+          console.error('There was a problem with the GET request:', error);
+        });
+  }
+
+  loadPersonPost();
+// })
+
 </script>
 
 <template>
@@ -76,13 +113,13 @@ const deletePost = (postId) => {
 
 <style scoped>
 
-.text-max-width{
+.text-max-width {
   max-width: 48px;
-  overflow:hidden;
+  overflow: hidden;
 
 }
 
-.picture-max-width{
+.picture-max-width {
   width: 50px;
   height: 50px;
   object-fit: cover
@@ -92,7 +129,7 @@ const deletePost = (postId) => {
   max-width: 80px;
 }
 
-.table tbody tr td{
+.table tbody tr td {
   vertical-align: middle;
 }
 

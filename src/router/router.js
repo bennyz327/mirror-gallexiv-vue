@@ -29,6 +29,11 @@ const routes = [
         component: () => import("../views/UserPersonalPage.vue"),
     },
     {
+        path: '/search/follower',
+        name: 'FollowerSearch',
+        component: () => import("../views/CreatorSearchPage.vue"),
+    },
+    {
         path: '/setting',
         name: 'Setting',
         component: () => import("../views/UserSettingPage.vue"),

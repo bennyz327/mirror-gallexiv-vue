@@ -90,14 +90,12 @@ const jsonDataImportSubscriptionPage = ref(settingSubscribeJsonFile);
 }
 
 .whole-setting-block {
-  margin-top: 12px;
   width: 100%;
-  max-height: 640px;
-
+  max-height: 680px;
 }
 
 .tab-content{
-  height: 640px;
+  height: 680px;
   border-width: 0 1px 1px 1px;
   border-style: solid;
   border-color: #ccc;

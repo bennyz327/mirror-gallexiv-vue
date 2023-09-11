@@ -1,9 +1,8 @@
 <script setup>
 import 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js';
 import {useField, useForm} from 'vee-validate';
-import {onMounted} from "vue";
-import UserBackgroundUploadAndEditFunction
-  from "@/components/functionComponents/UserBackgroundUploadAndEditFunction.vue";
+import {onMounted, ref} from "vue";
+import AvatarCropper from "vue-avatar-cropper";
 
 const facebooklink = useField('facebooklink')
 const youtubelink = useField('youtubelink')
@@ -19,7 +18,45 @@ const otherlink = useField('otherlink')
 //   loadLibrary("/src/assets/js/uploadSinglePicture");
 // });
 
+const maxFileSize = 4;
+const showCropper = ref(true);
+const message = ref("");
 
+const user = ref({
+  id: 1,
+  backgroundPicture: "",
+});
+
+const handleUploaded = (data) => {
+  const base64str = data.url.substring(data.url.indexOf(",") + 1);
+  const decoded = atob(base64str);
+  const decodedFileSize = decoded.length / 1024 ** 2;
+
+  if (decodedFileSize > maxFileSize) {
+    message.value =
+        "這張圖片太大了(超過4MB)請嘗試將它縮小後再上傳";
+
+    setTimeout(() => {
+      message.value = "";
+    }, 5000);
+  } else {
+    user.value.avatar = data.getCroppedCanvas().toDataURL("image/png");
+  }
+
+};
+
+const changeCropperVisibility = () => {
+  showCropper.value = true;
+};
+
+const onChanged = (event) => {
+  console.log(event.file.size);
+};
+
+const removePhoto = () => {
+  user.value.avatar = "";
+  message.value = "";
+};
 </script>
 
 <template>
@@ -94,7 +131,6 @@ const otherlink = useField('otherlink')
     </div>
 
 
-
     <div class="global-search-setting-block">
 
       <div class="global-search-text-div" style="margin: 16px">
@@ -120,14 +156,59 @@ const otherlink = useField('otherlink')
         </div>
       </div>
 
-      <div style="display: flex; justify-content: center"><hr style="width: 80%"></div>
+      <div style="display: flex; justify-content: center">
+        <hr style="width: 80%">
+      </div>
 
-      <UserBackgroundUploadAndEditFunction></UserBackgroundUploadAndEditFunction>
+      <div class="wrapper">
+        <div>
+          <div class="avatar-div" v-if="user.avatar">
+            <img :src="user.avatar" class="avatar" alt=""/>
+          </div>
+          <div class="avatar-div" v-else>
+            <img src="../../assets/Picture/presetBackgroundIcon.jpg" class="avatar" alt=""/>
+          </div>
+
+          <div class="upload-and-delete-button-div" style="display: flex; justify-content: center">
+            <div class="upload-button-div">
+              <v-btn type="button" @click="changeCropperVisibility" style="width: 160px">
+                上傳背景
+              </v-btn>
+            </div>
+
+            <div class="delete-button-div">
+              <v-btn v-if="user.avatar" type="button" @click="removePhoto" style="width: 160px">
+                刪除背景
+              </v-btn>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: center">
+          <p style="color: red">{{ message }}</p>
+        </div>
+
+        <avatar-cropper
+            class="custom-avatar-cropper"
+            v-model="showCropper"
+            :cropper-options="{
+        aspectRatio: 1.7,
+        autoCropArea: 1,
+        viewMode: 1,
+        movable: false,
+        zoomable: true,
+      }"
+            :mimes="'image/png, image/jpg, image/jpeg'"
+            :upload-handler="handleUploaded"
+            @changed="onChanged"
+            :output-options="{}"
+            :labels="{ submit: '上傳', cancel: '取消' }"
+        />
+      </div>
 
     </div>
 
   </div>
-
 
 
   <!--      舊版上傳功能-->
@@ -144,7 +225,7 @@ const otherlink = useField('otherlink')
   <!--      </div>-->
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .link-and-search-block {
   display: flex;
   padding: 16px;
@@ -155,7 +236,7 @@ const otherlink = useField('otherlink')
   width: 40%;
   max-width: 40%;
   margin: 8px;
-//border: 2px solid red;
+  //border: 2px solid red;
 }
 
 .person-page-link-setting-block {
@@ -164,7 +245,7 @@ const otherlink = useField('otherlink')
   margin: 8px;
   float: left;
   border-right: 1px solid #ccc;
-//border: 2px solid blue;
+  //border: 2px solid blue;
 }
 
 .link-setting-div {
@@ -172,59 +253,83 @@ const otherlink = useField('otherlink')
   width: 90%;
 }
 
-.upload-box {
-  position: relative;
+
+.wrapper {
+  margin: 15px auto;
+}
+
+.avatar-div {
+  min-width: 100%;
+  min-height: 160px;
+}
+
+.upload-button-div {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.delete-button-div {
+  text-align: center;
+  margin: 40px 0;
+}
+
+
+.avatar {
   width: 200px;
   height: 200px;
-  margin: 50px auto;
+  //border-radius: 50%;
+  display: block;
+  object-fit: contain;
+  margin: 20px auto;
+}
+
+.empty-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ccc;
+  margin-top: 80px;
+  width: 200px;
+  height: 200px;
+  //border-radius: 50%;
+
+  & > p {
+    margin: 0;
+    font-size: 3rem;
+    color: white;
+  }
+}
+
+::v-deep(.cropper-view-box) {
+  //border-radius: 50%;
+}
+
+::v-deep(.cropper-line) {
+  background-color: #ff5722;
+}
+
+::v-deep(.cropper-point) {
+  background-color: #ff5722;
+}
+
+::v-deep(.avatar-cropper .avatar-cropper-mark) {
+  background: rgb(0 0 0 / 50%);
+}
+
+::v-deep(.cropper-modal) {
+  opacity: 0.1;
+}
+
+::v-deep(.avatar-cropper .avatar-cropper-container) {
+  border-radius: 16px;
   overflow: hidden;
-  border: 1px dashed #ccc;
-  text-align: center;
-  &::after {
-    display: inline-block;
-    margin-top: -8px;
-    content: "+";
-    line-height: 200px;
-    font-size: 90px;
-    color: #ccc;
-  }
-
-  .preview-box img{
-    object-fit: contain;
-  }
-
-  [type="file"] {
-    display: none;
-  }
-
-  .upload-action {
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-  }
-
-  .preview-box {
-    position: absolute;
-    box-sizing: border-box;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    img {
-      min-width: 100%;
-      width: 100%;
-      min-height: 100%;
-    }
-  }
 }
 
-.hide {
-  display: none;
+::v-deep(.avatar-cropper
+    .avatar-cropper-container
+    .avatar-cropper-footer
+    .avatar-cropper-btn:hover) {
+  background-color: #f47c20;
 }
+
 </style>

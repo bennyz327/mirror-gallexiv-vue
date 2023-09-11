@@ -119,7 +119,7 @@ const messageInputRules = [
 
   <Navbar></Navbar>
 
-  <div class="container" v-if="testData">
+  <div class="container-sm" v-if="testData">
     <div class="container-postViewPageStyle">
 
       <!--------------------------------左半部區塊----------------------------------------->

@@ -107,8 +107,10 @@ const removePhoto = () => {
     <div class="create-subscribe-block">
 
       <!--預覽區塊-->
-      <div class="subscribe-view-div" style="margin-top: 48px">
-
+      <div class="subscribe-view-div">
+        <div>
+          <h4>預覽區塊</h4>
+        </div>
         <div class="col">
           <div class="card mb-4 rounded-4 shadow-sm">
 
@@ -117,7 +119,8 @@ const removePhoto = () => {
               <div class="text-center">
                 <img v-if="user.avatar" :src="user.avatar" class="rounded img-fluid"
                      style="max-width: 180px; max-height: 120px;" alt="index">
-                <img v-else src="../assets/Picture/presetPlanIcon.jpg" class="rounded img-fluid" alt="" style="max-width: 180px; max-height: 120px;"/>
+                <img v-else src="../assets/Picture/presetPlanIcon.jpg" class="rounded img-fluid" alt=""
+                     style="max-width: 180px; max-height: 120px;"/>
               </div>
             </div>
 
@@ -159,9 +162,9 @@ const removePhoto = () => {
         </div>
 
         <div class="button-div" style="display: flex; justify-content: center">
-        <v-btn type="button" @click="" style="width: 400px">
-         送出方案
-        </v-btn>
+          <v-btn type="button" @click="" style="width: 400px">
+            送出方案
+          </v-btn>
         </div>
       </div>
 
@@ -207,7 +210,7 @@ const removePhoto = () => {
 
         <!--圖片上傳-->
         <div class="wrapper">
-          <div style="border: 1px solid #ccc; margin-left: 32px; margin-right: 32px ; border-radius: 16px">
+          <div style="border: 1px solid #ccc; margin: 0 72px;border-radius: 16px; padding:48px 0">
             <div class="avatar-div" v-if="user.avatar">
               <img :src="user.avatar" class="avatar" alt=""/>
             </div>

@@ -36,8 +36,6 @@ const loadAllPost = async () => {
 
 loadAllPost();
 
-
-
 // 圖片功能
 
 //GPT

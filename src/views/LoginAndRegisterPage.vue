@@ -39,7 +39,7 @@ const pre = 'data:image/jpeg;base64,';
 const UUID = ref('');
 
 // const JavaBaseUrl = ref(import.meta.env.JAVA_API_BASEURL)
-const JavaBaseUrl = ref('http://localhost:8080')
+const JavaBaseUrl = ref('http://gallexivjava.com:8080')
 
 // 登入註冊頁面切換功能
 const isRightPanelActive = ref(false);
@@ -114,6 +114,7 @@ const signUpButton = async () => {
 //   })
 // };
 
+// 重新取得驗證圖片
 const getCaptcha = async () => {
   // const response = await axios.get('http://172.18.135.72:8080/captcha')
   const response = await instance.get('/captcha')
@@ -123,7 +124,8 @@ const getCaptcha = async () => {
 getCaptcha();
 
 
-// 註冊驗證功能
+// 註冊驗證功能 by zod (目前仍為英文錯誤訊息)
+// validationSchema為設置驗證類型及細節應包含，下面用defineInputBinds綁定驗證類型
 const {errors, defineInputBinds} = useForm({
   validationSchema: toTypedSchema(
       z.object({
@@ -140,7 +142,6 @@ const registerPwd = defineInputBinds('password');
 // 登入驗證功能
 const loginAccount = defineInputBinds('email');
 const loginPwd = defineInputBinds('password');
-
 
 </script>
 

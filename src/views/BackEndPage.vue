@@ -2,11 +2,16 @@
 import Navbar from "@/components/Navbar.vue";
 import {onMounted, ref} from 'vue';
 import axiosInstance from './api/api.js'
+import {useUserStore} from "@/store/userStore.js";
+
+const {token} = useUserStore()
 
 import backEndJsonFile from "@/assets/backendPage.json";
 import axios from "axios";
+import Default from "vue-upload-component";
 
 const jsonDataImportBackendVue = ref(backEndJsonFile);
+
 
 // const items = ref('');
 
@@ -23,34 +28,34 @@ const deletePost = (postId) => {
 
 
 // onMounted(() => {
-  function loadPersonPost() {
-    // const config = {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5NDQyNjAzNiwiZXhwIjoxNjk0NDI3ODM2fQ.ci4vgyLtaw338kvs9-'
-    //   }
-    // }
-    const url = 'http://localhost:8080/posts/person'
-    //
-    // const res = axios.get(url,config)
-    //     .then((response) => {
-    //       console.log(response.data.data);
-    //       const items = ref(response.data.data);
-    //     })
-    //     .catch((error) => {
-    //       console.error('There was a problem with the GET request:', error);
-    //     });
-    axiosInstance.post(url)
-        .then((response) => {
-          console.log(response.data.data);
-          const items = ref(response.data.data);
-        })
-        .catch((error) => {
-          console.error('There was a problem with the GET request:', error);
-        });
-  }
+function loadPersonPost() {
+  // const config = {
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5NDQyNjAzNiwiZXhwIjoxNjk0NDI3ODM2fQ.ci4vgyLtaw338kvs9-'
+  //   }
+  // }
+  const url = 'http://localhost:8080/posts/person'
+  //
+  // const res = axios.get(url,config)
+  //     .then((response) => {
+  //       console.log(response.data.data);
+  //       const items = ref(response.data.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error('There was a problem with the GET request:', error);
+  //     });
+  // axiosInstance.post(url)
+  //     .then((response) => {
+  //       console.log(response.data.data);
+  //       const items = ref(response.data.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error('There was a problem with the GET request:', error);
+  //     });
+}
 
-  loadPersonPost();
+loadPersonPost();
 // })
 
 </script>
@@ -59,11 +64,13 @@ const deletePost = (postId) => {
 
   <Navbar></Navbar>
 
-  <div class="container" v-if="items">
+  <div class="container" v-if="!items">
 
     <div class="title-text">
       <h3>貼文管理</h3>
     </div>
+
+    <div>{{token}}</div>
 
     <table class="table">
       <thead>

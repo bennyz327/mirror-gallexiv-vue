@@ -1,5 +1,42 @@
 <script setup>
 import Navbar from "@/components/Navbar.vue";
+
+import {ref} from 'vue';
+import axios from 'axios';
+
+const postTitle = ref('');
+const postDescription = ref('');
+const tags = ref([]);
+const URL = import.meta.env.VITE_API_Post;
+
+
+const submitForm = async () => {
+  const postData = {
+    postId:1,
+    userId:1,
+    postTitle: postTitle.value,
+    postContent: postDescription.value,
+    tagArr: tags.value
+
+    // 其他需要发送的数据字段
+  };
+  console.log(postData)
+
+  try {
+    const response = await axios.put(`${URL}/update`, postData);
+
+    if (response.status === 200) {
+      // 重定向到成功页面或其他页面
+      // 注意：你需要使用Vue Router的实例来导航，这里假设已经安装并配置了Vue Router
+      // import { useRouter } from 'vue-router';
+      // const router = useRouter();
+      // router.push('/success');
+    }
+  } catch (error) {
+    console.error('提交表单时出错：', error);
+  }
+};
+
 </script>
 
 <template>
@@ -109,7 +146,7 @@ import Navbar from "@/components/Navbar.vue";
 
 .edit-form-block {
   width: 100%;
-margin-top: 32px;
+  margin-top: 32px;
 }
 
 .form-data-block {

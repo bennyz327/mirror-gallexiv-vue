@@ -3,12 +3,13 @@ import Navbar from "@/components/Navbar.vue";
 import AvatarCropper from "vue-avatar-cropper";
 
 import {onMounted, ref, watch, defineEmits} from "vue";
+import axios from "axios";
 
 
 // 輸入限制區塊
-const subscribeTitle = ref("");
-const subscribePrice = ref("");
-const subscribeDescription = ref("");
+const planName = ref("");
+const planPrice = ref("");
+const planDescription = ref("");
 
 const subscribeTitleRules = [
   (value) => {
@@ -91,6 +92,40 @@ const removePhoto = () => {
   message.value = "";
 };
 
+const URL = import.meta.env.VITE_API_PLAN;
+
+const submitForm = async () => {
+
+  const planData = {
+    ownerIdByUserId:{
+      userId:2
+    },
+    planName: planName.value,
+    planPrice: planPrice.value,
+    planDescription: planDescription.value,
+    planStatusByStatusId:{
+      statusId:17
+    }
+  };
+  console.log(planData)
+
+  try {
+    const response = await axios.post(`${URL}/insert`, planData);
+    if (response.status === 200) {
+      // 重定向到成功页面或其他页面
+      // 注意：你需要使用Vue Router的实例来导航，这里假设已经安装并配置了Vue Router
+      // import { useRouter } from 'vue-router';
+      // const router = useRouter();
+      // router.push('/success');
+    }
+    console.log('JSON內容： ', response.data);
+  } catch (error) {
+    console.error('提交表单时出错：', error);
+  }
+
+
+}
+
 </script>
 
 <template>
@@ -128,10 +163,10 @@ const removePhoto = () => {
             <div class="card-body">
 
               <!-- 方案名稱 -->
-              <h4 class="my-4 fw-normal">{{ subscribeTitle }}</h4>
+              <h4 class="my-4 fw-normal">{{ planName }}</h4>
 
               <!-- 方案價格 -->
-              <h3 class="card-title pricing-card-title">NT${{ subscribePrice }}<small
+              <h3 class="card-title pricing-card-title">NT${{ planPrice }}<small
                   class="text-muted fw-light">/mo</small>
               </h3>
 
@@ -151,7 +186,7 @@ const removePhoto = () => {
                     <div id="collapse" class="accordion-collapse collapse"
                          aria-labelledby="heading" data-bs-parent="#accordion" style="max-width: 440px">
                       <div class="accordion-body">
-                        {{ subscribeDescription }}
+                        {{ planDescription }}
                       </div>
                     </div>
                   </div>
@@ -162,7 +197,7 @@ const removePhoto = () => {
         </div>
 
         <div class="button-div" style="display: flex; justify-content: center">
-          <v-btn type="button" @click="" style="width: 400px">
+          <v-btn type="button" @click="submitForm" style="width: 400px">
             送出方案
           </v-btn>
         </div>
@@ -177,7 +212,7 @@ const removePhoto = () => {
               <v-form @submit.prevent>
                 <h4>標題</h4>
                 <v-text-field
-                    v-model="subscribeTitle"
+                    v-model="planName"
                     :rules="subscribeTitleRules"
                     :counter="20"
                     :maxlength="20"
@@ -186,7 +221,7 @@ const removePhoto = () => {
 
                 <h4>費用</h4>
                 <v-text-field
-                    v-model="subscribePrice"
+                    v-model="planPrice"
                     :rules="subscribePriceRules"
                     :counter="4"
                     :maxlength="4"
@@ -195,7 +230,7 @@ const removePhoto = () => {
 
                 <h4>方案內容</h4>
                 <v-textarea
-                    v-model="subscribeDescription"
+                    v-model="planDescription"
                     :rules="subscribeDescriptionRules"
                     :counter="250"
                     :maxlength="250"

@@ -7,9 +7,10 @@ import '../assets/css/upload/common.css'
 
 
 import {onMounted, ref, watch} from "vue";
+import axios from "axios";
 
 const postTitle = ref("");
-const postDescription = ref("");
+const postContent = ref("");
 
 const postTitleRules = [
   (value) => {
@@ -23,7 +24,7 @@ const postTitleRules = [
   },
 ];
 
-const postDescriptionRules = [
+const postContentRules = [
   (value) => {
     if (value && value.length <= 250) {
       return true;
@@ -44,21 +45,37 @@ watch(tags, (newTags) => {
 });
 
 // json傳入功能
-const nsfw = ref(true);
-const isPublic = ref(true);
+const postAgeLimit = ref(0);
+const postPublic = ref(0);
+const URL = import.meta.env.VITE_API_Post;
 
-const submitForm = () => {
+
+const submitForm = async () => {
   const formattedDescription = postDescription.value.replace(/\n/g, '<br/>');
   const postData = {
-    title: postTitle.value,
-    description: formattedDescription.value,
-    nsfw: nsfw.value,
-    isPublic: isPublic.value,
-    tags: tags.value,
+    userId:2,
+    postTitle: postTitle.value,
+    postContent: postContent.value,
+    postAgeLimit: postAgeLimit.value,
+    postPublic: postPublic.value,
+    tagArr: tags.value,
   };
+  console.log(postData)
 
-  console.log("自我介紹内容：", formattedDescription);
-  console.log('JSON內容： ', postData);
+  try {
+    const response = await axios.post(`${URL}/insert`, postData);
+    if (response.status === 200) {
+      // 重定向到成功页面或其他页面
+      // 注意：你需要使用Vue Router的实例来导航，这里假设已经安装并配置了Vue Router
+      // import { useRouter } from 'vue-router';
+      // const router = useRouter();
+      // router.push('/success');
+    }
+    console.log('JSON內容： ', response.data);
+    console.log("自我介紹内容：", formattedDescription);
+  } catch (error) {
+    console.error('提交表单时出错：', error);
+  }
 };
 
 
@@ -83,7 +100,6 @@ onMounted(() => {
     <div class="text-div">
       <h4>新增文章</h4>
     </div>
-
     <div class="create-form-block">
 
       <!--上傳圖片區塊-->
@@ -128,8 +144,8 @@ onMounted(() => {
 
                 <h6 style="text-align: left">內文</h6>
                 <v-textarea
-                    v-model="postDescription"
-                    :rules="postDescriptionRules"
+                    v-model="postContent"
+                    :rules="postContentRules"
                     :counter="250"
                     :maxlength="250"
                     bg-color="white"
@@ -153,13 +169,13 @@ onMounted(() => {
               </div>
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" checked>
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse"  value="0" v-model="postAgeLimit" checked>
                   <label class="form-check-label" for="NSFWFalse">
                     無限制
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWTrue">
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWTrue" value="1" v-model="postAgeLimit">
                   <label class="form-check-label" for="NSFWTrue">
                     未成年不宜觀看
                   </label>
@@ -171,17 +187,17 @@ onMounted(() => {
 
             <div class="checkbox-public">
               <div class="text-div">
-                <h6 style="text-align: left; display: block">公開範圍</h6>
+                <h5 style="text-align: left; display: block">公開範圍</h5>
               </div>
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" checked>
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue"  value="0" v-model="postPublic" checked>
                   <label class="form-check-label" for="publicTrue">
                     公開
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse">
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse" value="0" v-model="postPublic">
                   <label class="form-check-label" for="publicFalse">
                     不公開
                   </label>
@@ -191,7 +207,7 @@ onMounted(() => {
 
             <hr>
 
-            <h6 style="text-align: left; display: block">Tag</h6>
+            <h5 style="text-align: left; display: block">Tag</h5>
             <div class="tag-div" style="margin: 8px">
               <n-dynamic-tags v-model:value="tags"
                               max="10"
@@ -242,23 +258,6 @@ onMounted(() => {
 .checkbox-and-tag-center {
   width: 90%;
   padding-left: 48px;
-}
-
-.v-text-field-css {
-  width: 560px;
-}
-
-@media screen and (max-width: 1400px) {
-
-}
-
-@media screen and (max-width: 1200px) {
-  .v-text-field-css {
-    width: 360px;
-  }
-  .upload-block{
-
-  }
 }
 
 </style>

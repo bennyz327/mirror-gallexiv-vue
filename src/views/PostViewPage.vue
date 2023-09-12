@@ -99,6 +99,18 @@ const loadComments = async () => {
 }
 loadComments();
 
+//找到子留言
+const subComments = ref([]);
+const loadSubComments = async () => {
+  try {
+    const response = await axios.get(`${URL_COMMENT}/findSubComment?parentCommentId=${parentCommentId}`);
+    console.log(response.data);
+    subComments.value = response.data.data;
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+  }
+}
+loadSubComments();
 
 //新增留言
 const comment = {

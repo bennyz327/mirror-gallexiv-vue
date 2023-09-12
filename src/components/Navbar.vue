@@ -60,7 +60,7 @@ const search = () => {
             <router-link to="" class="nav-link px-2 link-secondary">創作者</router-link>
           </li>
           <li>
-            <router-link to="/postviewpage" class="nav-link px-2 link-secondary">單頁</router-link>
+            <router-link to="/post" class="nav-link px-2 link-secondary">單頁</router-link>
           </li>
           <li>
             <router-link to="" class="nav-link px-2 link-secondary">會員相關</router-link>
@@ -129,7 +129,7 @@ const search = () => {
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
                 <!-- 下拉選單 -->
-                <router-link to="/userpage" class="dropdown-item">個人資料</router-link>
+                <router-link to="/user" class="dropdown-item">個人資料</router-link>
                 <router-link to="/backend" class="dropdown-item">後台管理</router-link>
                 <router-link to="/login" class="dropdown-item" v-if="!isNotLogin">登入</router-link>
                 <router-link to="/setting" class="dropdown-item">設定</router-link>

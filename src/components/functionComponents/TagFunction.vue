@@ -59,7 +59,7 @@ const nextPage = () => {
       <div class="d-flex flex-row">
         <div class="d-flex justify-content-between align-items-center"
              style="margin: 16px; background-color:#ffffff ">
-          <router-link :to="'/tags/' + tag.tagId" class="text-decoration-none" v-for="(tag, index) in paginatedTags"
+          <router-link :to="{ name: 'TagsSearchPage', params: { tagId: tag.tagId }}" class="text-decoration-none" v-for="(tag, index) in paginatedTags"
                        :key="index">
             <v-btn style="color: #0c4128;margin-left: 8px;">
               #{{ tag.tagName }}

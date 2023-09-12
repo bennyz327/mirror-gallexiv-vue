@@ -5,7 +5,9 @@ import Navbar from "../components/Navbar.vue";
 import TagFunction from "../components/functionComponents/TagFunction.vue";
 import UserHomePage from "@/components/PostPictureView.vue";
 import {useUserStore} from "@/store/userStore.js";
-const {isLogin,token} = useUserStore()
+const {isLogin,token,name} = useUserStore()
+
+let decodeName = eval("'"+name+"'")
 
 import jsonFile from "../assets/tag.json"
 import imgJsonFile from "../assets/imgList.json"
@@ -36,10 +38,10 @@ onMounted(() => {
   <div class="container">
 
     <div v-if="isLogin">
-      {{ useUserStore.name }}
+      已登入
     </div>
     <div>
-      {{ isLogin }}
+      {{ decodeName }}
     </div>
     <div>
       {{ token }}

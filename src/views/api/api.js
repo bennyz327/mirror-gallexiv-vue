@@ -8,6 +8,7 @@ const instance = axios.create({
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS, HEAD',
         'Access-Control-Allow-Headers': 'Origin, Content-Type, Authorization'
     }
+
 })
 
 export default instance;

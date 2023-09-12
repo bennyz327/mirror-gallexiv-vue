@@ -103,9 +103,14 @@ router.beforeEach((to, from, next) => {
     //如果路徑開頭是/200 就擷取後面token的參數放到localStorage
     if (to.path.startsWith('/200')) {
         localStorage.setItem('token', to.query.token);
+        localStorage.setItem('username', to.query.username);
     }
 
     store.token = localStorage.getItem('token');
+    store.name = localStorage.getItem('username');
+    if(store.token!==null){
+        store.isLogin = true
+    }
     next()
 })
 

@@ -11,6 +11,7 @@ import axios from "axios";
 import Default from "vue-upload-component";
 
 const jsonDataImportBackendVue = ref(backEndJsonFile);
+let items = ref();
 
 
 // const items = ref('');
@@ -35,24 +36,19 @@ function loadPersonPost() {
   //     'Authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5NDQyNjAzNiwiZXhwIjoxNjk0NDI3ODM2fQ.ci4vgyLtaw338kvs9-'
   //   }
   // }
-  const url = 'http://localhost:8080/posts/person'
-  //
-  // const res = axios.get(url,config)
-  //     .then((response) => {
-  //       console.log(response.data.data);
-  //       const items = ref(response.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error('There was a problem with the GET request:', error);
-  //     });
-  // axiosInstance.post(url)
-  //     .then((response) => {
-  //       console.log(response.data.data);
-  //       const items = ref(response.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error('There was a problem with the GET request:', error);
-  //     });
+  const url = 'http://172.18.135.72:8080/posts/person'
+  axiosInstance.post(url, null,{
+    headers: {
+      'Authorization': token
+    }
+  })
+      .then((response) => {
+        console.log(response.data.data);
+        items.value = ref(response.data.data);
+      })
+      .catch((error) => {
+        console.error('There was a problem with the GET request:', error);
+      });
 }
 
 loadPersonPost();
@@ -64,7 +60,7 @@ loadPersonPost();
 
   <Navbar></Navbar>
 
-  <div class="container" v-if="!items">
+  <div class="container" v-if="items">
 
     <div class="title-text">
       <h3>貼文管理</h3>
@@ -88,7 +84,7 @@ loadPersonPost();
       </tr>
       </thead>
       <tbody>
-      <tr v-for="item in items" :key="item.id" class="text-center">
+      <tr v-for="item in items.value" :key="item.id" class="text-center">
         <td class="text-max-width">{{ item.postTitle }}</td>
         <td><img :src="item.pictureSrc" alt="pictureSrc" class="picture-max-width"/></td>
         <td class="text-max-width">{{ item.postDescription }}</td>
@@ -98,7 +94,7 @@ loadPersonPost();
         <td>{{ item.isNFSW }}</td>
         <td>
           <v-tooltip
-              :text="item.postTag.join(', ')"
+              :text="item.tagsByPostId.map(tag => tag.tagName).join(', ')"
               activator="parent"
               location="bottom">
             <template v-slot:activator="{ props }">

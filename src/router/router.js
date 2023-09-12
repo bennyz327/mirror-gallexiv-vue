@@ -5,52 +5,47 @@ const component404 = import('@/components/Page404.vue')
 const routes = [
     {
         path: '/',
-        name: 'Home',
+        name: 'HomePage',
         component: () => import("../views/Homepage.vue"),
     },
     {
-        path: '/tags/{id}',
-        name: 'Tags',
-        component: () => import("../views/TagSearch.vue"),
-    },
-    {
-        path: '/postviewpage',
-        name: 'PostView',
-        component: () => import("../views/PostViewPage.vue"),
-    },
-    {
         path: '/login',
-        name: 'Login',
+        name: 'LoginPage',
         component: () => import("../views/LoginAndRegisterPage.vue"),
     },
     {
-        path: '/userpage',
-        name: 'Userpage',
+        path: '/user',
+        name: 'UserPage',
         component: () => import("../views/UserPersonalPage.vue"),
     },
     {
-        path: '/search/follower',
-        name: 'FollowerSearch',
-        component: () => import("../views/CreatorSearchPage.vue"),
-    },
-    {
-        path: '/setting',
-        name: 'Setting',
-        component: () => import("../views/UserSettingPage.vue"),
-    },
-    {
-        path: '/post/create',
-        name: 'PostCreate',
-        component: () => import("../views/PostCreatePage.vue"),
+        path: '/post/',
+        name: 'PostViewPage',
+        component: () => import("../views/PostViewPage.vue"),
     },
     {
         path: '/post/edit',
-        name: 'PostEdit',
+        name: 'PostEditPage',
         component: () => import("../views/PostEditPage.vue"),
     },
     {
+        path: '/post/create',
+        name: 'PostCreatePage',
+        component: () => import("../views/PostCreatePage.vue"),
+    },
+    {
+        path: '/tags/',
+        name: 'TagsSearchPage',
+        component: () => import("../views/TagSearch.vue"),
+    },
+    {
+        path: '/search/follower/',
+        name: 'UserSearchPage',
+        component: () => import("../views/CreatorSearchPage.vue"),
+    },
+    {
         path: '/subscribe/create',
-        name: 'CreatePlanPage',
+        name: 'PlanCreatePage',
         component: () => import("../views/PlanCreatePage.vue"),
     },
     {
@@ -59,8 +54,13 @@ const routes = [
         component: () => import("../views/PlanEditPage.vue"),
     },
     {
+        path: '/setting',
+        name: 'SettingPage',
+        component: () => import("../views/UserSettingPage.vue"),
+    },
+    {
         path: '/backend',
-        name: 'Backend',
+        name: 'BackEndPage',
         component: () => import("../views/BackEndPage.vue"),
     },
     {

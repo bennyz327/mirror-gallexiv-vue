@@ -4,6 +4,10 @@ import axios from 'axios';
 import Navbar from "../components/Navbar.vue";
 import TagFunction from "../components/functionComponents/TagFunction.vue";
 import UserHomePage from "@/components/PostPictureView.vue";
+import {useUserStore} from "@/store/userStore.js";
+const {isLogin,token,name} = useUserStore()
+
+let decodeName = eval("'"+name+"'")
 
 import jsonFile from "../assets/tag.json"
 import imgJsonFile from "../assets/imgList.json"
@@ -16,6 +20,13 @@ const imgDataImportHomePage = ref(imgJsonFile);
 
 // 圖片功能
 
+//拿出使用者狀態
+
+
+onMounted(() => {
+  console.log(useUserStore())
+})
+
 </script>
 
 <template>
@@ -25,6 +36,16 @@ const imgDataImportHomePage = ref(imgJsonFile);
   <!-- 整個頁面的容器大小 -->
 
   <div class="container">
+
+    <div v-if="isLogin">
+      已登入
+    </div>
+    <div>
+      {{ decodeName }}
+    </div>
+    <div>
+      {{ token }}
+    </div>
 
     <!-- 熱門Tag的title-->
 

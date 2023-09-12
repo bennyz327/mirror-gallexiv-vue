@@ -2,6 +2,7 @@
 import InputTextBox from "../components/functionComponents/InputTextBox.vue";
 // 使用vee驗證功能
 import {useForm, configure} from 'vee-validate';
+import instance from '@/views/api/api.js'
 
 //  TODO 中文化實作
 // import {localize, setLocale } from "@vee-validate/i18n";
@@ -36,6 +37,9 @@ const txt = 'iVBORw0KGgoAAAANSUhEUgAAA4QAAAQhCAMAAABC5rHaAAAAPFBMVEVStMPq9PVCm6l
     'VU0Ch8BwiGtRUrWd/2a1z1QWpZGo/ARIBzSSg8oSbJ47RCWHs92o1H4CBCOZC3l69lqS9izbklpd6NR+AgQDmWdi5SkWbz2dcnB4zkgBITDWwupwm1hZ/u6hXh009gCPgKEg0JYCBjX0WjXulPp8RIQAkJYC1d7tVSlTe871t09fi0cy8BHgHAwCPekcB0u9q1bYLxQCAAfAcKhrLu7wpSSznXJTjyaCiGBjwDh2NY9KTSX3sPesXPdvfPRBHF4ARCObc1LIUuzeF2BroFQZp8ex7oEXgCEo1vzFZ7xAN132oHuPp1HIgsvAMKxrbmymfRY5p0maCIjtLHMYgIMpjLBKkSek4medGipchAqeOFyVkD4p9Z5RaGWKsVPOrTc7ArZpmANXgCEsKoNJxMlZ607bwhfqyy8AAhh1ccnLN2znXdomSRBGMuk6eEFQAhrQqFl8MTMAZ2SZ5+224QVED7LOhuNclKl+KmZAxo9mqnzAl1YAeGzrFQx/zPzkzMHdPKPnsyz4QVACGseldmcmijKz5+Y6x49S4LsPCCEtWSVlEpOzh9R9vNI+fNkjoHYgBDWspXonw+t+7knwwoIYYUVEMIKK6yAEFZYASGssMIKCGGF9dYQ4u3ACuvfWgEhrLACQlhhBYR4HbDCCghhhRUQ4nXACisghBXWMa3/BzF7luTfExYVAAAAAElFTkSuQmCC';
 const pre = 'data:image/jpeg;base64,';
 const UUID = ref('');
+
+// const JavaBaseUrl = ref(import.meta.env.JAVA_API_BASEURL)
+const JavaBaseUrl = ref('http://gallexivjava.com:8080')
 
 // 登入註冊頁面切換功能
 const isRightPanelActive = ref(false);
@@ -110,17 +114,18 @@ const signUpButton = async () => {
 //   })
 // };
 
+// 重新取得驗證圖片
 const getCaptcha = async () => {
-  const response = await axios.get('http://172.18.135.72:8080/captcha')
-
+  // const response = await axios.get('http://172.18.135.72:8080/captcha')
+  const response = await instance.get('/captcha')
   captchaImg.value = response.data.data.base64Img;
   UUID.value = response.data.data.token;
-
 }
 getCaptcha();
 
 
-// 註冊驗證功能
+// 註冊驗證功能 by zod (目前仍為英文錯誤訊息)
+// validationSchema為設置驗證類型及細節應包含，下面用defineInputBinds綁定驗證類型
 const {errors, defineInputBinds} = useForm({
   validationSchema: toTypedSchema(
       z.object({
@@ -138,18 +143,9 @@ const registerPwd = defineInputBinds('password');
 const loginAccount = defineInputBinds('email');
 const loginPwd = defineInputBinds('password');
 
-
 </script>
 
 <template>
-
-  <div class="navbar-block">
-    <router-link to="/">
-      <button style="background-color: #A596F4; border: white ; width: 360px">
-        回到Gallexiv首頁
-      </button>
-    </router-link>
-  </div>
 
   <div class="container" :class="{ 'right-panel-active': isRightPanelActive }" id="container">
 
@@ -200,10 +196,15 @@ const loginPwd = defineInputBinds('password');
       <form action="#">
         <h5>登入以使用更多服務</h5>
         <div class="message-input-block" style="margin-left: 56px;">
-          <input-text-box v-model="VaccountId" label-id="accountId" labelText="E-mail" type-id="text"
+          <!--          <input-text-box v-model="VaccountId" label-id="accountId" labelText="E-mail" type-id="text"-->
+          <!--                          is-required="true" v-bind="loginAccount" class="input-text-box-login"/>-->
+          <!--          <div class="error-message-block">-->
+          <!--            <span>{{ errors.email }}</span>-->
+          <!--          </div>-->
+          <input-text-box v-model="VaccountId" label-id="accountId" labelText="Account" type-id="text"
                           is-required="true" v-bind="loginAccount" class="input-text-box-login"/>
           <div class="error-message-block">
-            <span>{{ errors.email }}</span>
+            <span>{{ errors.account }}</span>
           </div>
           <input-text-box v-model="VpasswordId" label-id="passwordId" labelText="密碼" type-id="password"
                           is-required="true" v-bind="loginPwd" class="input-text-box-login"/>
@@ -229,7 +230,7 @@ const loginPwd = defineInputBinds('password');
         <span>或是使用其他帳號登入</span>
         <div class="social-container">
           <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+          <a :href="JavaBaseUrl+'/oauth2/authorization/google'" class="social"><i class="fab fa-google-plus-g"></i></a>
         </div>
         <button @click="loginButton">登入</button>
       </form>
@@ -241,6 +242,11 @@ const loginPwd = defineInputBinds('password');
           <h1>Gallexiv</h1>
           <p>已有帳號嗎?</p>
           <button class="ghost" id="signIn" @click="showSignInPanel">登入</button>
+          <router-link to="/">
+            <button class="ghost">
+              回到Gallexiv首頁
+            </button>
+          </router-link>
         </div>
         <div class="overlay-panel overlay-right">
           <h1>Gallexiv</h1>
@@ -248,6 +254,11 @@ const loginPwd = defineInputBinds('password');
           <h2>歡迎! 朋友</h2>
           <p>創作&nbsp;&nbsp;與世界分享您的作品</p>
           <button class="ghost" id="signUp" @click="showSignUpPanel">註冊</button>
+          <router-link to="/">
+            <button class="ghost">
+              回到Gallexiv首頁
+            </button>
+          </router-link>
         </div>
       </div>
     </div>
@@ -259,17 +270,6 @@ const loginPwd = defineInputBinds('password');
 @font-face {
   font-family: 'applegothic';
   src: url('../assets/fonts/applegothic.ttf') format('truetype');
-}
-
-.navbar-block {
-  display: flex;
-  justify-content: center;
-
-}
-
-.navbar-brand {
-  border: #0dcaf0;
-  background-color: #0dcaf0;
 }
 
 .navbar-brand font :hover {
@@ -288,7 +288,7 @@ body {
   flex-direction: column;
   font-family: 'Montserrat', sans-serif;
   height: 100vh;
-  margin: -20px 0 50px;
+  margin: -25px 0 50px;
 }
 
 h1 {

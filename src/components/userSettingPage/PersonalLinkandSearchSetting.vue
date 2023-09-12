@@ -210,19 +210,6 @@ const removePhoto = () => {
 
   </div>
 
-
-  <!--      舊版上傳功能-->
-  <!--      <div class="global-search-text-div" style="margin: 16px">-->
-  <!--        <h4>個人頁面背景圖片</h4>-->
-  <!--      </div>-->
-
-  <!--      <div class="background-picture-upload-div">-->
-  <!--        <div class="upload-box">-->
-  <!--          <input type="file" accept="image/png,image/jpeg,image/jpg" class="upload-input"/>-->
-  <!--          <div class="upload-action"></div>-->
-  <!--          <div class="preview-box" style="object-fit: cover"></div>-->
-  <!--        </div>-->
-  <!--      </div>-->
 </template>
 
 <style lang="scss" scoped>

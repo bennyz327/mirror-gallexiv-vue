@@ -48,14 +48,16 @@ const nsfw = ref(true);
 const isPublic = ref(true);
 
 const submitForm = () => {
+  const formattedDescription = postDescription.value.replace(/\n/g, '<br/>');
   const postData = {
     title: postTitle.value,
-    description: postDescription.value,
+    description: formattedDescription.value,
     nsfw: nsfw.value,
     isPublic: isPublic.value,
     tags: tags.value,
   };
 
+  console.log("自我介紹内容：", formattedDescription);
   console.log('JSON內容： ', postData);
 };
 
@@ -79,9 +81,12 @@ onMounted(() => {
 
   <div class="container">
     <div class="text-div">
-      <h3>新增文章</h3>
+      <h4>新增文章</h4>
     </div>
+
     <div class="create-form-block">
+
+      <!--上傳圖片區塊-->
       <div class="upload-block">
         <div class="img-box full">
           <section class=" img-section">
@@ -110,24 +115,29 @@ onMounted(() => {
           <div class="title-description-center">
             <v-sheet class="mx-auto">
               <v-form @submit.prevent>
-                <h5 style="text-align: left">標題</h5>
+                <h6 style="text-align: left">標題</h6>
                 <v-text-field
                     v-model="postTitle"
                     :rules="postTitleRules"
                     :counter="30"
                     :maxlength="30"
+                    bg-color="white"
                     label="標題"
-                    style="width:600px"/>
+                    class="v-text-field-css"
+                />
 
-                <h5 style="text-align: left">內文</h5>
+                <h6 style="text-align: left">內文</h6>
                 <v-textarea
                     v-model="postDescription"
                     :rules="postDescriptionRules"
                     :counter="250"
                     :maxlength="250"
+                    bg-color="white"
+                    placeholder
                     label="敘述你的圖片或相關內容"
                     no-resize
-                    style="width:600px"/>
+                    class="v-text-field-css"
+                />
               </v-form>
             </v-sheet>
           </div>
@@ -139,7 +149,7 @@ onMounted(() => {
 
             <div class="checkbox-nfsw">
               <div class="text-div">
-                <h5 style="text-align: left; display: block">年齡及閱覽限制</h5>
+                <h6 style="text-align: left; display: block">年齡及閱覽限制</h6>
               </div>
               <div>
                 <div class="form-check">
@@ -161,7 +171,7 @@ onMounted(() => {
 
             <div class="checkbox-public">
               <div class="text-div">
-                <h5 style="text-align: left; display: block">公開範圍</h5>
+                <h6 style="text-align: left; display: block">公開範圍</h6>
               </div>
               <div>
                 <div class="form-check">
@@ -181,7 +191,7 @@ onMounted(() => {
 
             <hr>
 
-            <h5 style="text-align: left; display: block">Tag</h5>
+            <h6 style="text-align: left; display: block">Tag</h6>
             <div class="tag-div" style="margin: 8px">
               <n-dynamic-tags v-model:value="tags"
                               max="10"
@@ -232,6 +242,23 @@ onMounted(() => {
 .checkbox-and-tag-center {
   width: 90%;
   padding-left: 48px;
+}
+
+.v-text-field-css {
+  width: 560px;
+}
+
+@media screen and (max-width: 1400px) {
+
+}
+
+@media screen and (max-width: 1200px) {
+  .v-text-field-css {
+    width: 360px;
+  }
+  .upload-block{
+
+  }
 }
 
 </style>

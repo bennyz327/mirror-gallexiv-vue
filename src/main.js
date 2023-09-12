@@ -39,5 +39,9 @@ const naive = create({
 })
 app.use(naive)
 
+// 使用 pinia
+import { createPinia } from 'pinia'
+app.use(createPinia())
+
 // 掛載到 #app 元素
 app.mount('#app')

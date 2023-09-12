@@ -1,21 +1,59 @@
 <script setup>
 import Navbar from "@/components/Navbar.vue";
-import { ref } from 'vue';
+import {onMounted, ref} from 'vue';
+import axiosInstance from './api/api.js'
+import {useUserStore} from "@/store/userStore.js";
+
+const {token} = useUserStore()
 
 import backEndJsonFile from "@/assets/backendPage.json";
+import axios from "axios";
+import Default from "vue-upload-component";
+
 const jsonDataImportBackendVue = ref(backEndJsonFile);
+let items = ref();
 
-const items = ref(jsonDataImportBackendVue);
 
-const editPost = (item) => {
-  // 在这里执行编辑帖子的逻辑，可以使用 item.post
-  // 例如，发送后端请求来编辑帖子
-  console.log("编辑帖子", item);
+// const items = ref('');
+
+
+const editPost = (postId) => {
+  // 發送編輯請求
+  console.log("編輯ID", postId);
 };
 
 const deletePost = (postId) => {
-  console.log("删除帖子", postId);
+  // 發送刪除請求
+  console.log("刪除ID", postId);
 };
+
+
+// onMounted(() => {
+function loadPersonPost() {
+  // const config = {
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5NDQyNjAzNiwiZXhwIjoxNjk0NDI3ODM2fQ.ci4vgyLtaw338kvs9-'
+  //   }
+  // }
+  const url = 'http://172.18.135.72:8080/posts/person'
+  axiosInstance.post(url, null,{
+    headers: {
+      'Authorization': token
+    }
+  })
+      .then((response) => {
+        console.log(response.data.data);
+        items.value = ref(response.data.data);
+      })
+      .catch((error) => {
+        console.error('There was a problem with the GET request:', error);
+      });
+}
+
+loadPersonPost();
+// })
+
 </script>
 
 <template>
@@ -27,6 +65,8 @@ const deletePost = (postId) => {
     <div class="title-text">
       <h3>貼文管理</h3>
     </div>
+
+    <div>{{token}}</div>
 
     <table class="table">
       <thead>
@@ -44,7 +84,7 @@ const deletePost = (postId) => {
       </tr>
       </thead>
       <tbody>
-      <tr v-for="item in items" :key="item.id" class="text-center">
+      <tr v-for="item in items.value" :key="item.id" class="text-center">
         <td class="text-max-width">{{ item.postTitle }}</td>
         <td><img :src="item.pictureSrc" alt="pictureSrc" class="picture-max-width"/></td>
         <td class="text-max-width">{{ item.postDescription }}</td>
@@ -53,13 +93,17 @@ const deletePost = (postId) => {
         <td>{{ item.isPublic }}</td>
         <td>{{ item.isNFSW }}</td>
         <td>
-          <v-tooltip :text="item.postTag">
+          <v-tooltip
+              :text="item.tagsByPostId.map(tag => tag.tagName).join(', ')"
+              activator="parent"
+              location="bottom">
             <template v-slot:activator="{ props }">
               <v-btn v-bind="props">詳細</v-btn>
             </template>
-          </v-tooltip></td>
+          </v-tooltip>
+        </td>
         <td>
-          <v-btn @click="editPost(item)">編輯</v-btn>
+          <v-btn @click="editPost(item.postId)">編輯</v-btn>
         </td>
         <td>
           <v-btn @click="deletePost(item.postId)">刪除</v-btn>
@@ -72,13 +116,13 @@ const deletePost = (postId) => {
 
 <style scoped>
 
-.text-max-width{
+.text-max-width {
   max-width: 48px;
-  overflow:hidden;
+  overflow: hidden;
 
 }
 
-.picture-max-width{
+.picture-max-width {
   width: 50px;
   height: 50px;
   object-fit: cover
@@ -88,7 +132,7 @@ const deletePost = (postId) => {
   max-width: 80px;
 }
 
-.table tbody tr td{
+.table tbody tr td {
   vertical-align: middle;
 }
 

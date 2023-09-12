@@ -1,4 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router';
+import {useUserStore} from "@/store/userStore";
 
 const component404 = import('@/components/Page404.vue')
 
@@ -27,6 +28,11 @@ const routes = [
         path: '/userpage',
         name: 'Userpage',
         component: () => import("../views/UserPersonalPage.vue"),
+    },
+    {
+        path: '/search/follower',
+        name: 'FollowerSearch',
+        component: () => import("../views/CreatorSearchPage.vue"),
     },
     {
         path: '/setting',
@@ -68,6 +74,12 @@ const routes = [
         name: 'Testconfig',
         component: () => import("../views/TestConfig.vue"),
     },
+    //訊息頁面
+    {
+        path: '/200',
+        name: '200',
+        component: () => import("@/components/Page200.vue"),
+    },
     //找不到頁面處理
     {
         path: '/404',
@@ -87,6 +99,18 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     // 每次路由切換時就重新加載javascript
+    const store = useUserStore();
+    //如果路徑開頭是/200 就擷取後面token的參數放到localStorage
+    if (to.path.startsWith('/200')) {
+        localStorage.setItem('token', to.query.token);
+        localStorage.setItem('username', to.query.username);
+    }
+
+    store.token = localStorage.getItem('token');
+    store.name = localStorage.getItem('username');
+    if(store.token!==null){
+        store.isLogin = true
+    }
     next()
 })
 

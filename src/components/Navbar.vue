@@ -1,45 +1,34 @@
-<script>
-import {ref, watch} from 'vue';
+<script setup>
+import {onMounted, onUnmounted, ref, watch} from 'vue';
 import {NBackTop} from "naive-ui";
 
-export default {
-  components: {NBackTop},
-  setup() {
-    // 使用 ref 創建響應式vue
-    const selectedOption = ref('作品名稱');
 
-    const apiUrl = ref('');
+// 使用 ref 創建響應式vue
+const selectedOption = ref('作品名稱');
+const apiUrl = ref('');
 
-    // 監聽selectedOption
-    watch(selectedOption, (newVal) => {
-      if (newVal === '作品名稱') {
-        apiUrl.value = '/localhost:8080/posts/byTitle';
-      } else if (newVal === '1') {
-        apiUrl.value = '/localhost:8080/posts/byAuthor';
-      } else if (newVal === '2') {
-        apiUrl.value = '/localhost:8080/posts/byHashtag';
-      } else {
-        apiUrl.value = '';
-      }
-    });
+// 監聽selectedOption
+watch(selectedOption, (newVal) => {
+  if (newVal === '作品名稱') {
+    apiUrl.value = '/localhost:8080/posts/byTitle';
+  } else if (newVal === '1') {
+    apiUrl.value = '/localhost:8080/posts/byAuthor';
+  } else if (newVal === '2') {
+    apiUrl.value = '/localhost:8080/posts/byHashtag';
+  } else {
+    apiUrl.value = '';
+  }
+});
 
-    // 創建搜尋方法
-    const search = () => {
-      // 使用 apiUrl 發送api請求
-      // 例如使用 axios 發送到 apiUrl
-      // axios.get(apiUrl.value).then(response => {
-      // });
-      console.log('API request URL: ', apiUrl.value);
-    };
-
-    // 供模塊使用
-    return {
-      selectedOption,
-      apiUrl,
-      search,
-    };
-  },
+// 創建搜尋方法
+const search = () => {
+  // 使用 apiUrl 發送api請求
+  // 例如使用 axios 發送到 apiUrl
+  // axios.get(apiUrl.value).then(response => {
+  // });
+  console.log('API request URL: ', apiUrl.value);
 };
+
 </script>
 
 <template>
@@ -57,15 +46,16 @@ export default {
       </div>
 
       <!--  標題列  -->
-
-      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-xl-start">
-        <!--      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">-->
-        <!--        <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">-->
-        <!--          <use xlink:href="#bootstrap"></use>-->
-        <!--        </svg>-->
-        <!--      </a>-->
-        <router-link to="/" class="navbar-brand" style="margin-right: 36px; font-size: 30px;">Gallexiv</router-link>
-        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+      <div class="d-flex flex-wrap align-items-center justify-content-center">
+        <!--              <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">-->
+        <!--                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">-->
+        <!--                  <use xlink:href="#bootstrap"></use>-->
+        <!--                </svg>-->
+        <!--              </a>-->
+        <ul class="nav col-12 col-lg-auto justify-content-center mb-md-0">
+          <li>
+            <router-link to="/" class="navbar-brand" style="margin-right:24px;font-size: 30px;">Gallexiv</router-link>
+          </li>
           <li>
             <router-link to="" class="nav-link px-2 link-secondary">創作者</router-link>
           </li>
@@ -81,16 +71,10 @@ export default {
 
         <div class="d-flex align-content-center flex-wrap">
 
-          <div class="d-flex flex-wrap align-items-center justify-content-center">
-            <router-link to="/post/create" >
-              <button type="button" class="btn btn-outline-info me-2">發文</button>
-            </router-link>
-          </div>
-
           <form class="d-flex">
 
-            <div class="d-flex flex-wrap align-items-center justify-content-center">
-              <input type="search" class="form-control me-2" placeholder="Search" aria-label="Search">
+            <div class="d-flex flex-wrap align-items-center justify-content-center search-bar">
+              <input type="search" class="form-control me-1" placeholder="Search" aria-label="Search">
             </div>
 
             <div class="d-flex flex-wrap align-items-center justify-content-center">
@@ -103,6 +87,12 @@ export default {
 
             <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">
               <button @click="searchPosts" type="button" class="btn btn-outline-secondary">搜尋</button>
+            </div>
+
+            <div class="d-flex flex-wrap align-items-center justify-content-center">
+              <router-link to="/post/create">
+                <button type="button" class="btn btn-outline-info me-2">發文</button>
+              </router-link>
             </div>
 
           </form>
@@ -140,9 +130,9 @@ export default {
 
                 <!-- 下拉選單 -->
                 <router-link to="/userpage" class="dropdown-item">個人資料</router-link>
-                <router-link to="/login" class="dropdown-item">登入</router-link>
+                <router-link to="/backend" class="dropdown-item">後台管理</router-link>
+                <router-link to="/login" class="dropdown-item" v-if="!isNotLogin">登入</router-link>
                 <router-link to="/setting" class="dropdown-item">設定</router-link>
-                <router-link to="/backend" class="dropdown-item">後台</router-link>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" @click="logout">登出</a>
               </div>
@@ -175,4 +165,13 @@ export default {
 .dropdown:hover .dropdown-menu {
   display: block;
 }
+
+@media screen and (max-width: 1200px) {
+  .search-bar {
+    max-width: 120px;
+  }
+}
+
+
+
 </style>

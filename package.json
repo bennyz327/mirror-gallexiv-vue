@@ -30,6 +30,7 @@
     "jQuery": "npm:jquery@^3.7.1",
     "naive-ui": "^2.34.4",
     "perfect-scrollbar": "^1.5.5",
+    "pinia": "^2.1.6",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "select2": "^4.1.0-rc.0",

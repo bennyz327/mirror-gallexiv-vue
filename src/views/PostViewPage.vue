@@ -39,7 +39,7 @@ const fetchData = async () => {
 
     const fakeUserData = {
       "postUserName": "Aosora",
-      "postDescription": "夏萊的老師有無窮的包容力  還有無限的地下室",
+      "postDescription": "夏萊的老師有無窮的包容力  還有無限的地下室<br/>還有無限的地下室<br/>還有無限的地下室<br/>還有無限的地下室",
       "postDate": "2022-10-02",
       "postTitle": "Fbi Open UP",
       "userImageURL": "https://i.imgur.com/6rpzbog.gif",

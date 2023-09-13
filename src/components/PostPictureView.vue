@@ -95,8 +95,6 @@ loadAllPost();
                   <i :class="heartClass(index)" style="color: #da2b2b;"></i>
                 </button>
               </div>
-
-
             </div>
           </div>
         </div>
@@ -156,7 +154,13 @@ loadAllPost();
 }
 
 .picture-text-div {
-//background-color: #F0EEFA; max-width: 264px; height: 32px; text-align: left; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; //text-decoration: underline;
+//background-color: #F0EEFA; max-width: 264px;
+  height: 32px;
+  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+//text-decoration: underline;
 }
 
 .picture-item-user-div {

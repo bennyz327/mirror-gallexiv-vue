@@ -1,7 +1,6 @@
 <script setup>
 import {computed, reactive, ref} from "vue";
 import axios from "axios";
-import {computed, onBeforeMount, onBeforeUpdate, onMounted, onUpdated, reactive, ref} from "vue";
 
 
 // 傳回物件

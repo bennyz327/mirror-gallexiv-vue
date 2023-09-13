@@ -4,9 +4,11 @@ import Navbar from "@/components/Navbar.vue";
 import '../assets/js/upload/jquery-1.8.3.min.js'
 import '../assets/css/upload/index.css'
 import '../assets/css/upload/common.css'
+import {useUserStore} from "@/store/userStore.js";
 
 
 import {onMounted, ref, watch} from "vue";
+const {token} = useUserStore()
 import axios from "axios";
 
 const postTitle = ref("");
@@ -48,22 +50,31 @@ watch(tags, (newTags) => {
 const postAgeLimit = ref(0);
 const postPublic = ref(0);
 const URL = import.meta.env.VITE_API_Post;
+const IMGURL = import.meta.env.VITE_API_PICTURE;
+
 
 
 const submitForm = async () => {
-  const formattedDescription = postDescription.value.replace(/\n/g, '<br/>');
+  const formattedDescription = postContent.value.replace(/\n/g, '<br/>');
   const postData = {
-    userId:2,
     postTitle: postTitle.value,
     postContent: postContent.value,
     postAgeLimit: postAgeLimit.value,
     postPublic: postPublic.value,
     tagArr: tags.value,
   };
+  const pictureData = {
+    picturesByPostId: file.value,
+  }
   console.log(postData)
 
   try {
-    const response = await axios.post(`${URL}/insert`, postData);
+    const response = await axios.post(`${URL}/insert`, postData,{
+      headers: {'Authorization': token}
+    });
+    const reponeImg = await axios.post(`${IMGURL}/upload`, pictureData,{
+      headers: {'Authorization': token}
+    });
     if (response.status === 200) {
       // 重定向到成功页面或其他页面
       // 注意：你需要使用Vue Router的实例来导航，这里假设已经安装并配置了Vue Router

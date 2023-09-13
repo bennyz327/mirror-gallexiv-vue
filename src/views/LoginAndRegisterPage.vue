@@ -1,5 +1,5 @@
 <script setup>
-import InputTextBox from "../components/functionComponents/InputTextBox.vue";
+import "../assets/css/inputTextBox.css"
 // 使用vee驗證功能
 import {useForm, configure} from 'vee-validate';
 import instance from '@/views/api/api.js'
@@ -51,7 +51,6 @@ const showSignInPanel = () => {
 };
 
 // 登入導向功能
-
 const loginButton = async () => {
   try {
     const response = await fetch('http://localhost:8080/loginprocess', {
@@ -154,28 +153,57 @@ const loginPwd = defineInputBinds('password');
 
       <form action="#">
         <h4>建立帳號</h4>
+
         <div class="message-input-block" style="margin-left: 48px;">
-          <input-text-box v-model="VsignUpNickNameId" label-id="signUpNickNameId" labelText="帳號名稱" type-id="text"
-                          is-required="true" v-bind="registerAccount" class="input-text-box-create"/>
+          <div class="input-wrapper" style="width: 360px">
+            <div class="input-data">
+              <input type="text" v-model="VsignUpNickNameId" v-bind="registerAccount" required/>
+              <div class="underline"></div>
+              <label>帳號名稱</label>
+            </div>
+          </div>
+
           <div class="error-message-block">
             <span>{{ errors.account }}</span>
           </div>
-          <input-text-box v-model="VsignUpAccountId" label-id="signUpAccountId" labelText="E-mail" type-id="text"
-                          is-required="true" v-bind="registerEmail" class="input-text-box-create"/>
+
+          <div class="input-wrapper" style="width: 360px">
+            <div class="input-data">
+              <input type="email" v-model="VsignUpAccountId" v-bind="registerEmail" required/>
+              <div class="underline"></div>
+              <label>Email</label>
+            </div>
+          </div>
+
           <div class="error-message-block">
             <span>{{ errors.email }}</span>
           </div>
-          <input-text-box v-model="VsignUpPasswordId" label-id="signUpPasswordId" labelText="密碼" type-id="password"
-                          is-required="true" v-bind="registerPwd" class="input-text-box-create"/>
+
+          <div class="input-wrapper" style="width: 360px">
+            <div class="input-data">
+              <input type="password" v-model="VsignUpPasswordId" v-bind="registerPwd" required/>
+              <div class="underline"></div>
+              <label>密碼</label>
+            </div>
+          </div>
+
           <div class="error-message-block">
             <span>{{ errors.password }}</span>
           </div>
+
           <div>
+
             <div class="verification-div" style="display:flex">
               <div class="verification-input-div">
-                <input-text-box v-model="VsignUpCodeId" label-id="VsignUpCodeId" labelText="驗證碼" type-id="text"
-                                is-required="true" @blur="VsignUpCodeId" style="width: 160px;"/>
+                <div class="input-wrapper" style="width: 120px">
+                  <div class="input-data">
+                    <input type="text" v-model="VsignUpCodeId" v-bind="VsignUpCodeId" required/>
+                    <div class="underline"></div>
+                    <label>驗證碼</label>
+                  </div>
+                </div>
               </div>
+
               <div class="verification-picture-div">
                 <img class="captchaImg" :src="captchaImg" @click="getCaptcha"
                      style="position: relative; right: 32px; top:8px" alt="載入失敗">
@@ -201,20 +229,41 @@ const loginPwd = defineInputBinds('password');
           <!--          <div class="error-message-block">-->
           <!--            <span>{{ errors.email }}</span>-->
           <!--          </div>-->
-          <input-text-box v-model="VaccountId" label-id="accountId" labelText="Account" type-id="text"
-                          is-required="true" v-bind="loginAccount" class="input-text-box-login"/>
+          <div class="input-wrapper" style="width: 360px">
+            <div class="input-data">
+              <input type="text" v-model="VaccountId" v-bind="loginAccount" required/>
+              <div class="underline"></div>
+              <label>帳號</label>
+            </div>
+          </div>
+
           <div class="error-message-block">
             <span>{{ errors.account }}</span>
           </div>
-          <input-text-box v-model="VpasswordId" label-id="passwordId" labelText="密碼" type-id="password"
-                          is-required="true" v-bind="loginPwd" class="input-text-box-login"/>
+
+          <div class="input-wrapper" style="width: 360px">
+            <div class="input-data">
+              <input type="password" v-model="VpasswordId" v-bind="loginPwd" required/>
+              <div class="underline"></div>
+              <label>密碼</label>
+            </div>
+          </div>
+
           <div class="error-message-block">
             <span>{{ errors.password }}</span>
           </div>
+
           <div class="verification-div" style="display:flex;max-width: 288px;margin-right: 56px">
             <div class="verification-input-div">
-              <input-text-box v-model="VsignInCodeId" label-id="VsignInCodeId" labelText="驗證碼" type-id="text"
-                              is-required="true" @blur="VsignInCodeId" style="width: 160px;"/>
+
+              <div class="input-wrapper" style="width: 120px">
+                <div class="input-data">
+                  <input type="text" v-model="VsignInCodeId" v-bind="VsignInCodeId" required/>
+                  <div class="underline"></div>
+                  <label>驗證碼</label>
+                </div>
+              </div>
+
             </div>
             <div class="verification-picture-div">
               <img class="captchaImg" :src="captchaImg" @click="getCaptcha"

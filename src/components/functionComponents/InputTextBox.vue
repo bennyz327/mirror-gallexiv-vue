@@ -10,7 +10,7 @@ defineProps(['labelId', 'labelText', 'typeId', 'isRequired'])
 
   <div class="wrapper" style="width: 420px">
     <div class="input-data">
-      <input :type="typeId" :required="isRequired" @blur="$emit('blur')" @input="$emit('input', $event)"/>
+      <input :type="typeId" :required="isRequired"/>
       <div class="underline"></div>
       <label :id="labelId">{{ labelText }}</label>
     </div>

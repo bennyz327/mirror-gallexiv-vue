@@ -69,30 +69,26 @@ const imgDataImportToCarousel = reactive(
 
 // 其他區域假資料
 
-const testData = ref(null);
-
-const fetchData = async () => {
+const postData = ref(null);
+const URL_POST = import.meta.env.VITE_API_Post;
+const postUserData = {
+  "postUserName": "",
+  "postDescription": "",
+  "postTitle": "",
+  "userImageURL": "https://i.imgur.com/6rpzbog.gif",
+  "postUserImageURL": "https://media.discordapp.net/attachments/782068953899335710/1138768475754598420/83E0E2EE11DE10FD3314E2FE2D1EBDAE.gif",
+};
+const loadPost = async () => {
   try {
-
-    const fakeUserData = {
-      "postUserName": "Aosora",
-      "postDescription": "夏萊的老師有無窮的包容力  還有無限的地下室",
-      "postTitle": "Fbi Open UP",
-      "userImageURL": "https://i.imgur.com/6rpzbog.gif",
-      "postUserImageURL": "https://media.discordapp.net/attachments/782068953899335710/1138768475754598420/83E0E2EE11DE10FD3314E2FE2D1EBDAE.gif",
-    };
-
-
-    setTimeout(() => {
-      testData.value = fakeUserData;
-    }, 1000);
+    const response = await axios.get(`${URL_POST}/post?postId=${postId}`);
+    console.log(response.data);
+    postData.value = response.data.data;
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
 };
-
 onMounted(() => {
-  fetchData();
+  loadPost();
 });
 
 const liked = ref(false);
@@ -152,11 +148,10 @@ loadComments();
 
 //新增留言
 const comment = {
-  "postId": 1,
+  "postId": "",
   "commentText": "",
   "parentCommentId": null
 }
-const showInsertComment = ref(true);
 async function insertCommnet() {
   const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
   try {
@@ -271,7 +266,7 @@ function formatTime(times) {
 
   <Navbar></Navbar>
 
-  <div class="container" v-if="testData">
+  <div class="container" v-if="postData">
     <div class="container-postViewPageStyle">
 
       <!--------------------------------左半部區塊----------------------------------------->
@@ -306,7 +301,7 @@ function formatTime(times) {
             <!-- 留言者頭像區塊 -->
             <div class="message-user-avatar-block">
               <div class="rounded-circle" style="display:flex">
-                <img :src="testData.userImageURL" alt="User" width="64" height="64" class="rounded-circle"
+                <img :src="postUserData.userImageURL" alt="User" width="64" height="64" class="rounded-circle"
                   style="object-fit:cover;" />
               </div>
             </div>
@@ -324,7 +319,7 @@ function formatTime(times) {
 
           <!-- 底部留言區塊 -->
           <!-- <Message v-if="showInsertComment" /> -->
-          <div class="message-show-block" v-if="showInsertComment">
+          <div class="message-show-block">
             <div class="single-message-block" v-for="comment in comments" :key="comment.commentId">
               <div class="single-message-div">
                 <!-- 留言者頭像 -->
@@ -374,7 +369,7 @@ function formatTime(times) {
           <div class="picture-name-block">
 
             <div class="picture-name-div">
-              <h4 class="ellipsis" id="mainPostPicName">{{ testData.postTitle }}</h4>
+              <h4 class="ellipsis" id="mainPostPicName">{{ postData.postTitle }}</h4>
             </div>
 
             <div class="menu-block">
@@ -391,14 +386,14 @@ function formatTime(times) {
               <!-- 頭像 -->
               <div class="author-icon-block">
                 <div class="rounded-circle" style="display:flex">
-                  <img :src="testData.postUserImageURL" alt="User" width="64" height="64" class="rounded-circle"
+                  <img :src="postUserData.postUserImageURL" alt="User" width="64" height="64" class="rounded-circle"
                     style="object-fit:contain;" />
                 </div>
 
                 <!-- 名稱 -->
                 <div class="author-name-block">
                   <h6 class="ellipsis" id="mainPostUserName">
-                    {{ testData.postUserName }}
+                    {{ postData.userinfoByUserId.userName }}
                   </h6>
                   <br>
                 </div>
@@ -407,7 +402,7 @@ function formatTime(times) {
               <!-- 圖片敘述 -->
               <div class="picture-description-block">
                 <div class="description-block">
-                  <p id="descriptionText" style="display:none">{{ testData.postDescription }}</p>
+                  <p id="descriptionText" style="display:none">{{ postData.postContent }}</p>
                   <a href="javascript:"
                     onclick="descriptionText.style.display=descriptionText.style.display==='none'?'':'none'"><i
                       class="fa-solid fa-crop-simple fa-bounce" style="color: #d88d4f;">顯示/隱藏敘述</i></a>

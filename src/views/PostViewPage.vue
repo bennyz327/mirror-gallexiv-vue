@@ -7,26 +7,64 @@ import axios from "axios";
 import { ref, onMounted, reactive, computed, nextTick } from 'vue';
 import Message from "../components/MessageArea.vue";
 
+const postId = 1;
 
 // 圖片區假資料
-const imgDataReference = ref([
-  {
-    "pictureId": "0",
-    "imgPath": "https://cdn.discordapp.com/attachments/940525773457072169/1143597896827162654/101585724_p1.png",
-  },
-  {
-    "pictureId": "1",
-    "imgPath": "https://cdn.discordapp.com/attachments/940525773457072169/1143599997208776757/101317845_p0.png",
-  },
-  {
-    "pictureId": "2",
-    "imgPath": "https://cdn.discordapp.com/attachments/940525773457072169/1143601111375286352/RABBIT_108010979_p0.jpg",
+// const imgDataReference = ref([]);
+// onMounted(async () => {
+//   // try {
+//   //   const response = await axios.get(`http://localhost:8080/test/p?postId=${postId}`);
+
+//   //   console.log("response: ", response.data);
+//   // for (const base64Image of base64Images) {
+//   //   // 解码 Base64 字符串
+//   //   // const decodedImage = atob(base64Image);
+//   //   // 创建 Data URL，并将其设置为图片的 src
+//   //   // const imageUrl = `data:image/png;base64,${decodedImage}`;
+//   //   imgDataReference.value.push(base64Image);
+//   // }
+//   try {
+//     const response = await axios.get(`http://localhost:8080/test/p?postId=${postId}`, { responseType: 'json' });
+//     console.log("response:", response);
+//     const imageBytesList = response.data;
+//     // const blob = new Blob([response.data], { type: 'application/octet-stream' });
+//     // const imageUrl = URL.createObjectURL(blob);
+//     for (const imageBytes of imageBytesList) {
+//       const blob = new Blob([imageBytes], { type: 'image/png' }); // 使用适当的 MIME 类型
+//       const imageUrl = URL.createObjectURL(blob);
+//       const imageType = blob.type;
+//       imgDataReference.value.push({ url: imageUrl, type: imageType });
+//       console.log("imgDataReference:", imgDataReference.value);
+//     }
+//   } catch (error) {
+//     console.error('Error fetching images:', error);
+//   }
+// });
+const imgDataReference = ref([]);
+
+onMounted(async () => {
+  try {
+    const response = await axios.get(`http://localhost:8080/test/p?postId=${postId}`, { responseType: 'json' });
+    console.log("response:", response);
+    const imageBytesList = response.data;
+
+    for (const imageBytes of imageBytesList) {
+      // 将 byte[] 转换为 Base64 字符串
+      const base64Image = btoa(String.fromCharCode(...new Uint8Array(imageBytes)));
+
+      // 构建 Data URL
+      const imageUrl = `data:image/png;base64,${base64Image}`;
+
+      imgDataReference.value.push({ url: imageUrl, type: 'image/png' }); // 使用适当的 MIME 类型
+    }
+  } catch (error) {
+    console.error('Error fetching images:', error);
   }
-]);
+});
 
 // 匯入資料到carousel
 const imgDataImportToCarousel = reactive(
-  imgDataReference.value.map(item => item.imgPath)
+  imgDataReference.value
 );
 
 // 其他區域假資料
@@ -82,7 +120,7 @@ const heartClass = computed(() => {
 });
 
 
-const postId = 1;
+
 const replyText = ref("");
 
 //依 postId 找到 userName, commentTest, commentTime
@@ -100,17 +138,17 @@ const loadComments = async () => {
 loadComments();
 
 //找到子留言
-const subComments = ref([]);
-const loadSubComments = async () => {
-  try {
-    const response = await axios.get(`${URL_COMMENT}/findSubComment?parentCommentId=${parentCommentId}`);
-    console.log(response.data);
-    subComments.value = response.data.data;
-  } catch (error) {
-    console.error('Error fetching comments:', error);
-  }
-}
-loadSubComments();
+// const subComments = ref([]);
+// const loadSubComments = async () => {
+//   try {
+//     const response = await axios.get(`${URL_COMMENT}/findSubComment?parentCommentId=${parentCommentId}`);
+//     console.log(response.data);
+//     subComments.value = response.data.data;
+//   } catch (error) {
+//     console.error('Error fetching comments:', error);
+//   }
+// }
+// loadSubComments();
 
 //新增留言
 const comment = {

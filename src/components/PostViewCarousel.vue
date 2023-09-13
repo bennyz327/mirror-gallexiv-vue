@@ -1,6 +1,6 @@
 <script setup>
-import {ref, reactive} from 'vue'
-import {Carousel, Slide} from 'vue3-carousel'
+import { ref, reactive } from 'vue'
+import { Carousel, Slide } from 'vue3-carousel'
 
 import 'vue3-carousel/dist/carousel.css'
 const currentSlide = ref(0);
@@ -9,7 +9,7 @@ const currentSlide = ref(0);
 const props = defineProps({
   imgUrlList: Array,
 })
-
+console.log("props: ", props.imgUrlList)
 // 將物件(圖片陣列:僅有url不包含任何key)
 const items = reactive(props.imgUrlList);
 
@@ -31,13 +31,7 @@ const slideTo = (val) => {
       </Carousel>
     </div>
     <div class="carousel-down">
-      <Carousel
-          id="thumbnails"
-          :items-to-show="5"
-          :wrap-around="true"
-          v-model="currentSlide"
-          ref="carousel"
-      >
+      <Carousel id="thumbnails" :items-to-show="5" :wrap-around="true" v-model="currentSlide" ref="carousel">
         <Slide v-for="(item, index) in items" :key="index">
           <div class="carousel__item">
             <img :src="item" class="slideImgs card-img-top" @click="currentSlide = index">
@@ -49,10 +43,10 @@ const slideTo = (val) => {
 </template>
 
 <style scoped>
-
 .carousel-block {
   max-width: 800px;
 }
+
 .carousel-down {
   max-height: 196px;
   box-shadow: 0px 0px 3px rgba(0, 0, 0, 1);
@@ -65,5 +59,4 @@ const slideTo = (val) => {
 .carousel-down img {
   max-height: 120px;
 }
-
 </style>

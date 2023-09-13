@@ -12,7 +12,8 @@ import {onMounted, ref, watch} from "vue";
 
 const postTitle = ref("");
 const postDescription = ref("");
-const imgArr = ref([]);
+//先用MAP處理刪除操作
+const newImgMap= new Map();
 
 const postTitleRules = [
   (value) => {
@@ -65,27 +66,34 @@ $(function(){
     var imgContainer = $(this).parents(".z_photo"); //存放圖片的父元素
     var fileList = file.files; //獲取圖片檔案
     var input = $(this).parent(); //獲取文本框
-    // let imgArr = ref([]);
 
     //遍歷
 
-    // var numUp = imgContainer.find(".up-section").length;
-    // var totalNum = numUp + fileList.length;  //總數量
-    var totalNum = imgArr.value.length;
-    console.log(imgArr.value)
-    // console.log(imgArr.value)
+    var numUp = imgContainer.find(".up-section").length;
+    var totalNum = numUp + fileList.length;  //總數量
+
+    console.log("存圖片物件狀態")
+    console.log(newImgMap)
+    console.log("totoalNum: "+totalNum)
+
     if(fileList.length > 20 || totalNum > 20 ){
       alert("上傳圖片不可超過20張");
     }
-    // else if(numUp <= 20){
-    else if (totalNum <= 20){
+    else if(numUp <= 20){
       fileList = validateUp(fileList);
+
       console.log("總數量")
+      console.log(totalNum)
+      console.log("本次點選上傳數量")
       console.log(fileList.length)
+
       for(var i = 0;i<fileList.length;i++){
         var imgUrl = window.URL.createObjectURL(fileList[i]);
+
+        console.log("單圖片網址")
         console.log(imgUrl)
-        imgArr.value.push(imgUrl);
+
+        newImgMap.set(numUp+i, imgUrl);
         var $section = $("<section class='up-section fl loading'>");
         imgContainer.append($section);
         var $span = $("<span class='up-span'>");
@@ -99,9 +107,13 @@ $(function(){
         });
         $img0.attr("src","/src/assets/Picture/upload/deleteButton.png").appendTo($section);
         const $img = $("<img class='up-img up-opcity'>");
-        console.log(imgArr.value)
+
         console.log(i)
-        $img.attr("src",imgArr.value[i]);
+        console.log("本次存入後物件狀態")
+        console.log(newImgMap)
+
+        $img.attr("arrId",numUp+i);
+        $img.attr("src",imgUrl);
         $img.appendTo($section);
         var $p = $("<p class='img-name-p'>");
         $p.html(fileList[i].name).appendTo($section);
@@ -115,9 +127,8 @@ $(function(){
       $(".up-section").removeClass("loading");
       $(".up-img").removeClass("up-opcity");
     },450);
-    // numUp = imgContainer.find(".up-section").length;
-    // if(numUp > 20){
-    if(totalNum >20){
+    numUp = imgContainer.find(".up-section").length;
+    if(numUp > 20){
       $(this).parent().hide();
     }
   });
@@ -136,6 +147,12 @@ $(function(){
       delParent.parent().find(".z_file").show();
     }
     delParent.remove();
+
+    //先找到父元件arrId屬性的值，根據此值移除map中的正確資料
+    var arrId = delParent.find(".up-img").attr("arrId");
+    console.log("要移除key為 "+arrId+" 的圖片");
+    newImgMap.delete(parseInt(arrId));
+
   });
 
   $(".wsdel-no").click(function(){
@@ -170,7 +187,10 @@ $(function(){
   }
 })
 
-const submitForm = (imgArr) => {
+const submitForm = (newImgMap) => {
+  //map轉成字串陣列
+  const imgArr = Array.from(newImgMap.values());
+
   const formattedDescription = postDescription.value.replace(/\n/g, '<br/>');
   const postData = {
     title: postTitle.value,
@@ -178,7 +198,7 @@ const submitForm = (imgArr) => {
     nsfw: nsfw.value,
     isPublic: isPublic.value,
     tags: tags.value,
-    images: imgArr
+    images: imgArr,
   };
 
   console.log('hi')
@@ -318,7 +338,7 @@ const submitForm = (imgArr) => {
           </div>
         </div>
 
-        <v-btn @click="submitForm(imgArr)" block class="mt-2" size="60px">推送貼文</v-btn>
+        <v-btn @click="submitForm(newImgMap)" block class="mt-2" size="60px">推送貼文</v-btn>
       </div>
     </div>
   </div>

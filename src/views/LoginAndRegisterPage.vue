@@ -1,30 +1,15 @@
 <script setup>
 import "../assets/css/inputTextBox.css"
-// 使用vee驗證功能
-import {useForm, configure} from 'vee-validate';
-import instance from '@/views/api/api.js'
 
-//  TODO 中文化實作
-// import {localize, setLocale } from "@vee-validate/i18n";
-// import zhTW from "@vee-validate/i18n/dist/locale/zh_TW.json";
-import {toTypedSchema} from '@vee-validate/zod';
-import {z} from 'zod';
+// 使用vee驗證功能
+import {useForm, useField} from 'vee-validate';
+import instance from '@/views/api/api.js'
 
 import qs from "querystring";
 import axios from "axios";
 
 import {ref, watch} from "vue";
 
-const VaccountId = ref('');
-const VpasswordId = ref('');
-const VsignUpNickNameId = ref('');
-const VsignUpAccountId = ref('');
-const VsignUpPasswordId = ref('');
-const VsignInCodeId = ref('');
-const VsignUpCodeId = ref('');
-
-const loginErrorMsg = ref('');
-const signUpErrorMsg = ref('');
 const captchaImg = ref('');
 const txt = 'iVBORw0KGgoAAAANSUhEUgAAA4QAAAQhCAMAAABC5rHaAAAAPFBMVEVStMPq9PVCm6lewM+wtLoCAwPy1Lvm5ub///8eICDB3uOAg4ZLp7acztU7TVB8usMxdYDpxqzbtZLJR23X2C5TAAAgAElEQVR42uydi5LbqhJFeXhKFkJC5/9/9tKAnpZsJxGTXM/CkzmTbFtzaqtWddONQN23o9kOVFTU2qrCDlRUIERFBULsQEUFQlRUIMQOVFQgREUFQuxARQVCVFQgxCxUVCBERQVCzEJFBUJUVCDErL+n6vKvGjeAELO+WdWN64O1SkYIfe8arfHq8yHEnX9FdX2f8fMq/2c0xvcOrz5eBcJ/RO3DTF/IIHozmnGMHOo5L8UrIEStNQkUBJWyAmDIHAbrjVAoHAa3wRAngRD1YlX3yvv4tR9mGRFDvAJC1Fpqr4zEvHmMJQIaNY+YnPZLMMRJIES9Ur2NQ9t+pdG2w4ZFpdYYLsEQJ4EQ9Sq1uQ1fD6OAGL/nCk3wuWLjYzDESSBEvVDVE4ExAJZRQuIUEIU9QVBlDmMwxEkgRL1I1brp2ok3b6ehzBiT0zkcFgT91LqIUdHhJBCiXqBq7RKCbZz2JfZSc0K+ZIztlJWWlTM5HuZgaB1OAiHqn6pTFBxGZcsKtXlYa1KOmqNh5DLNCBN+odRnHE4CIeqfqbq5JQTNA4ERQT/kIOhH+aE16S1+Skrz1NDhJBCi/ol6dyu8dgyqMUfI1KlPP4/KTrPBaU1ppBAngRD1t1WtJQy2M1uPmWhC0BgTv6W/eptDoZ+XdnvV4CQQov6mGmeDGawjBseE57JaLQfD1ti5NDplpFbj82dBiDvfpzaDcHaAoKSiaaK4XjCag2GmcOnYL50KfP4UFQi/T3VtyS8fGfRDDoMzgOW7pKSjXcqjOTP1AZ+BEPU3VJkODuqQQZMST78GcEpJC4VzeVRtVrDhMxCivqvq+y3hdJSKJgaHFXx++T5ROJdH87TQ9/gMhKi/uE6tm0PaYRzMDHqzDYd+FQv9eg2bN44nm4AQ9RfUxOBS6HxkcNw8wrseiUL5qF/3C/1o2IsNCFF/ZbHoSwa34G2mhonCSJ/3JQ5KccaMAZ+BEPVt9f6bcdAvsXBotOtLOpo2gTJjr/EZCFHfUtMymZcMej9N99Ruf5ncqejiJSOHKSDmndimaSE+AyHqKwilN/GcQZ9C2zwid1IBXWWmhUK5bB/y2+eEFJ+BEPW5mnr0J3VRL5JSRvaZaVdbXMjD9qPxys+10qjepivHvNTLRlAmJ6T4DISoT1Uta9VOGFSD9CaG9utkCIg5N03FGb1cuc87svGgPRCivlRTYXSwh+tk7DA9vyvAdbdbYsrdbt0wg9lOIEpxZn1lwXD0+AyEqK9UKYwer1VTdlxAG8Pu09pFFNs1h8OckJbf15dQiM9AiPpElQWjrT8vyhTEjG/2n9VatkQsIMY3qfj2ttkkui4Yj8+fACHu1FT1cFoY9WWvp7THaDi9cgQxczjmbuFG1XJoEz7/v6tAWFXtnhdlpmd4w9Mr6xwPpX7a7Y8r1PgMhKjP1NvTCeFgjLdyJqjVz6981yUcfrXSoMdnIER9V43J6JOVMm3e4DeO/uWV73fX5Z3YtMZnIER9W32ejKbpoJxHGPQ7+9OUkytud3wGQtR31ZfJqJy8FHX3dt8/RsO20fgMhKhvqueVUSNPVeTTP5Xv375y2ry7A0IgRH1Tvb1ORuW8ibSB4btX1trd8BkIUd9StW6/2lfJqBRmerwCQuyoA2H37NmJkoyOPgdCnARC7Lhc1a49rcpMyWg6CNThFRBiRx0Iu2dVmZKMxq+g8QoIsaOGqt3pA0xqFQhH4/AKFQjrQHgeCEtVJtdlvMYrVCCsoeZAeNyeKFWZ3KLo8QqVU5nqqG8EwlQcdXiFykO9VdSmPQuES3silWXwChUI66hPA6Fst10qM46t7FGBsIoqi2Ve9unNaid7nARC7LhWPV81Om7Oneg5WQkVCOuow8mq0bk0mtLRvGEhTqIC4fVq82YgDHiFCoR11POyzKZHaBxeoQJhHXX4GtSzVaP7/gROAiF2XKu602w0zhXXZRm8QgXCOmrMRg/33LY+BkI/l2UMXqECYR1VD2erZU7LMjgJhNhxpXrWJFz6EzkW3jReoQJhFfU0G52Wbo+5OurwChUI66innXrZAdFPJ2Dvjp/AyR8NIe5cqsreMsfZqJcnK4IN8hVC2VsGJ1F5qPdyCG8nnXrJRo0NMUjKHxU0XqECYR21OzkU1OY0NUwvvEIFwiqqbk6Wy8zZaIGwxytUIKyjnk4JSzYaXxIOd1NCnARC7LgsEp52CQdJUwXCFAitxitUIKwD4ckTFNKpH+ycjAY6Q6hAWA/Cwy6hPEAxrhgMeIUKhJUgPFk4mqeEE4V2X5fBSSDEjotUfbbXoUwJbVg6FA6vUIGwDoS3k+JomRKmmsxBcRQngRA7LoPwuDg6TQklH00VUrxCBcJ6EB4WR6cuYVm3FvAKFQgrQXjyHJM8QRHs0qLo8QoVCOuo9+MOhZxJ2JYpYS6O4hXqCkLcuVI9gTAvHFWqrB31Dq9QlwGEl0N4WpeZIqEUR/EKFQirQXhSHDU22FKaIRKiAmE99XjBjBRHvVXBTo9RACEqENaLhCcQyiMUuVFoiYSoQPjdhZlUHFVpdxlJR5kTogJh1XT08HTQIT1VX8oyNgAhKhB+dyTMK0dLLGROiAqEfwfCPCXMAREIUYHwb0AYypIZ0lFUIKyo3o4frJcHnEpZxgYiISoQVoXw4CkKiYRjnwDMLyBEBcK/AOH0r17+9HiFCoSV1Oboyfo0J1wOJpTTYPAKFQgrqScbPe0hNBqvUBcIcedS9QjCx0ho2GMGdRlAeKmqj86DWSDspoN6gRAVCGupx5vMDMtB2ZlD9h1FBcJakfDoQBi7hrAMvEIFwlrq4dFoY4RwV5nBK1QgrKMe7rcmD/WOC4TdY2UGJ4EQOy6D8Gj737THzKYyYzipFxUIa0HYDI/LR63/2vcoTINXqEBYRz0+obB9qMz0eIUKhJUgvB0czCSHMk2VmZyRjkrjFSoQ1lHvw2Mo3FVmHhfN4CQQYsd1qpRm9qFQKjNpUtgtEHp9ye/V2jVuPXT8X9DcIyD80ephKGw3ncJuPyv8hd+bCNMJvD6OIHvWKNnWO0wPS0XAQ4iSy+/kHgHhj1NTKFSv81H/i/FKNwKUi9QFv2pFWjUdM2Pzd5UnnSaxGHrXNJp7BIQ/DEIpkO56hXM+etIrfHXlhF8fCl4RsPng7YdXUCvQx0S7gFhI5B79ixDizvWqfkxI1/XRedzeuXKE5x4zz91nTxmcIuFEYPkh5OSUe/QvqkBYQ40J6a5jvw6Fczz0Tr8IqiX/XAGVQpuRTfXl0NHpy9qwHEG6JXDm0Ie+4R4B4Y9RO5kW2od+vd9lpN49XXwjGahfwPMrpFZ/iT97pSYU48ucjzRF5B4B4Y9QB5kW2l1pZr90LULxZKo2p6AJuDGOIY42jq+HEf9xGCTaqUjiQwxcDRs2HHIHgfBzVb2nUB4q/NoUTRIg4eTKru9VinEmsXcE3tGILEZYlzjZ7WkMEjMXDLmDQPjBatPuKZRZYRO2vcI4tzu6ct/H5FKZcU9fCniCmQwzv1KQXL1TUEwZ7ONI254Kh9wjIPx89dbu5oU2hsLb3W3RiEy47We1dr2NAXDYQDWk+ObTdQ6HUjlqzp9KIHq/i4dp0pjqN73jHgHhh6uZwk1Xvf1qbzHMrSonXs6H6TftjV6tAEwzvTjRm8mbqX7cQyOjqLyQWD6fPr2HPhdU4ycihtxBIPxoVbsY+lqzpKSSkLbxbdqFLRT9/FkXZgBldmdUAe/o0MPDkd+6CqTxMutKakhns6VvVjDkDgLhR6u66b5SMLTrCmnumZfKpw85MLkcBMcVOapkmb81vKwgnUBsh+2cML9kRAx5ogoIP1rVuosYtKMqMNkVhU3k0Js0yZNlLjamke0M4B/gN1GYhjETh6Vi6stS71B+b/Cq55ELIPxkVd8lJV0wTH2KoZlUacbnbvw4E5gyUHXF8KnB70s8bEcv4e+og79gyB0Ewg9UdXPLGPrEYabQbT/ruokToy4CcAqHKfiVvDQCHuzhOhrvuINA+NGPFzbdkCqVeZqnYkba3qbH/LS+R0rbmcArEZw5TC3/hPmwNA+73cod7iAQfrCqdcFQOndxuic8dO6u47jr/7ocpMYaBK7CoaSl0+Rwu15gHQy5g38HQtz5FvXWzWWXNP9rbwKhywimSoyqNiYMTcHQb1qHE4myaIA7+FdUIPwmNU4Ou6kBMS1Ba0uaWpPABUOpj6bMd9hhuDzSwR0Ews/u3ce01HXDsF2KPVxci3lSKy0Y5t+6pbArzzlxQgYQfrwqs8Dmduu6PEmMMNjvQXATDVdTw267pK1nX3Ag/BGqhJvUt5AoqL5zFAzHMhHdl2dkNRu7oQLhj4BQ5w6+sd+L4EShKQ2LhzqpLKHbUMgdBMKPVPX/2DsT7TZ1IAwDiuMAWuzk/d+1zCIQIByQ3BOWsZ363qrJKa4+/tlFFaVQRFP8wYMjpWiTTgM02GsYVpMuXpEx8u8rEB52tSzJEtXqTxgcMMQ8ybjRyaEUql+r2KAJ5P7LYIHRrCr51xcI/9dqWW5tQWAZtNWfITi4hiSGQKFufW8jP8tXV1QaHh8eXy1xLrgxzjh8b2j4sOwcgfC9qw0UXtOj22Tl6u9lGfwjS3RBDLGwzfc28uu+fEVN4c9XnK+W+Lmo4OmgSMBJ97BA+N5VD6CiDYvjy9Z9L3U2/bEMDmLInuHDj8DQnkGlFktJSzeMD5+ulg19LKOHRsC1a0rZOQLhm1aNv9c7v+Pgy9xXfO/XfRcyGIrhYJLC19Dty13GgeUNr68vw5YsvN0nR800rKKDnioHw3KorxFm8cu+EgjzV0EEBwBNv+OUg9bYX8rW0BSt9yCDoRiiSUrmqO7ZUUzhcC33tu2gQxnsPEjdArIj97j7aLoPxPCHAx8N/B8qYYsgohzKvhII81Zhoxk15s/7hqpy5S8QtpO5T7sQw+6r7hP3gyfHFI4iuh+9DGK3cD/DH6JTnSUKP8/hiWwGPh7DsogAtprmh2tXyr4SCDNWoQlea95mtMlMEIDALoQXP7ndjyk6N0mRQu0CKUQKw4hup5ekg4wiSSH2Q7Y0FxwfMN/NIYi9T6gJwxbk0Iuh7KsRhELd73mFsm9+xxmgVUei8/d6w0rYbcog9uDGwoj7eEem6Mgk5fCMN0cHEBmYD77yB/qCaF8Sinesv4sN5bcP+GCARJ6xwSSCayj7Spp6t66WQQ9S0Pvghhgp2qbj8wbvGnZbz+EXDz8sdvcgk/RBQdIxgpwvvFvffgWuY8umKKLl7r5J0s8FD+aAE4fOM4tCCFpIFMq+EghXr3buUN+Ny/uMuwArcg59iBQNtD7wYOhsTv9DwaXalTs4FUOikGObqo9xGpZBbn0kKWwpr9j3CFuejuofuh8DDp+RHh4tO4dG9pVAuGG15Pkvo43G88us62Ol6BPq4QDsUvuDyLBYZDYQf28UshZSijBQQuWIs/qGEFJ5jSZxo14MGssxPokRB+lYvlVp9AoDJXRIoew6gXDlamP71vdgjjZyCOaZZn8Q3mispxuEUPuZEcjgY7cMei2sicLAHjUwJZVkEDDspZC8PPuqHRJ+27cPF4EUOmBQWvgFwtWrmFSIbzSlMKaoOWehOApYafoBbLDRUM+P6fFMe3QMNVM4MGhcVQ8MkhbWVOIGfxxDqq+uCm5VlkYfB6YohVddI7tOIFyz+mFflVrT6ELX+4TaWhBDw0LoI4hs6O2aQTZJgcK+aEaZwgYIDlLItuiqugPAkJxNCpC6CrRQu3EgWXadQLiwWv7W7YAUgl9IofgHDtelbLQLDrI+BIM4rRv/qpVhAxvt7dHj5qWQAjmrgr2dxYAlCj4/4ZV0SqFAKB/HfBVzCq8dORym/fDpej9NsNtcTe8EOdzLj90jOFBY04kxqGD1z8+IQZTCAhUNRHPdVSmNUSmnu9fw1NrIrhMIX6/y0YLql1PIaoxVdI/i4dPULZbW9D0E9SF0sLdIMRnIo6B+uoedSSGWKTw23FnoXmXMqLfCOBlmIxC+Xl1ZYobnDWofK/RjRD/6ilLjjsNgoIU8MR8gjEghXFv331tOTLRo5oZP+HBK2XUC4fLq6m4HMELRQKt8DAO3r+bKUnUUW3TQQsujibtL+VmQwm1CyBZp7UIpxMpSI7tOIFxavWPyQa3bXhx1sEMonzGEnWb3nKOPa2E1xEQXpdDYtZ9PbzEQhdBeQU+svG1k1wmE8dX7FnSAM98ONGxWiNA4DJgeikGisO4TE4tSWN/ststSfTqHC94Nmux32XUCYWx1E4PoFXb2qA0ZtD+EIWy8YzGIFAa5ibgUVm6zkU0nFDvjG8DIHFVOdh1DKPbnaHWbCQkB0roYCyHuXAqVVgdjkCgcS+HPTAqr7Z4uh0jJG2SH2bnKyK6jfkKBMHxsdePgFo8xxUAIPYUHZLAoKDhzi0shlc3Y1UnCSXBG91Fjg79o3ciuEwinq+1WNw7t0ZkQ/mAPweOADHYUUqt9XArJIE25vXiD1FFcRlHDr5NdJxBOVjcziBDauBBadUgIOTizEJvhsxW390aiW4hJRrRIURChcEZ2nUB4nzBYb95e9bjOmbbt7XCB0bhbaOMGaYqh7XP2ioaxoRJiV5NAKBAGbRMpDKpxs0EvhLU+KIPQ2TS4hQtSmOLtYn2RzxbS6AvoL2wEQoFw6OCtk3wdGxfC6rAMoltYv5bCJHcX3UI8pALn1NEAmkpGzgiEw++n1ZjFIKyPGpSJGKTzjD35uykQskFKs+qgvF23hUYpFAgFQk5OpDCobEwI6+LIEBZBId5UCm/cV5hEIZevUe2aM7oCt1DmPgmEQWA00dGZQnjQDOGYwt4gjXuFaUrvDVIKzTgaewGxGYFQIMSgTFI4MyKERzdGWQrZIL3FvcJEKeTCGTJHSQkdJAsFQoEQmniTthW0UcyF0BZHhzA0SOPFa4lS2EdI4QUDZ1pMFgqEAuHdJoYz1SMihIc3RgnCsUE6SxWmpWCwvcuMlBDqZgRCgdCmBt31rGLNnsAYHRukESnM8ArhE9PcR0EuYcsz6gTCS0PYplqQIyG8nccYfR2boQDpTWfFZkAJSQjhdb84hJfvJyw/UlMKOOlp2sN0BmN0IoU2KoU2DULFyUI6aa7VOJTUSVPvpSEsm2RwIh7hSYzRWGzGviVAGkycMTg90VVFO/Q0CYRXhLC8J3txESE8fJo+bpDOM/bpUlhwOwUk68klxFGkAuGFIUzN0kc9QnsiIcTqtddSWCXfuzBNgQcfaz48zQiE14Uw2SGkzPNUCA/aRLhVCutcKcQ0BecJWwdyKBBeFsKyTm54GFesWaqVqU7E4AuvMC9ASoXcxvSHFmouIRUILwlhm25AqogQPs7E4DxNMZs2k3r7AoPUuUL7JyQqGoHwmhB+pBuQMSE8UVQmSFPUyxn7VOGnyeUO8oXwojeB8JIQ3uv0DviZENrTCeErKSSDNFUKIU1RFUNnIbyZRiC8IoQ2/V4+Lt0+pxD69t56OU2R+vHhdHLDQ5949JMRCC8IYXp2IpKoP6MQvmwszPEKCyghrUw/cQa/BikUCC8DYZOhXePSbXumotGlAKl9p1cYtPc60w/GFwgvB2GGMRoVwup8DKIU3l6lKZJNie4D688a5y/TCIQXgzAjOzGpWDuvEP4ybibXKzS9V+hGXqFAeBEIc4zR6wghzj+8/Q+vcDi/NwjONBeF8Jr9hOU9yxiNCuEGFdBHrCC9vdUrLCqSQhUGZxpp6r0ShDnGaKYQKl0fKY6qJ0NIf97kFWoqXgvPsleuFAgvAyFOdko3RsPS7RvlCDdsRVXdjgWhrhfOSsvyCsHMtaMkhfNSKBBeAMI8Y3RSsbbZI+x01BaHskcfS2el5eUKux/beinERKFzJIUC4QUgzErTR3qY6k2hUSh404eSwqpePDY0SwprOrLQ9ZNIu/8QCK8BYZkVGZ0L4bb2CYzqrNu3ai9S2N917BulUPdSqIYkBUqhQHh6CMsyL6Gg5kK4BWkstlkDrVI76RAO7NF5xv4tUkgEEokC4RUgzDNGc4WQv38lhLvAMLRHbayxMLFOAaWwMsafYU/vpUB4fgjRGNXvFcJNP+6x7sBp5RS8dhaa+V9S6NuaMEAqEJ78gsu8FCG2hd+yGurxbN8V36J2I4VB1cyCV5gphfBwgxQKhGeH8CPLGJ0n6rcKYecS2lV5RbUbLdRVZZekkCisVLKdWxuSQkYQpFAgPLs5arOGZEd7mDb9OAgJdlu6WC2Fal/2aOSstHU+7gspdC5IVZhSIDz5BecZozEh3Jj0637Ad7vWHt2JFgan2N/iUvhIl0JrKDZDyYoOw0YgPPcF3/OmUMxLt+utxm2nxM/nKvkE/hSSuKdUYbx4LdErrPTQTDFwKBCe+4LbvJ6j/B4muPU/P+2aWwETuAOLdGSPxovXMqUQzFA16Wi6DoSX6t3KjsqMKtb8eKdt9/7OJXw+190LPIJ/T2Fgjy7EZnKkUHPFDFqj8C5Nvee9YCjczkkR0nHPWfkJLNV6Pr/X2aPeHP1zv3Bsj9r/IYXhsxEIzwthmzsSLSKE26Du9nL9/Xw+19mjbi9aOLZHo1JYZ0ohz5mhl0B41gvO6yJcqFjbaN3Cff/7+b3OHlXD46+1MMzXz6TwVmdJ4Y0CpAAfj+Qen2IvEJ5nNbdwe1KxZlPCMppcwu+19ihIYR8m/WMI7bIUZpTN0CQpN6QK6U0gPCmEmVGZiBBuzk+QSwhSuD4+quj9b7VwYo9GM/aP9No1iwcVwtkw8Ev3uguEZ7zg7KjMXAi3h2XIJdxgjzpSwL/3C8cQRqWwzpDCyunwqRuB8IwXnFsrM6lY+0k5fgJDgc/OHO0wXKOijF4nD2m1M+qt9mg9mazzJimsSAoLPMCen9qUAuH5LjiznX6aqLdJYRmE8BMQxPioXieFAGGiFvZ/Xufbo/OTiaexmUQprPCQJji417WexDBLIRCeZfUrOyozE8LtYRl2CRHCVcLsBilM0kLFf/Xq3U5h7Ky0LCl8ODorVBctWqSBFAqEJ1n9yo3KRISw3hoQHFxCSBWu+XYKyGhdVWk9FYqTk/XjzfZovHgtTQqrCjqayBtE37C754QJe4HwHKuZQw6npdu3n6TjsSHMX2OCont+rgnNeKfwYTvTNSVGqnyNweMNUljPpdC+IVeoeylsmcLOJwwS9gLhSSDMrpWZC+HmYKvmuAyao9+f36vtUfAlrUrSQoqtQj5c50M4cgqjxWupAdIKa3C9GHYsGjck7AXCU6yW9+xzdNVMCLcnCYcsYcfh56pWCrZHOy0DYBP8QuWTK498CMdO4aIU6q1hIC+FmsIy4BiaQAoFwnNA+BYhnBSMbLdGu63mXUKAcM1firQPartQdrdrofJBpTo3OFNVoyPCX0nhRgw1+pt2kEKNZdzlZSC8RD/hvc6cPK/UNDSacEZ9FWQJnx2EzxV/Kx+Z0RzG2ayF/GdBaXS2FNa3VV5hihRywn5QQmcuc1zhNSBsc48PnFespQhh1ScoEEIfmlG/R2bIXkuqnXmbFJLR+EIKOVeIRTCbpZAT9vTEwIwzjUB4ngtucs/RHZ/D9JOUJCSQApfw83NN1QxVrlU4rfQfe9fC5CyqRFXyGCORmO///9cr3Q00CiqQvRVTuFWztcNMspN4ck6ffsETpnIh/qgop0KJnRRxKrS5QqmvxNeGqJDK1oAJVQXhD/3B439ChMlqlGUJEYQ3Mlj3qFAJGoItc7hQmAxLKRWuQdiHqFASCGUWFRoQQk9TBeHP/MHFeXqvdNsSYXKSUPohoaZCozE3nhqSFFg0ZlCYxoWfokKJ40fXVPhvQYUIwlQqpIS9/mUTExIVVhD+wGlp90Rg6va/\n' +
     'PplcMSSEwlFSo0iFO4XWPCg0qjqtzVcwKpSFenQMUuHoiFC/UJ3+WxNRaBP2Vo5qFD4rCH/kD76Upif8RP2/f5m126xw1IJwOECFMPMQ9ahFoUqRpI4KRynLQKhfiA1vhgzSPBBCwl6BLaOICdGaqSA8+6nupy/N08sQESar0cb2Emoxer8DCinRcUCP6ohy1NhPjgsNFerQuBCEuvRmiwqxr7BrkkFINEtUaGJCjAorCM9+WtRGiLGNCPSUJ5esdZDqu2kAzmw46ItR4QaeKF2PRAqhqDD8eFSREgq7UirEnPpG8doV+wrnZ5njxzQYEsKpq9fI0QrCX/iDS9oIzaiFNRGOuWp0BuAwwo06P6RHhWI7R4HW5PDuGQoPk6H5qVIq7DRbjTLkzVxtTAhRYTIG6cGv3UyFnXJM+Kwg/AEQ5ufpJSPC5ZyxdFsG7M1hQPzBNd4OUaFxZtBcXaDwGBfSDxVTIWpiFaNCQCBRYdflWTOUpWhoEHAF4Q/8wW1+nl4apz1IhH3y7Qs9CMCA4zi8MTA8TIWKgsL3jaHwuDtjUFhaxw04kSqYpriSGu0NFXbJqUIYQQpzLprn01kzFYTnPi3I00u6GkaEV0uE6WoU3c1+GKw1ejtGhYoHhbdp8LhQHUKhR4Wl9ujrGfRmrgTDK6PCrF6KhrmjYM1UEJ76tCBPr/HXgckXIsIMNaqxPAIDTj4K96jQZgo1hObfffeeR6pSUAhUKAuYUDszDxVMU1yZHr1iVJjxQdVrEEplMThTYQXhqU/bMiIEEK4n/WU0r3admX9vC0fXVCi2GikoIIMcR5+cLzQglNei4jWs+nk+w42FV+OO6lxhOhVKm6VoqGJGwGDuupXp3KcFRKh3RIO5EBg8nVOyRk31k6tZs9d4hApJrcGvOxQ2BxWp+ZHC4jVyZp4+FV57FxVa1ylPj0KWApgQbRnNiL+/uPe3QZhfsAaZro4KtVZEmK5GTbkMDnm6hagwhkIqFWUlN9Nb50ikcAXe4jAVFhWv4f/DjI7Bp0IbKiMLqtFaM2mPbtoKpXy661FBeObTS/5odsBgt+ig+5epRunu8p/4Fi8AACAASURBVDsofCqUG4LUTHvqLJveNAp7h8J9SWrOy6gQQdg9laNCrJFxIOxfCisF0/1RR4Xu0rspKgjPfFpQsEYY7Po1EaIaFWk3l8RtTF7hqL3MdpgoCJXgQaEOKieNQuTjY00VH6FCQomQij6cTF5iJAz2r+e9xY0DmVSorRm9uHf+TYXmsHxUEJ73NJ8IwxgcuRoV6fduJCQEKqSGXbFVw+26gmlCjUHhEUnqU2E2CnEYjJTYWXU1VTL9iBC83FtbK5jujzYoPYZZg87vgd1LoSoIT3taULktyZXxO3csEfbN4TUPgt1bpql+DcL3ZprCylHXDEXDMfqEtL2hwqKWJjSYtMrsEIS9c0RnFmxbdFH0dLsxnQmNgYVM6PbDPCoIz3qaX7nNA0K61Vh9FqpRcRyDsgs01ad4MwgyU7lmsxzDNSVtrz5BhSiJdTGRQsfKOqL98Ghbv1owT4/qmpwZhcSEOnEvnxWEJz1tsyu3ZcPE6NV0BzgiBDWaBEK+jSkIwlu/5c0sM4UGyVA8czRhaLMUzavvCkConRmtR6HR2WCwH+5tu6ySyKLCDhf3EhMSFVYQnvS0oIWpY2LUhD7XMUONCl+NxkJCz5sRW3oUKtccklnanrbbH4kK00cSLkEIyABvxkBw1cZJ1kw6CCkTqR0ZRWToU2EF4WlOC4jQidHxZciQu/CH1agQfoIiLke3vRlnj7qgkFA4euOfNt0ZB9H8Fmeq78RBMFaItoE2TpelSK2agfJUM+dC6R1NSlUQnvK0kAhxPcL8kY90aNZPpKlRESiXiWBQTwImb0bE9Cg6+KPHp4tUxSYZfmDTL34OvHSjA1LhtR9leKCBFti51kyvlHNHtT/6qCA84em9zx41SkQIZYzzBzKRoS1SRjUqAmiL3PRGjU5bRMi9GbHRU+gHhbcke+YT+7ZpYL0ERTq/HGPXqPC7QNZMhh4FwautJIND5enRCsKznBZYo0iEMBZJfwgrCTAcqV0n1HgkYn6KK97GcplwgmJfkArFg8IFoQIKD01hKweh2RqhK8tmNhw7HbGF34UHWTN5z6CUBaAaGo8KKwhPcnrv81uYjDM6i1Ho7J0/kKEhnohwrUYj/CM8NYqVLrrkLHa9exvehZhQ2aBwWvg7YM/IAyap+gAT6tmjOkcxwDwmAGMbfhdKrBnyfqTekgZAfFYQnu60YKiFdUZfNA96/hhuLyY0DKlRgMiuGt0jQqC0mENqq0fZhkMGXxsYbpuk5XqU3EtJq61xe8s9/C6QNSOTYY5jLowpQyj8aRD+YnVsyVALaZzR3jkDUANnewSCajSEm1Xx9rQREvqCVISMGa+n0HsgsGcgMNxWpB/Roy+caahmMoQvMjwn21bNpD+DhGHc9uUHqN9rU++5TouJUCeiOyBCHY+g3GppSBOoURGI2MKs47xRFKRbIJycIBUxPepYdVqwKA8MRbQArpwJMVtP2+X1l8iw+nbI1qO4MpQiQkoVVhCe6hSIMO92YylCu5zEvv0PqNRqVgkKBEiEdA56o0yQhsJC58xQULiC8+ACw422imIq7EyisINVgoOOCSPD6tt8PUrWDI4gBdWr7MrQCsJTnJYToc6AKxzJ3rl3/+8+xNWoiBGhbYjfVaMoSF9RKuRB4bry5t2zwFBEDVvxATmKiUJa6Dk0MRDee6TCrLiTrBkbFspHBeGJTnX4VmKNWldGO6PSvfnYHBVQoyHeMd+g5LOtG2XImSKCNBQWUlAog5lChmATGMa48BMg7IgJgQz1SxRb29IWpQrBmqFU4aCYIKkgPAMIS4kQxagp1mAPTM1RwZBQRInQ7ufdJ0KsIW3CKNTfCGcKV4GhiJKhKkShSRRK0KKaDGUchJl61FozGHiSJLXWTAXhCU4LiHDhyngqSD8v5hAC8FAiRoRJapQVziyeRdlGCrdzO9iXiIEhEqcK5jo+AUKFOQoUpFEQ6gZ7madHwZpBLhyUH5tXEJ7gNJsISYwyIuyYKWcfWYRS9StgWlTbcs9oB8WRsJA19saCQpsxdJI0njkpsUc1E6JUR2smukXQ6NEM9wcKSG2aYoCvbQXhWU7v5UTY4yx2l4hmM2vC6FipUfaIVj6+DxAhFs6sw0LDa2zQTPDRJl+SqqhjVAxCDcDtmHDWo32mHjXLYbCHQuLXRwXhWU7LIkLJtuQtiZDgvY4I1UKO2p9YZuoDoAnnKZoQCvV/dmz6aBjSg5OkwcCwLCrUvDZCIQMxoYzLUTvwSTa51gzlJyhpX0F4ktNiIiRfTnIFFFejwTudR4S7PfXx8jXvqRQGnt4E0/DjURGbsHPYxAep0NWtNbqsU1NVnAmz9SivmoGQEN+RewXhOU4/QIQdfQAviFCrURFQo6uiabGwZWhR/XQUhDwsFIlBoSlii0vST4HQVI5G84SstVdmWzPojM5413Hhs4LwFKfQR1ianjD3l0+E80O/gmp04Y66u7zjPfU+BqfUsNBWj0IbwzRtMquTpGpN1EUoJBB26I4OcjMmnK88PeqqZqSNCPXXtoLwDKeF1qi+wbtwRBjM1FuqYd/1IsLOzUc7TISQLVwVkQquR/cekLuky9LWj4CQYkK5GROW6FGyZpxDqv/9qCA8wWl+Q71PhDTv8i/kja5cGT8hJzwQ7k54ioeFvjkjlun6bVRvuaQl1oyr4G4GyhNuMWFboEdddD4oXsb7gyD8qe6stjAipPQEFcs8vS1rj0DdqLVlWD+hWNgyfToRsrCQoVAZEAK77jUngiQFUbvyjsQHQKjYCJjnhkrURUYZIDSyGxdSNFjMTWOAa1PvV5+2j3IifLl1QO3fcmaKWKcN1IJnAkQYnfA0xQPEqXe9hcJ3ZmBfw7SPa5SkDaslFR8DocStZbjLczNUK9CjNBH/udjQVEH43SAsmyyDZRr29nos943269wd3NkLmuGPuLWLaT9nLzkKDYwgUXc9JHCHq58yVOUodOAwq3TVNghL9ChMxPevCsIvP4XemU8RodIiiz3lZa1GjePBY0IRsGUOV6xth4WHariD7U3Mn7EbZP5fTNhif73MtGaUQ7uhwgrCrwbhJ4nw+fCeN65G/fEWHgb1XTSYlvrbLQOFHDOucK2jOdx7wL63kDL062dEERVaJlTun+3MQWaSQq6iA0RiBeFXn0KRVOas0TARMqF7N5n6wGgZD4PCZTxgUk10KeHuNS3MGcuEi70wG0Q4jDg0tROswI7Sh2XGjNkpD0y4+R6hHk0HIVXNrPVoBeE3g/Dy4YiQg/BC0++FHxDquS9Mjrqwi8SotWWmdBCCmOwcCl0Nd2Mae7ft0dFukO/9LkORr0eZYQIQFDom3HyP7td8PWqsGcWtmQrC7z39SESomDXKn1erUbkEIbqVkjHhyhplw+/vM7e934O+LprB7ruV3LCB0M4TtSGodC2KG0w49Fd+jZYMkQ2zR5AyJlQIjh0QluhRZ824qLCC8ItP/z5AhFKZT/fnwvIZoRpuSYRC6B1jzndcRoR8J6HRhkhN4/BONGcEc2Z2g8K3D8Gr2ydaSoW+OyogJtx+jzBJIZt8a8bPUlQQfu1pQUSIFWtYMOwR4V9cjRrLX2omVM51XBMhth0xbWhhMUwpOXslbOFaR8u35ytewb26cBZbI6Jd9wmTniQBcN8d/dPz8F+lepSZMxWE33taSoTUOkN+33Ptu0oRqqeWTI4Kr1jGNRLOEOyvwWvco8OpZ+aMrZlhy5l2aXDm3Mt8Qf3My2UoFuWkGUyIghRkw/Z7lJ2koCFZS2umrSD80tMSa1Sy6U6+5rHPCL0ZHIPKdhZJK0dFsHR7mmIQ1NceG9qGCjZPis3hnsJNwQ6Bl8fjcXs87vcLJStcztFBUHavZCbUvswhd1Tr0T5bj75Ij7qYcBkUVhB+zekHiPAqAYTw+e4/799SjTox2jkmdAWk0pVuzzDk2rDvx7HvPaYaDoaFDaPCrUaKgT305X5/TI/L7TLNMEQyDH1QQUV2EhOa10kdiAmLgsL/sXcu2m3qShgW4AQLhIT7/g97mJs0EsLG0HXs3YXTNl1REjkxH//cRYdnZxbpcEH4rUro0WA8J4QwOSx7nWXDEaOUqw5bMjvFJ1wJoc1lEA1D0KXFONRBGv945RZ6FVMxJo1cq4VHx4TgwAT2y66P21CIoQbrZ38TZvIJI4ivIByOZQrV4dnP7NELwm9ZPSGERhrqQQjZ6mny5MeAIzO0EMZhE8kc7Wql24/IhAdZQmH6xfe3FKqxf3bn7INupKg5hXE/VsEHUE8/xqYYdgZ75d9UQgzNkE/4qtf2YCfFVhX39M9B+I90Z43nhJB610gJsTYq27ewRrtcCNkc7crS7YWtaIr6EUi4ERU3InG4+V0mqXILGXT69jUIhUELCIIODrjvDZKT+D9POcNi7AxOtn/fJxQlfPEaHc0UxgZ7FRvFd1dT71eu9j9HxzsZORubBlqQNVrsi9aoEkJJdkcIQ9ZSKL5MShUAgkDegBTiuwHdtPgJL9xC62JwxuiRa0Vk5o8wf+uXXR5EoOfaNb98tKmKYWfsbil0SgklRfEKwvGgPerqqcLsBPsLwq9ZPd/My6cAZULYp3b9DSFMSqjCja1A4kXoFgTZNVu4EOsQEBnEZXxG4UMHZxIIK6ewl9wEeINoiCrM5Zk0w/gjrRVHpDDzCTvqZXrxGtFxke/3FNaquOGRnWB/Qfgtq8fnHJqUqMdBJvmNVg2X0QwGCZCQo9PldWAxP+GjLIEukTahO3iDCA1yyAYifNaL9lzt8TpW2lIJ+Vsh8+gL0je3fm7nmfTQ35pKgKZz8IG3fcKdStgfzRTibmB5F0qYSeEF4ZesHhdCIxVrJkRztNwXM5CdqtEWBmcUwvJsNAknjBmDvxQgGUayDhfjEG1U+MgOCqNbGHewYO7mTuGoGYTd8HRhPzt6tLPPxHBW0V7oE26P+IR7lPCEU5jaFzWEZrog/LrV4+OdlBCKEurbrLQBzF1ujGJk1LWeIcwOIuPzJywbmn4gXUIqhjFPEaaY5XMKwSDVpQhpGL5Swj+aQfy+iJpzfPIpYGjxE5pVgKaD887cuz4h5+tfKyG31x+DcNVgH0y4IPy61RP5CYlkOp4kxHNM9L6jtkaT6jk3W62EZVgmMghI/Pa/kTY7z2IcQhDzlxXrqV/4yPuVVSPFozBGFwbR9CUG4TZBg8WJwxbhw9SnpXFs8k33hmZc6qyfpItigIqlZxAOhyGshWZCWN0oLwg/vNo0JyvW9OT7zBqlfXVYJrbFwvVhLVlY+aQnvmxsTBWQELLdaQELfKBxCMz0OyjEupu2y0nAyd6P3Bj1oK2oujjzkKep0j+Oz5yiTdkm5V/c7tDMyicME5yYPTyvq0an0B23R+dBQWiCmy4Iv2v1LwghTJkVJSyd/pu2RrUQtjCIeiWEnErnB/qDPShhwxYgriMODo1DMFd5cdG2JxTK4KeNyMzDMoM9VQPchEH8Q+/hP4nCzCYFe3RXaCaLjpJjyCOAh2ZTCfvxjFNYNthDHPuC8KtW6SjKc2GZNG99DaEOy+iojItlJllfEN+6o3/WI4IDnBKGDpoQAZekQwqGBgw2/7x25qHyFHrERQ6hpaoceLPEoN6vjc3L9tYQGzZi2Hm+p+xWQgnNTDSldeEwKA77ilPozGEpDEoK4bUaLgi/CsKzQsj5CToLbypzUJj9UFPKOBfBTcDrlgS2Rn+0LoEtinPPjOKBjEM4NKIHIpjCxzaFOk+hGykUhGNDzMMZEIuwudZl2y1e2SJgEAn14qxFDNEedW8qIUdHcR6+cPj3IWyLKm6wWqYLwq+C8KQQciMhSWGYhloZgBp3ptPl1nQVCKM1SnpDyXkvpqjSQhcp7OlAzach0kcaOZM1UmgIZUO46G3cK1GIRbFNsIRrHw3hRaKhasa7d6Kj0l4UjEzjhlML3VS1VihTeFAJi1QhHkwxXBB+zyr4bGcT9er4iancF6as6alqsY/BqtaDrrxIyRht+tSGgVAo+tg2NLN84p0oHPcUzmQjLhKEXgVCfmaTGOR3Upju4g1i2ZYx9DtThZwEDaqc08npMPQrrL6CI55ef8IeHZM9Ss77BeH3rJ44fiI2wLchPkoIVVhGFcaw31eBX1mjdmiUNfbDOugihQsUi+82JReNcuu/T93COYPwoUpmAMIm/U68cwl3eh9PeoO+r3SHuHOEZl98lG8y1jOHMIzAhXhYRKgqITyjg5GZSqowf6EuCD++inWJJ4Swja8v+TdDsa+PtdtqgrWYnFUIozU6pufpSZgYCCbDkPs0eHEL75jZ67chTHkKR09cRWYeGiyL/qdQ6HjT1AI0LRsNjap2kNo5t1MJ6bPnNnTS/yWt72HYjGAfhJDva2Dt0lsciP/PQPhf/xnOCeGqXy3flxDHBgk5YYyiMqR2dQhnico0fS5MBET8V0IYk2VgwXNKED5qFEY/VA1zS7l65uqOdqtsJO+cS6m8CcDX88UHvnG0u5VQGpXbELI5TOJUF6/gQJnCE6NO55DSSHrq2tXU+/nVwyfzxiYm3bldppxTWCZlA10ErQqh8YUQQk8wCZNGsE28L4alRWKR1v53j0G6iswsSkjfhHI2sh8JYTvPc6shhNBu3+TdRj8/e+xRznGkGR3Wq3MpUtVf+Qr6ozXccU5BYLM35PfLC8KPr44n8xMS/S5a6u+xicmadOhL0MaorUKICTy8NjMhnEvj0LUKCZFCDDL1z5qaYoQ0DbGJkZkbx1rwuxgF/MyPEAUe0xQjT8iCP2KQ2p1KaOnBmp+EMGwpYXO4hju2hrUh1vfqKRcXhB9fPV6xFq3RsGmNprCMapSQQyaqELoI4XKJN/yGCUVXPhKEA3y7hQOao/F01AUYpBghrURm+qbB/VC+036RwXmWLQeHN5+mEQabKIXtfiWMHFo9jnsDwsONvUYf2ys9n9WJeBeEH1o9kaiPScLtQV5cLRO6TpfKsFO0ASHHZSxf3sTEnDG4WIfL3koJwcO83YEg/2L4WjRI1ZyZBGGPDIL162oMCoUTnbWybBnvEw2IPtqj3TtKSBTabPrEhhLeTkJIRfbaHC0GNF8Qfmr1hBCiS9hKbTC31BfRhB+ulgmpVEaM0U0IZxbCBoVpeWiPUFHh4vWJMwd9s3zFvR+2TvONUkithS7OmUl9FLgfBSJNlcHFIoWkCBS2QIHMeKcnCF/VsBTa7j0lRKs8Tn0COdx4BU9EZlRoRgVmRAovCD+8ekYIwRo1RZdMvzKhXHF4g+QBNyE0BCEJGwqTeGjcPDEXLloDZSbLxTzAV9zvr0ZyS8q+jYVr2hxtuMPZrLejR8tx2SYQ92CJ4l+WQvsq1FxRQp8pYf0VxNM82jNSaMUevSD8rtXjM9Yo/VT0ixbHblHZaNBHTSdjtAphTNXbBpXwjpnGxITJoAhURMZ1M6idffPy1MIHJQvbFB5NSohbWgV9W0I4S2EZJOwHFN/lDb9w3GWP1pWwEwQ3lfB4I0X6vbrMJyxPzrog/MjqidEyqXZbHb1VQCj5iRD7BeXUwW0I2SVEohaJaSCHYo0RBnMoWmiOa5dLy8Dd4A5IvISQmpr0sCelhAD9YveBNWpWzPOehkNCM8o13yoWDsGs+Hld+eDWgRm5j+EJMVsQNkfncKv46Jwr4TRcEH5+9USiPnYSZkLYl1H1/JRpQxGCHRAul3e6tH2HTJi1MIFx2C2XUg+NRAO5kb97DNK5o60wPJorYXQJTU0IYctBCkjH5YeUJyqhmVfF8BUlnCU78UwJz0RmZACpLZRwuiD8+GpzQghrJYkFhJyfUEEZ7kz3AuEqKCRxGY9XNfxhDw0ZrAjT8uFBshQ3ImKHFKKFm8KjooSAFA1JNZtCCBSiGTy4KL78xvboi9taRQnnHT4hpV9OQNimIt98IP4F4UdXx5NhGVWyJlPW1vkJVa0mhw6OUQm3gqPj/S5Xtmdr1FQ9tOWiRMemaeMXPT+8Fz9MZWlwWXodmZENPbq8C4htFULjwjBM0FG8eK53BeFtj1NYUcJRDrDXQ1tXEHLNzJ4Xp3uSKnShKHC6IPzo6pn8hDRQ6LEJ+b5aCLu8fIovwtX2sav+FhlEtXYIRVWYBMKOdOledQoftf5eswqPkhJ6MA9QC+sQzvRcIBhk+zt9DcLI9qh/2ydslRJuB2Z218zUjhGWEXaFEk4XhB9ePZOfMNXYaHmqnisDo+DwzUPYVEJxGQe+uO/soW0LE/c2TJAsIXvy9SHanCx0ZXhUqMdk/vJmqgzObKp2CCFrIT1bv8MprCsh2xLdtjna7z4hLZ+bld/f2gLC/oLws6snOuorDRShgFD6JzpVKQPS6acEod2Iy1gRFwyTONalOhM4qWzCJAV6h6/DoxKbcWV4VCLGLW/otiCkp9OiYqc41D6nsKKEQc0/fALhzsjM6hjhVaowP8D+X4Dwv/oznBbC1dF3+b6Sn4jtS+wQLp84bgVmYp9hluYwfNG7bV1yrotI/O6hEKXQ0CmFfzIIb1j/+WRDcApNBcL7PqewrULILuHTDiPInexWwtBV6pugtCKHcLqaej+5eqajvh4b1fs2N65Y0zoIFx+Oc4g+oatDOGZGrWEK2w0kcPVNCKluBnMUhRLeaPwU/G23ICQKFx9rLH6vOzKFFXM0RJewm8I2hM3OyExX1ULVVTht11dcEP4/V/ngzr9mjRblF4S4bl9qcSYTXgBJCQsIVVwmhVh9R0hsQ+h4BPZYgfDxrG7G5TkKgdAwZRsQzszoGsI7ZQqfRbtcRQnV0YGp8q/yCu49KzR0FbcwhcUuCL8GwrNCWFijYdL7EuLpDDQJyhC0m0ooEGYV5tyEuxUmaXnVeLZiN9WvMEihW5/DoylRGKV3m/qZnxCOV6tB+Pz3mkP4IxBKCXxotl/\n' +
@@ -50,69 +35,6 @@ const showSignInPanel = () => {
   isRightPanelActive.value = false;
 };
 
-// 登入導向功能
-const loginButton = async () => {
-  try {
-    const response = await fetch('http://localhost:8080/loginprocess', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        accountId: VaccountId.value,
-        passwordId: VpasswordId.value,
-      }),
-    });
-
-    if (response.ok) {
-      // 請求正確時的處理(導向畫面)
-    } else {
-      // 請求失敗之處理
-      loginErrorMsg.value = '登入失敗，請檢查您的帳號密碼是否正確';
-    }
-  } catch (error) {
-    console.error('發生錯誤：', error);
-    // 例外錯誤
-    loginErrorMsg.value = '發生了一些錯誤，請稍後在嘗試';
-  }
-};
-
-// 註冊導向功能
-const signUpButton = async () => {
-  try {
-    const response = await fetch('http://localhost:8080/rigisterrequest', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        nickName: VsignUpNickNameId.value,
-        accountId: VsignUpAccountId.value,
-        password: VsignUpPasswordId.value,
-      }),
-    });
-
-    if (response.data.code = 200) {
-      // 若註冊成功的話應該要怎麼做
-    } else {
-      // 註冊失敗處理
-      signUpErrorMsg.value = '註冊失敗，請稍後再試';
-    }
-  } catch (error) {
-    console.error('發生錯誤：', error);
-    // 例外處理
-    signUpErrorMsg.value = '發生了一個錯誤，請稍後再試';
-  }
-};
-
-
-// function getCaptcha() {
-//   this.$axios.get('/captcha').then(res => {
-//     this.loginForm.token = res.data.data.token
-//     this.captchaImg = res.data.data.base64Img
-//   })
-// };
-
 // 重新取得驗證圖片
 const getCaptcha = async () => {
   // const response = await axios.get('http://172.18.135.72:8080/captcha')
@@ -122,25 +44,134 @@ const getCaptcha = async () => {
 }
 getCaptcha();
 
+// 錯誤訊息
+const loginErrorMsg = ref('');
+const signUpErrorMsg = ref('');
 
-// 註冊驗證功能 by zod (目前仍為英文錯誤訊息)
-// validationSchema為設置驗證類型及細節應包含，下面用defineInputBinds綁定驗證類型
-const {errors, defineInputBinds} = useForm({
-  validationSchema: toTypedSchema(
-      z.object({
-        account: z.string().min(1),
-        email: z.string().min(1).email(),
-        password: z.string().min(6),
-      })
-  ),
-});
-const registerAccount = defineInputBinds('account');
-const registerEmail = defineInputBinds('email');
-const registerPwd = defineInputBinds('password');
+// 註冊驗證功能 TODO 帳號名稱驗證功能
+const {handleSubmit} = useForm({
+  validationSchema: {
+    signUpAccount(value) {
+      if (value?.length >= 4) return true
+      return '建立帳號至少需要輸入4個字元'
+    },
+    signUpEmail(value) {
+      if (/^[a-z.-]+@[a-z.-]+\.[a-z]+$/i.test(value)) return true
+      return '請輸入有效的電子郵件'
+    },
+    signUpPwd(value) {
+      if (value?.length >= 6) return true
+      return '建立密碼至少需要輸入6個字元'
+    },
+    signUpPwdAgain(value) {
+      if (value === signUpPwd.value.value) return true
+      return '與第一次輸入比較不匹配'
+    },
+    signUpVerification(value) {
+      if (value?.length >= 4) return true
+      return '驗證碼至少有4個字元'
+    }
+  },
+})
+
+const signUpAccount = useField('signUpAccount');
+const signUpEmail = useField('signUpEmail');
+const signUpPwd = useField('signUpPwd');
+const signUpPwdAgain = useField('signUpPwdAgain');
+const signUpVerification = useField('signUpVerification');
+
+// 更改json Key名稱區塊
+const signUpSubmit = handleSubmit(async values => {
+
+  const modifiedSignUpValues = {
+    account: values.signUpAccount,
+    email: values.signUpEmail,
+    password: values.signUpPwd,
+    verification: values.signUpVerification
+  };
+  console.log(JSON.stringify(modifiedSignUpValues, null, 2))
+
+  // 註冊送出資料
+  try {
+    const response = await axios.post('http://localhost:8080/rigisterrequest', modifiedSignUpValues);
+
+    if (response.data.code === 200) {
+      // 若註冊成功的話應該要怎麼做
+    } else {
+      // 註冊失敗處理
+      signUpErrorMsg.value = '註冊失敗，請稍後再試';
+      setTimeout(() => {
+        signUpErrorMsg.value = '';
+      }, 3000);
+    }
+  } catch (error) {
+    console.error('發生錯誤：', error);
+    // 例外處理
+    signUpErrorMsg.value = '目前無法登入，請稍後在試';
+    setTimeout(() => {
+      signUpErrorMsg.value = '';
+    }, 3000);
+  }
+})
 
 // 登入驗證功能
-const loginAccount = defineInputBinds('email');
-const loginPwd = defineInputBinds('password');
+const signInAccount = ref('');
+const signInPwd = ref('');
+const signInVerification = ref('');
+
+const signInAccountRules = [
+  (value) => {
+    if (value?.length >= 4) return true;
+    return '帳號名稱至少應有4個字元';
+  },
+];
+
+const signInPwdRules = [
+  (value) => {
+    if (value?.length >= 6) return true;
+    return '密碼至少需要輸入6個字元';
+  },
+]
+
+const signInVerificationRules = [
+  (value) => {
+    if (value?.length >= 4) return true;
+    return '驗證碼至少有4個字元';
+  }
+]
+
+const signInSubmit = async () => {
+
+  if (signInAccount.value && signInPwd.value && signInVerification.value) {
+    try {
+      const signInData = {
+        account: signInAccount.value,
+        password: signInPwd.value,
+        verification: signInVerification.value,
+      };
+
+      const response = await axios.post('http://localhost:8080/login', signInData);
+
+      if (response.data.code === 200) {
+        // 成功登入處理
+      } else {
+        // 失敗登入處理
+        setTimeout(() => {
+          loginErrorMsg.value = '無此帳號或密碼';
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('發生錯誤：', error);
+      setTimeout(() => {
+        loginErrorMsg.value = '目前無法登入，請稍後再試';
+      }, 3000);
+    }
+  } else {
+    setTimeout(() => {
+      loginErrorMsg.value = '任何欄位不得為空!';
+    }, 3000);
+  }
+}
 
 </script>
 
@@ -151,118 +182,118 @@ const loginPwd = defineInputBinds('password');
     <!--註冊表單-->
     <div class="form-container sign-up-container">
 
-      <form action="#">
+      <form @submit.prevent="signUpSubmit">
         <h4>建立帳號</h4>
 
-        <div class="message-input-block" style="margin-left: 48px;">
-          <div class="input-wrapper" style="width: 360px">
-            <div class="input-data">
-              <input type="text" v-model="VsignUpNickNameId" v-bind="registerAccount" required/>
-              <div class="underline"></div>
-              <label>帳號名稱</label>
+        <div class="message-input-block">
+          <div class="signUp-text-field">
+            <v-text-field
+                v-model="signUpAccount.value.value"
+                label="帳號"
+                type="text"
+                :error-messages="signUpAccount.errorMessage.value"
+                bg-color="white"
+                :maxlength="20"
+            ></v-text-field>
+          </div>
+
+          <div class="signUp-text-field">
+            <v-text-field
+                v-model="signUpEmail.value.value"
+                label="Email"
+                type="email"
+                :error-messages="signUpEmail.errorMessage.value"
+                bg-color="white"
+                :maxlength="50"
+            ></v-text-field>
+          </div>
+
+          <div class="signUp-text-field">
+            <v-text-field
+                v-model="signUpPwd.value.value"
+                label="密碼"
+                type="password"
+                :error-messages="signUpPwd.errorMessage.value"
+                bg-color="white"
+                :maxlength="20"
+            ></v-text-field>
+          </div>
+
+          <div class="signUp-text-field">
+            <v-text-field
+                v-model="signUpPwdAgain.value.value"
+                label="再次輸入密碼"
+                type="password"
+                :error-messages="signUpPwdAgain.errorMessage.value"
+                bg-color="white"
+                :maxlength="20"
+            ></v-text-field>
+          </div>
+
+          <div class="verification-div" style="display:flex">
+            <div class="verification-input-div">
+              <v-text-field
+                  v-model="signUpVerification.value.value"
+                  label="驗證碼"
+                  :error-messages="signUpVerification.errorMessage.value"
+                  bg-color="white"
+                  :maxlength="8"
+              ></v-text-field>
+            </div>
+
+            <div class="verification-picture-div">
+              <img class="captchaImg" :src="captchaImg" @click="getCaptcha"
+                   style="position: relative; right: 32px; top:8px" alt="載入失敗">
+              <!--              <span>{{UUID}}</span>-->
             </div>
           </div>
-
-          <div class="error-message-block">
-            <span>{{ errors.account }}</span>
-          </div>
-
-          <div class="input-wrapper" style="width: 360px">
-            <div class="input-data">
-              <input type="email" v-model="VsignUpAccountId" v-bind="registerEmail" required/>
-              <div class="underline"></div>
-              <label>Email</label>
-            </div>
-          </div>
-
-          <div class="error-message-block">
-            <span>{{ errors.email }}</span>
-          </div>
-
-          <div class="input-wrapper" style="width: 360px">
-            <div class="input-data">
-              <input type="password" v-model="VsignUpPasswordId" v-bind="registerPwd" required/>
-              <div class="underline"></div>
-              <label>密碼</label>
-            </div>
-          </div>
-
-          <div class="error-message-block">
-            <span>{{ errors.password }}</span>
-          </div>
-
-          <div>
-
-            <div class="verification-div" style="display:flex">
-              <div class="verification-input-div">
-                <div class="input-wrapper" style="width: 120px">
-                  <div class="input-data">
-                    <input type="text" v-model="VsignUpCodeId" v-bind="VsignUpCodeId" required/>
-                    <div class="underline"></div>
-                    <label>驗證碼</label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="verification-picture-div">
-                <img class="captchaImg" :src="captchaImg" @click="getCaptcha"
-                     style="position: relative; right: 32px; top:8px" alt="載入失敗">
-                <!--              <span>{{UUID}}</span>-->
-              </div>
-            </div>
+          <div class="erromsg-block" style="margin: 8px;border: 0;height: 24px;color: #e51313">
+            <span style="font-size: 18px">{{ signUpErrorMsg }}</span>
           </div>
         </div>
-        <div class="erromsg-block" style="margin-bottom: 16px;border: 0;height: 24px;color: #e51313">
-          <span>{{ singUpErrormsg }}</span>
-        </div>
-        <button @click="signUpButton">註冊</button>
+        <button @click="signUpSubmit">註冊</button>
       </form>
     </div>
 
     <!--登入表單-->
     <div class="form-container sign-in-container">
-      <form action="#">
+      <form @submit.prevent="signInSubmitForm">
         <h5>登入以使用更多服務</h5>
-        <div class="message-input-block" style="margin-left: 56px;">
-          <!--          <input-text-box v-model="VaccountId" label-id="accountId" labelText="E-mail" type-id="text"-->
-          <!--                          is-required="true" v-bind="loginAccount" class="input-text-box-login"/>-->
-          <!--          <div class="error-message-block">-->
-          <!--            <span>{{ errors.email }}</span>-->
-          <!--          </div>-->
-          <div class="input-wrapper" style="width: 360px">
-            <div class="input-data">
-              <input type="text" v-model="VaccountId" v-bind="loginAccount" required/>
-              <div class="underline"></div>
-              <label>帳號</label>
-            </div>
+        <div class="message-input-block">
+
+          <div class="signIn-text-field">
+            <v-text-field
+                v-model="signInAccount"
+                label="帳號"
+                type="text"
+                :rules="signInAccountRules"
+                bg-color="white"
+                :maxlength="20"
+            ></v-text-field>
           </div>
 
-          <div class="error-message-block">
-            <span>{{ errors.account }}</span>
-          </div>
-
-          <div class="input-wrapper" style="width: 360px">
-            <div class="input-data">
-              <input type="password" v-model="VpasswordId" v-bind="loginPwd" required/>
-              <div class="underline"></div>
-              <label>密碼</label>
-            </div>
-          </div>
-
-          <div class="error-message-block">
-            <span>{{ errors.password }}</span>
+          <div class="signIn-text-field">
+            <v-text-field
+                v-model="signInPwd"
+                label="密碼"
+                type="password"
+                :rules="signInPwdRules"
+                bg-color="white"
+                :maxlength="20"
+            ></v-text-field>
           </div>
 
           <div class="verification-div" style="display:flex;max-width: 288px;margin-right: 56px">
             <div class="verification-input-div">
 
-              <div class="input-wrapper" style="width: 120px">
-                <div class="input-data">
-                  <input type="text" v-model="VsignInCodeId" v-bind="VsignInCodeId" required/>
-                  <div class="underline"></div>
-                  <label>驗證碼</label>
-                </div>
-              </div>
+              <v-text-field
+                  v-model="signInVerification"
+                  label="驗證碼"
+                  type="text"
+                  :rules="signInVerificationRules"
+                  bg-color="white"
+                  :maxlength="8"
+              ></v-text-field>
 
             </div>
             <div class="verification-picture-div">
@@ -273,15 +304,15 @@ const loginPwd = defineInputBinds('password');
           </div>
         </div>
         <div class="erromsg-block" style="margin: 0;border: 0;height: 24px;color: #e51313">
-          <span>{{ loginErrorMsg }}</span>
+          <span style="font-size: 18px">{{ loginErrorMsg }}</span>
         </div>
         <a href="#">忘記密碼?</a>
         <span>或是使用其他帳號登入</span>
         <div class="social-container">
-          <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+<!--          <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>-->
           <a :href="JavaBaseUrl+'/oauth2/authorization/google'" class="social"><i class="fab fa-google-plus-g"></i></a>
         </div>
-        <button @click="loginButton">登入</button>
+        <button @click="signInSubmit">登入</button>
       </form>
     </div>
 
@@ -548,22 +579,20 @@ input {
   width: 40px;
 }
 
-.error-message-block {
-  width: 420px;
-  padding-left: 33px;
-  padding-right: 33px;
-  text-align: left;
-  height: 24px;
-  color: #e51313;
+.message-input-block {
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
-.input-text-box-create {
-  max-width: 360px;
+.signUp-text-field {
+  width: 320px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
-.input-text-box-login {
-  max-width: 360px;
+.verification-input-div {
+  width: 120px;
+  margin-right: 24px;
 }
-
 
 </style>

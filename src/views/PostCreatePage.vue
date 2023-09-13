@@ -72,7 +72,6 @@ onMounted(() => {
   loadLibrary("/src/assets/js/upload/imgUp.js")
 });
 
-
 </script>
 
 <template>
@@ -94,7 +93,7 @@ onMounted(() => {
               <section class="z_file fl">
                 <img src="/src/assets/Picture/upload/plusButton.png" class="add-img">
                 <input type="file" name="file" id="file" class="file" value=""
-                       accept="image/jpg,image/jpeg,image/png,image/bmp,image/gif" multiple/>
+                       accept="image/jpg,image/jpeg,image/png,image/bmp,image/gif"  @change="handleFileChange" multiple/>
               </section>
             </div>
           </section>

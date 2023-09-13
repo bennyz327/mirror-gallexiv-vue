@@ -15,7 +15,7 @@ const routes = [
         component: () => import("../views/TagSearch.vue"),
     },
     {
-        path: '/postviewpage',
+        path: '/postviewpage/:postId',
         name: 'PostView',
         component: () => import("../views/PostViewPage.vue"),
     },

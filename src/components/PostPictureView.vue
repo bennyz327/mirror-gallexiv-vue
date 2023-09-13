@@ -37,7 +37,7 @@ const heartClass = computed(() => {
     <div class="galley-middle-block">
       <div class="picture-galley-block">
         <div class="picture-item-div" v-for="(item, index) in items" :key="index">
-          <a target="_blank" :href="'/post/' + item.pictureId">
+          <a target="_blank" :href="'/post/' + item.postId">
             <img :src="item.imgPath" alt="pic"
                  style="width: 240px; height: 240px; object-fit: cover; border-radius: 8px;"
                  class="picure-div">

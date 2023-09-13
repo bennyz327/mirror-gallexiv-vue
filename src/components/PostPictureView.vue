@@ -70,8 +70,6 @@ const heartClass = computed(() => {
                   <i :class="heartClass(index)" style="color: #da2b2b;"></i>
                 </button>
               </div>
-
-
             </div>
           </div>
         </div>

@@ -54,11 +54,10 @@ const loadblobUrl = async (item) => {
   if (!item || !item.picturesByPostId || item.picturesByPostId.length === 0) {
     return;
   }
-
+  const IMGURL = import.meta.env.VITE_API_PICTURE
   const a = item.picturesByPostId[0].pictureId;
-  const src = 'http://localhost:8080/test/p/' + a;
   try {
-    const blob = await load(src);
+    const blob = await load(`${IMGURL}/test/${a}`);
     item.blobUrl = window.URL.createObjectURL(blob);
   } catch (error) {
     console.error('Failed to load image:', error);

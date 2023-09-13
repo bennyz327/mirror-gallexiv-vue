@@ -10,7 +10,6 @@ import axios from "axios";
 const planName = ref("");
 const planPrice = ref("");
 const planDescription = ref("");
-
 const subscribeTitleRules = [
   (value) => {
     if (value && value.length <= 20 && value.trim().length > 0) {
@@ -98,14 +97,15 @@ const submitForm = async () => {
 
   const planData = {
     ownerIdByUserId:{
-      userId:2
+      userId:1
     },
     planName: planName.value,
     planPrice: planPrice.value,
     planDescription: planDescription.value,
     planStatusByStatusId:{
       statusId:17
-    }
+    },
+    planPicture:user.avatar.value
   };
   console.log(planData)
 

@@ -9,9 +9,10 @@ const currentSlide = ref(0);
 const props = defineProps({
   imgUrlList: Array,
 })
-console.log("props: ", props.imgUrlList)
+console.log("props of Carousel: ", props.imgUrlList)
 // 將物件(圖片陣列:僅有url不包含任何key)
 const items = reactive(props.imgUrlList);
+console.log(items);
 
 const slideTo = (val) => {
   currentSlide.value = val;
@@ -25,7 +26,7 @@ const slideTo = (val) => {
       <Carousel id="gallery" :items-to-show="1" :wrap-around="false" v-model="currentSlide">
         <Slide v-for="(item, index) in items" :key="index">
           <div class="carousel__item">
-            <img :src="item" class="slideImgs card-img-top" @click="currentSlide = index">
+            <img :src="item.url" class="slideImgs card-img-top" @click="currentSlide = index">
           </div>
         </Slide>
       </Carousel>
@@ -34,7 +35,7 @@ const slideTo = (val) => {
       <Carousel id="thumbnails" :items-to-show="5" :wrap-around="true" v-model="currentSlide" ref="carousel">
         <Slide v-for="(item, index) in items" :key="index">
           <div class="carousel__item">
-            <img :src="item" class="slideImgs card-img-top" @click="currentSlide = index">
+            <img :src="item.url" class="slideImgs card-img-top" @click="currentSlide = index">
           </div>
         </Slide>
       </Carousel>

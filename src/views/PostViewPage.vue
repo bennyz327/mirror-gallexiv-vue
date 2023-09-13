@@ -40,27 +40,54 @@ const postId = 1;
 //     console.error('Error fetching images:', error);
 //   }
 // });
+
 const imgDataReference = ref([]);
 
 onMounted(async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/test/p?postId=${postId}`, { responseType: 'json' });
-    console.log("response:", response);
-    const imageBytesList = response.data;
+    const response = await axios.get(`http://localhost:8080/test/p?postId=${postId}`);
+    console.log("urls:", response.data);
+    const imageUrls = response.data;
 
-    for (const imageBytes of imageBytesList) {
-      // 将 byte[] 转换为 Base64 字符串
-      const base64Image = btoa(String.fromCharCode(...new Uint8Array(imageBytes)));
-
-      // 构建 Data URL
-      const imageUrl = `data:image/png;base64,${base64Image}`;
-
-      imgDataReference.value.push({ url: imageUrl, type: 'image/png' }); // 使用适当的 MIME 类型
+    for (const imageUrl of imageUrls) {
+      imgDataReference.value.push({ url: imageUrl, type: 'image/png' });
     }
   } catch (error) {
     console.error('Error fetching images:', error);
   }
 });
+
+
+// const imgDataReference = ref([]);
+
+// onMounted(async () => {
+//   try {
+//     const response = await axios.get(`http://localhost:8080/test/p?postId=${postId}`, { responseType: 'json' });
+//     console.log("response:", response);
+//     const imageBytesList = response.data;
+
+//     for (const imageBytes of imageBytesList) {
+//       // 将 byte[] 转换为 Base64 字符串
+//       function byteArrayToBase64(byteArray) {
+//         let binary = '';
+//         for (let i = 0; i < byteArray.length; i++) {
+//           binary += String.fromCharCode(byteArray[i]);
+//         }
+//         return btoa(binary);
+//       }
+
+//       // 在你的代码中使用该函数
+//       const base64Image = byteArrayToBase64(imageBytes);
+//       // 构建 Data URL
+//       const imageUrl = `data:image/png;base64,${base64Image}`;
+
+//       imgDataReference.value.push({ url: imageUrl, type: 'image/png' }); // 使用适当的 MIME 类型
+//     }
+//   } catch (error) {
+//     console.error('Error fetching images:', error);
+//   }
+// });
+
 
 // 匯入資料到carousel
 const imgDataImportToCarousel = reactive(

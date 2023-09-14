@@ -11,7 +11,7 @@ let decodeName = eval("'"+name+"'")
 
 import jsonFile from "../assets/tag.json"
 import imgJsonFile from "../assets/imgList.json"
-import TagFunctionTest from "@/components/functionComponents/TagFunctionTest.vue";
+
 
 const json = ref(jsonFile)
 

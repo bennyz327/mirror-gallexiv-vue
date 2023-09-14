@@ -10,7 +10,7 @@ let statusCode = ref(200);
 let msg = ref("登入成功");
 let redirect = ref("/");
 //定義一個每秒減少的變數
-const time = ref(5);
+const time = ref(2);
 
 //定義一個定時器
 let timer = null;

@@ -50,8 +50,8 @@ watch(tags, (newTags) => {
 });
 
 // json傳入功能
-const nsfw = ref(true);
-const isPublic = ref(true);
+const nsfw = ref(0);
+const isPublic = ref(0);
 
 
 $(function () {
@@ -134,6 +134,8 @@ $(function () {
     if (numUp > 20) {
       $(this).parent().hide();
     }
+    //input内容清空讓相同圖片可繼續上傳
+    file.value = "";
   });
 
 
@@ -191,55 +193,46 @@ $(function () {
 })
 
 const submitForm = (newImgMap, fileMap) => {
-  //map轉成字串陣列
+
+  //map轉成字串陣列，只是看看，沒有用到
   const imgArr = Array.from(newImgMap.values());
-  console.log("圖片物件陣列");
+
+  if (fileMap.size < 1) {
+    alert('請選擇上傳圖片')
+    return;
+  }
+
+  console.log("圖片Map物件");
   console.log(fileMap);
   console.log(typeof fileMap);
 
-  // fileMap to File[]
   const fileArray = Array.from(fileMap.values());
+  console.log("檔案Array")
+  console.log(fileArray)
+  console.log(typeof fileArray)
 
+  //這行是?
+  // const formattedDescription = postDescription.value.replace(/\n/g, '<br/>');
 
-
-  const fileArr = Array.from(fileMap.values());
-  // const fm = Array.from(fileMap.values());
-  console.log("圖片物件")
-  console.log(fileArr)
-  console.log(typeof fileArr)
-  // type : Array
-  console.log(fileArr[0]);
-
-  const formattedDescription = postDescription.value.replace(/\n/g, '<br/>');
   const postData = {
     title: postTitle.value,
-    // title: 'hiTitle'
-    // description: formattedDescription.value,
-    // nsfw: nsfw.value,
-    // isPublic: isPublic.value,
-    // tags: tags.value,
-    // images: imgArr,
-    // fileMap: fileArr,
+    description: postDescription.value,
+    nsfw: nsfw.value,
+    isPublic: isPublic.value,
+    tags: tags.value.toString(),
   };
 
-  console.log('hi')
-
   const formData = new FormData();
-
   console.log('送formData');
 
-  let files = [];
-  for (let i = 0; i < fileArr.length; i++) {
-    files.push(fileArr[i].raw);
-  }
-
-  //todo 目前只能成功送出一個檔案
-  formData.append('files', fileArr[0]);
-  // formData.append('files', fileArr);
-  formData.append('other',new Blob([JSON.stringify(postData)],{type : 'application/json'}))
+  //放入所有圖片和JSON資料
+  fileArray.forEach((file) => {
+    formData.append('files', file);
+  });
+  formData.append('other', new Blob([JSON.stringify(postData)], {type: 'application/json'}))
 
   //送出
-  axios.post('http://localhost:8080/pic/upload', formData, {
+  axios.post('http://localhost:8080/post/upload', formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
@@ -334,13 +327,13 @@ const submitForm = (newImgMap, fileMap) => {
               </div>
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" checked>
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" value="0" v-model="nsfw">
                   <label class="form-check-label" for="NSFWFalse">
                     無限制
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWTrue">
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWTrue" value="1" v-model="nsfw">
                   <label class="form-check-label" for="NSFWTrue">
                     未成年不宜觀看
                   </label>
@@ -356,13 +349,13 @@ const submitForm = (newImgMap, fileMap) => {
               </div>
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" checked>
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" value="0" v-model="isPublic">
                   <label class="form-check-label" for="publicTrue">
                     公開
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse">
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse" value="1" v-model="isPublic">
                   <label class="form-check-label" for="publicFalse">
                     不公開
                   </label>

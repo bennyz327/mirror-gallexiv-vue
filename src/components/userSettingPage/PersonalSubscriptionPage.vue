@@ -1,6 +1,7 @@
 <script setup>
 
 import {reactive} from "vue";
+import axios from "axios";
 
 // 傳回拿到的物件
 const props = defineProps({
@@ -8,6 +9,27 @@ const props = defineProps({
 })
 // 將物件取出
 const items = reactive(props.subscribeList);
+
+const getPlanData = async () => {
+  const planId = 1
+
+  try {
+    const response = await axios.get(`${URL}/${planId}`,{headers: {'Authorization': token}
+    });
+    getData.value = response.data;
+    subscribeTitle.value = getData.value.data.planName;
+    subscribePrice.value=getData.value.data.planPrice;
+    subscribeDescription.value= getData.value.data.planDescription;
+    previewPicture.value = getData.value.data.planPicture
+
+    console.log(getData.value)
+    console.log(response)
+
+  }catch (error){
+    console.error('提交表单时出错：', error);
+  }
+}
+getPlanData();
 
 </script>
 

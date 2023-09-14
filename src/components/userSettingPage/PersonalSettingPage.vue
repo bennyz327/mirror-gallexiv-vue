@@ -3,6 +3,7 @@ import SettingPageInputTextComponent from "@/components/userSettingPage/SettingP
 
 import {ref} from "vue";
 import AvatarCropper from "vue-avatar-cropper";
+import axios from "axios";
 
 const maxFileSize = 2;
 const showCropper = ref(true);
@@ -12,6 +13,25 @@ const user = ref({
   id: 1,
   avatar: "",
 });
+
+// const getData = ref([]);
+// const URL = import.meta.env.VITE_API_USER
+// const getUserData = async () => {
+//   const userId = 1
+//
+//   try {
+//     const response = await axios.get(`${URL}/${userId}`);
+//     getData.value = response.data;
+//     user.avatar.value = getData.value.data.avatar;
+//
+//     console.log(getData.value)
+//     console.log(response)
+//
+//   }catch (error){
+//     console.error('提交表单时出错：', error);
+//   }
+// }
+// getUserData();
 
 const handleUploaded = (data) => {
   const base64str = data.url.substring(data.url.indexOf(",") + 1);

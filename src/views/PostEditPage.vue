@@ -19,7 +19,7 @@ const getPostData = async () => {
     const postId = 2
 
   try {
-    const response = await axios.get(`${URL}/${postId}`);
+    const response = await axios.get(`${URL}/${postId}`)//,{headers: {'Authorization': token}
     getData.value = response.data;
     postTitle.value = getData.value.data.postTitle;
     postDescription.value=getData.value.data.postContent;

@@ -4,6 +4,7 @@ import {NBackTop} from "naive-ui";
 import {useUserStore} from "@/store/userStore.js";
 
 const {token, isLogin} = useUserStore()
+import axios from "axios";
 
 
 // 使用 ref 創建響應式vue
@@ -23,8 +24,19 @@ watch(selectedOption, (newVal) => {
   }
 });
 
+const URL = import.meta.env.VITE_API_Post;
+const inputString = ref("");
 // 創建搜尋方法
-const search = () => {
+const search = async () => {
+  try {
+    const response = await  axios.get(`${URL}/postTitle`,inputString)
+
+    if (response.status === 200) {
+    }
+  }catch (error) {
+    console.error('提交表单时出错：', error);
+  }
+
   // 使用 apiUrl 發送api請求
   // 例如使用 axios 發送到 apiUrl
   // axios.get(apiUrl.value).then(response => {

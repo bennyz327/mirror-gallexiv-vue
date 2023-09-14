@@ -3,6 +3,7 @@
 import {ref, watch, defineProps} from 'vue'
 import {useField, useForm} from 'vee-validate'
 import {NDatePicker} from "naive-ui";
+import axios from "axios";
 
 const selectedCountry = ref(null);
 const email = useField('email')
@@ -63,6 +64,28 @@ watch(formattedValue, (newValue) => {
     timestamp.value = null;
   }
 });
+
+const getData = ref([]);
+const URL = import.meta.env.VITE_API_USER
+const getUserData = async () => {
+  const userId = 1
+
+  try {
+    const response = await axios.get(`${URL}/${userId}`);
+    getData.value = response.data;
+    email.value.value = getData.value.userEmail;
+    personalNickName.value = getData.value.userName;
+    personalDescription.value = getData.value.intro;
+    formattedValue.value = getData.value.birthday;
+
+    console.log(getData.value)
+    console.log(response)
+
+  }catch (error){
+    console.error('提交表单时出错：', error);
+  }
+}
+getUserData();
 
 
 </script>
@@ -152,15 +175,15 @@ watch(formattedValue, (newValue) => {
       <div class="gender-radio-div">
         <h6>性別</h6>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="male" value="option1">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="male" value="M" v-model="gender">
           <label class="form-check-label" for="male">男性</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="female" value="option2">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="female" value="F" v-model="gender">
           <label class="form-check-label" for="female">女性</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="unknowGender" value="option3">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="unknowGender" value="N" v-model="gender">
           <label class="form-check-label" for="unknowGender">不予透露</label>
         </div>
       </div>

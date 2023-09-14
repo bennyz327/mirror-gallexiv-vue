@@ -96,9 +96,6 @@ const URL = import.meta.env.VITE_API_PLAN;
 const submitForm = async () => {
 
   const planData = {
-    ownerIdByUserId:{
-      userId:1
-    },
     planName: planName.value,
     planPrice: planPrice.value,
     planDescription: planDescription.value,
@@ -110,7 +107,8 @@ const submitForm = async () => {
   console.log(planData)
 
   try {
-    const response = await axios.post(`${URL}/insert`, planData);
+    const response = await axios.post(`${URL}/insert`, planData,{headers: {'Authorization': token}
+    });
     if (response.status === 200) {
       // 重定向到成功页面或其他页面
       // 注意：你需要使用Vue Router的实例来导航，这里假设已经安装并配置了Vue Router

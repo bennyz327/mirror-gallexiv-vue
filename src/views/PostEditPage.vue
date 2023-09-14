@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar.vue";
 
 import {ref} from 'vue';
 import axios from 'axios';
+import {useUserStore} from "@/store/userStore.js";
 
 const id = ref(0)
 const getData = ref([]);
@@ -14,12 +15,13 @@ const postAgeLimit = ref(0);
 const postPublic = ref(0);
 const URL = import.meta.env.VITE_API_Post;
 const tagsArray = ref([]);
+const {token} = useUserStore();
 
 const getPostData = async () => {
     const postId = 2
 
   try {
-    const response = await axios.get(`${URL}/${postId}`)//,{headers: {'Authorization': token}
+    const response = await axios.get(`${URL}/${postId}`,{headers: {'Authorization': token}})
     getData.value = response.data;
     postTitle.value = getData.value.data.postTitle;
     postDescription.value=getData.value.data.postContent;

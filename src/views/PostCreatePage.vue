@@ -197,13 +197,13 @@ onMounted(() => {
               </div>
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue"  value="0" v-model="postPublic" checked>
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue"  value="0" v-model="postPublic">
                   <label class="form-check-label" for="publicTrue">
                     公開
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse" value="0" v-model="postPublic">
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse" value="1" v-model="postPublic">
                   <label class="form-check-label" for="publicFalse">
                     不公開
                   </label>

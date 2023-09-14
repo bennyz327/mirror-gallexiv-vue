@@ -9,11 +9,13 @@ import '../assets/css/upload/common.css'
 
 
 import {onMounted, ref, watch} from "vue";
+import axios from "axios";
 
 const postTitle = ref("");
 const postDescription = ref("");
 //先用MAP處理刪除操作
-const newImgMap= new Map();
+const newImgMap = new Map();
+const fileArrMap = new Map();
 
 const postTitleRules = [
   (value) => {
@@ -48,19 +50,19 @@ watch(tags, (newTags) => {
 });
 
 // json傳入功能
-const nsfw = ref(true);
-const isPublic = ref(true);
+const nsfw = ref(0);
+const isPublic = ref(0);
 
 
-$(function(){
+$(function () {
   var delParent;
   var defaults = {
-    fileType         : ["jpg","png","bmp","jpeg"],   // 上傳圖片類型
-    fileSize         : 1024 * 1024 * 10                  // 上傳圖片大小 10MB
+    fileType: ["jpg", "png", "bmp", "jpeg"],   // 上傳圖片類型
+    fileSize: 1024 * 1024 * 10                  // 上傳圖片大小 10MB
   };
 
   // 	點選圖片的外框時
-  $(".file").change(function(){
+  $(".file").change(function () {
     var idFile = $(this).attr("id");
     var file = document.getElementById(idFile);
     var imgContainer = $(this).parents(".z_photo"); //存放圖片的父元素
@@ -74,12 +76,11 @@ $(function(){
 
     console.log("存圖片物件狀態")
     console.log(newImgMap)
-    console.log("totoalNum: "+totalNum)
+    console.log("totoalNum: " + totalNum)
 
-    if(fileList.length > 20 || totalNum > 20 ){
+    if (fileList.length > 20 || totalNum > 20) {
       alert("上傳圖片不可超過20張");
-    }
-    else if(numUp <= 20){
+    } else if (numUp <= 20) {
       fileList = validateUp(fileList);
 
       console.log("總數量")
@@ -87,33 +88,35 @@ $(function(){
       console.log("本次點選上傳數量")
       console.log(fileList.length)
 
-      for(var i = 0;i<fileList.length;i++){
+      for (var i = 0; i < fileList.length; i++) {
         var imgUrl = window.URL.createObjectURL(fileList[i]);
 
         console.log("單圖片網址")
         console.log(imgUrl)
 
-        newImgMap.set(numUp+i, imgUrl);
+        newImgMap.set(numUp + i, imgUrl);
+        fileArrMap.set(numUp + i, fileList[i]);
+
         var $section = $("<section class='up-section fl loading'>");
         imgContainer.append($section);
         var $span = $("<span class='up-span'>");
         $span.appendTo($section);
 
-        var $img0 = $("<img class='close-upimg'>").on("click",function(event){
+        var $img0 = $("<img class='close-upimg'>").on("click", function (event) {
           event.preventDefault();
           event.stopPropagation();
           $(".works-mask").show();
           delParent = $(this).parent();
         });
-        $img0.attr("src","/src/assets/Picture/upload/deleteButton.png").appendTo($section);
+        $img0.attr("src", "/src/assets/Picture/upload/deleteButton.png").appendTo($section);
         const $img = $("<img class='up-img up-opcity'>");
 
         console.log(i)
         console.log("本次存入後物件狀態")
         console.log(newImgMap)
 
-        $img.attr("arrId",numUp+i);
-        $img.attr("src",imgUrl);
+        $img.attr("arrId", numUp + i);
+        $img.attr("src", imgUrl);
         $img.appendTo($section);
         var $p = $("<p class='img-name-p'>");
         $p.html(fileList[i].name).appendTo($section);
@@ -123,89 +126,124 @@ $(function(){
         $input2.appendTo($section);
       }
     }
-    setTimeout(function(){
+    setTimeout(function () {
       $(".up-section").removeClass("loading");
       $(".up-img").removeClass("up-opcity");
-    },450);
+    }, 450);
     numUp = imgContainer.find(".up-section").length;
-    if(numUp > 20){
+    if (numUp > 20) {
       $(this).parent().hide();
     }
+    //input内容清空讓相同圖片可繼續上傳
+    file.value = "";
   });
 
 
-
-  $(".z_photo").delegate(".close-upimg","click",function(){
+  $(".z_photo").delegate(".close-upimg", "click", function () {
     $(".works-mask").show();
     delParent = $(this).parent();
   });
 
-  $(".wsdel-ok").click(function(){
+  $(".wsdel-ok").click(function () {
     $(".works-mask").hide();
     var numUp = delParent.siblings().length;
-    if(numUp < 20){
+    if (numUp < 20) {
       delParent.parent().find(".z_file").show();
     }
     delParent.remove();
 
     //先找到父元件arrId屬性的值，根據此值移除map中的正確資料
     var arrId = delParent.find(".up-img").attr("arrId");
-    console.log("要移除key為 "+arrId+" 的圖片");
+    console.log("要移除key為 " + arrId + " 的圖片");
     newImgMap.delete(parseInt(arrId));
+    fileArrMap.delete(parseInt(arrId));
 
   });
 
-  $(".wsdel-no").click(function(){
+  $(".wsdel-no").click(function () {
     $(".works-mask").hide();
   });
 
-  function validateUp(files){
+  function validateUp(files) {
     var arrFiles = [];//替換文件陣列
-    for(var i = 0, file; file = files[i]; i++){
+    for (var i = 0, file; file = files[i]; i++) {
       //名稱上傳的後綴名稱
       var newStr = file.name.split("").reverse().join("");
-      if(newStr.split(".")[0] != null){
+      if (newStr.split(".")[0] != null) {
         var type = newStr.split(".")[0].split("").reverse().join("");
-        console.log(type+"===type===");
-        if(jQuery.inArray(type, defaults.fileType) > -1){
+        console.log(type + "===type===");
+        if (jQuery.inArray(type, defaults.fileType) > -1) {
           // 類型符合才可上傳
           if (file.size >= defaults.fileSize) {
             alert(file.size);
-            alert('檔案名稱: "'+ file.name +'"的項目太大');
+            alert('檔案名稱: "' + file.name + '"的項目太大');
           } else {
             // 判斷所有文件
             arrFiles.push(file);
           }
-        }else{
-          alert('檔案名稱: "'+ file.name +'"上傳類型不符合');
+        } else {
+          alert('檔案名稱: "' + file.name + '"上傳類型不符合');
         }
-      }else{
-        alert('檔案名稱: "'+ file.name +'"類型無法識別');
+      } else {
+        alert('檔案名稱: "' + file.name + '"類型無法識別');
       }
     }
     return arrFiles;
   }
 })
 
-const submitForm = (newImgMap) => {
-  //map轉成字串陣列
+const submitForm = (newImgMap, fileMap) => {
+
+  //map轉成字串陣列，只是看看，沒有用到
   const imgArr = Array.from(newImgMap.values());
 
-  const formattedDescription = postDescription.value.replace(/\n/g, '<br/>');
+  if (fileMap.size < 1) {
+    alert('請選擇上傳圖片')
+    return;
+  }
+
+  console.log("圖片Map物件");
+  console.log(fileMap);
+  console.log(typeof fileMap);
+
+  const fileArray = Array.from(fileMap.values());
+  console.log("檔案Array")
+  console.log(fileArray)
+  console.log(typeof fileArray)
+
+  //這行是?
+  // const formattedDescription = postDescription.value.replace(/\n/g, '<br/>');
+
   const postData = {
     title: postTitle.value,
-    description: formattedDescription.value,
+    description: postDescription.value,
     nsfw: nsfw.value,
     isPublic: isPublic.value,
-    tags: tags.value,
-    images: imgArr,
+    tags: tags.value.toString(),
   };
 
-  console.log('hi')
+  const formData = new FormData();
+  console.log('送formData');
 
-  console.log(imgArr);
+  //放入所有圖片和JSON資料
+  fileArray.forEach((file) => {
+    formData.append('files', file);
+  });
+  formData.append('other', new Blob([JSON.stringify(postData)], {type: 'application/json'}))
 
-  console.log('JSON內容： ', postData);
+  //送出
+  axios.post('http://localhost:8080/post/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 };
 
 
@@ -299,13 +337,13 @@ const submitForm = (newImgMap) => {
               </div>
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" checked>
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" value="0" v-model="nsfw">
                   <label class="form-check-label" for="NSFWFalse">
                     無限制
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWTrue">
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWTrue" value="1" v-model="nsfw">
                   <label class="form-check-label" for="NSFWTrue">
                     未成年不宜觀看
                   </label>
@@ -321,13 +359,13 @@ const submitForm = (newImgMap) => {
               </div>
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" checked>
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" value="0" v-model="isPublic">
                   <label class="form-check-label" for="publicTrue">
                     公開
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse">
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse" value="1" v-model="isPublic">
                   <label class="form-check-label" for="publicFalse">
                     不公開
                   </label>
@@ -348,7 +386,7 @@ const submitForm = (newImgMap) => {
           </div>
         </div>
 
-        <v-btn @click="submitForm(newImgMap)" block class="mt-2" size="60px">推送貼文</v-btn>
+        <v-btn @click="submitForm(newImgMap,fileArrMap)" block class="mt-2" size="60px">推送貼文</v-btn>
       </div>
     </div>
   </div>
@@ -402,7 +440,8 @@ const submitForm = (newImgMap) => {
   .v-text-field-css {
     width: 360px;
   }
-  .upload-block{
+
+  .upload-block {
 
   }
 }

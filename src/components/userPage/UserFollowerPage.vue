@@ -67,8 +67,7 @@ onMounted(() => {
           <!-- 留言者頭像區塊 -->
           <div class="follower-avatar-icon-div">
             <div class="rounded-circle" style="display:flex">
-              <img :src="item.userIcon" alt="User" width="64" height="64" class="rounded-circle"
-                   style="object-fit:cover;"/>
+              <img :src="item.userIcon" alt="User"/>
             </div>
           </div>
 
@@ -107,11 +106,16 @@ onMounted(() => {
 <style scoped>
 
 .follower-block {
-//display: flex; //position: relative; //left:160px; justify-content: center;
-  margin-top: 24px;
+//display: flex; //position: relative; //left:160px; justify-content: center; margin-top: 24px;
 }
 
-.single-follower-block{
+.rounded-circle img{
+  width:64px;
+  height:64px;
+  object-fit: cover;
+}
+
+.single-follower-block {
   display: flex;
   justify-content: center;
 }
@@ -149,8 +153,7 @@ onMounted(() => {
 }
 
 .follower-description-div {
-//display: inline-block; padding-left: 24px; max-width: 800px;
-  overflow: hidden;
+//display: inline-block; padding-left: 24px; max-width: 800px; overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -162,8 +165,21 @@ onMounted(() => {
   top: -24px;
 }
 
-.users-follow-button-div button{
+.users-follow-button-div button {
   width: 120px;
+}
+
+@media screen and (max-width: 1300px) {
+  .follower-detail-div {
+    max-width: 540px;
+    overflow: hidden;
+    margin-right: 24px;
+  }
+  .rounded-circle img{
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+  }
 }
 
 

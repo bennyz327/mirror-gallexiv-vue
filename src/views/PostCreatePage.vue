@@ -209,6 +209,16 @@ const submitForm = (newImgMap) => {
 };
 
 
+// function loadLibrary(libraryPath) {
+//   let newScript = document.createElement('script')
+//   newScript.setAttribute('src', libraryPath)
+//   document.head.appendChild(newScript)
+// }
+//
+// onMounted(() => {
+//   loadLibrary("/src/assets/js/upload/imgUp.js")
+// });
+
 </script>
 
 <template>

@@ -5,6 +5,7 @@ import AvatarCropper from "vue-avatar-cropper";
 import {onMounted, ref, watch, defineEmits} from "vue";
 import axios from "axios";
 import {useUserStore} from "@/store/userStore.js";
+import {useRoute} from "vue-router";
 
 
 // 輸入限制區塊
@@ -70,7 +71,6 @@ const user = ref({
   id: 1,
   planPicture: "",
 });
-
 
 const handleUploaded = (data) => {
   const base64str = data.url.substring(data.url.indexOf(",") + 1);
@@ -151,6 +151,16 @@ const submitForm = async () => {
   }
 };
 
+
+const route = useRoute();
+const planId = ref('');
+
+// 在组件挂载后获取 planId 值
+onMounted(() => {
+  planId.value = route.query.planId || '';
+});
+
+
 </script>
 
 <template>
@@ -160,7 +170,7 @@ const submitForm = async () => {
   <div class="container">
 
     <div class="page-title-div">
-      <h3>新增方案</h3>
+      <h3>修改方案</h3>
     </div>
 
     <!--全區塊-->

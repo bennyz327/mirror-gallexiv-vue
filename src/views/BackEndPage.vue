@@ -36,7 +36,7 @@ function loadPersonPost() {
   //     'Authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5NDQyNjAzNiwiZXhwIjoxNjk0NDI3ODM2fQ.ci4vgyLtaw338kvs9-'
   //   }
   // }
-  const url = 'http://172.18.135.72:8080/posts/person'
+  const url = '/posts/person'
   axiosInstance.post(url, null,{
     headers: {
       'Authorization': token
@@ -87,18 +87,27 @@ loadPersonPost();
       <tr v-for="item in items.value" :key="item.id" class="text-center">
         <td class="text-max-width">{{ item.postTitle }}</td>
         <td><img :src="item.pictureSrc" alt="pictureSrc" class="picture-max-width"/></td>
+        <td>
+          <v-tooltip
+            :text="item.postDescription"
+            activator="parent"
+            location="bottom">
+          <template v-slot:activator="{ propsDescription }">
+            <v-btn v-bind="propsDescription">詳細</v-btn>
+          </template>
+        </v-tooltip></td>
         <td class="text-max-width">{{ item.postDescription }}</td>
         <td class="text-max-width">{{ item.likeCount }}</td>
-        <td class="date-max-width ">{{ item.updateTime }}</td>
-        <td>{{ item.isPublic }}</td>
-        <td>{{ item.isNFSW }}</td>
+        <td class="date-max-width ">{{ item.postTime }}</td>
+        <td>{{ item.postPublic }}</td>
+        <td>{{ item.postAgeLimit }}</td>
         <td>
           <v-tooltip
               :text="item.tagsByPostId.map(tag => tag.tagName).join(', ')"
               activator="parent"
               location="bottom">
-            <template v-slot:activator="{ props }">
-              <v-btn v-bind="props">詳細</v-btn>
+            <template v-slot:activator="{ propsTags }">
+              <v-btn v-bind="propsTags">詳細</v-btn>
             </template>
           </v-tooltip>
         </td>

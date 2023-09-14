@@ -335,16 +335,16 @@ const submitForm = (newImgMap, fileMap) => {
               <div class="text-div">
                 <h6 style="text-align: left; display: block">年齡及閱覽限制</h6>
               </div>
-              <div>
+              <div style="margin-top: 8px">
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" value="0" v-model="nsfw">
-                  <label class="form-check-label" for="NSFWFalse">
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" value="0" v-model="nsfwValue">
+                  <label class="form-check-label" for="NSFWFalse" style="margin-left: 8px">
                     無限制
                   </label>
                 </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWTrue" value="1" v-model="nsfw">
-                  <label class="form-check-label" for="NSFWTrue">
+                <div class="form-check-inline">
+                  <input class="form-check-input" type="radio" name="NSFWRadio" value="1" id="NSFWTrue" v-model="nsfwValue">
+                  <label class="form-check-label" for="NSFWTrue" style="margin-left: 8px">
                     未成年不宜觀看
                   </label>
                 </div>
@@ -357,17 +357,39 @@ const submitForm = (newImgMap, fileMap) => {
               <div class="text-div">
                 <h6 style="text-align: left; display: block">公開範圍</h6>
               </div>
-              <div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" value="0" v-model="isPublic">
-                  <label class="form-check-label" for="publicTrue">
+              <div style="margin-top: 8px">
+                <div class="form-check-inline">
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" value="1" v-model="isPublic">
+                  <label class="form-check-label" for="publicTrue" style="margin-left: 8px">
                     公開
                   </label>
                 </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse" value="1" v-model="isPublic">
-                  <label class="form-check-label" for="publicFalse">
+                <div class="form-check-inline">
+                  <input class="form-check-input" type="radio" name="publicRadio" value="0" id="publicFalse" v-model="isPublic">
+                  <label class="form-check-label" for="publicFalse" style="margin-left: 8px">
                     不公開
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <hr>
+
+            <div class="checkbox-plan-need">
+              <div class="text-div">
+                <h6 style="text-align: left; display: block">訂閱需求限制</h6>
+              </div>
+              <div style="margin-top: 8px">
+                <div class="form-check-inline" style="width: 200px">
+                  <input class="form-check-input" type="radio" name="planRadio" value="0" id="planNone" v-model="selectedPlan">
+                  <label class="form-check-label" for="planNone" style="margin-left: 8px">
+                    無限制
+                  </label>
+                </div>
+                <div class="form-check-inline" style="width: 200px" v-for="(item, index) in planData" :key="index">
+                  <input class="form-check-input" type="radio" name="planRadio" :id="'planTier'+ (index + 1)" :value="(index + 1)" v-model="selectedPlan">
+                  <label class="form-check-label" :for="'planTier' + (index + 1)" style="margin-left: 8px">
+                    Tier{{ index + 1 }} (NT$ {{ item.planPrice }})
                   </label>
                 </div>
               </div>
@@ -385,9 +407,14 @@ const submitForm = (newImgMap, fileMap) => {
 
           </div>
         </div>
-
-        <v-btn @click="submitForm(newImgMap,fileArrMap)" block class="mt-2" size="60px">推送貼文</v-btn>
       </div>
+
+      <div class="submit-button-div" style="display: flex; justify-content: center;">
+        <v-btn @click="submitForm(newImgMap,fileArrMap)"
+               style="width: 1200px; height: 80px; background-color:beige; font-size: 24px ">推送貼文
+        </v-btn>
+      </div>
+
     </div>
   </div>
 
@@ -439,10 +466,6 @@ const submitForm = (newImgMap, fileMap) => {
 @media screen and (max-width: 1200px) {
   .v-text-field-css {
     width: 360px;
-  }
-
-  .upload-block {
-
   }
 }
 

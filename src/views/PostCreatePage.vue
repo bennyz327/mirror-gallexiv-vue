@@ -1,6 +1,8 @@
 <script setup>
 import Navbar from "@/components/Navbar.vue";
 
+import $ from 'jquery';
+
 import '../assets/js/upload/jquery-1.8.3.min.js'
 import '../assets/css/upload/index.css'
 import '../assets/css/upload/common.css'
@@ -10,6 +12,8 @@ import {onMounted, ref, watch} from "vue";
 
 const postTitle = ref("");
 const postDescription = ref("");
+//先用MAP處理刪除操作
+const newImgMap= new Map();
 
 const postTitleRules = [
   (value) => {
@@ -47,7 +51,146 @@ watch(tags, (newTags) => {
 const nsfw = ref(true);
 const isPublic = ref(true);
 
-const submitForm = () => {
+
+$(function(){
+  var delParent;
+  var defaults = {
+    fileType         : ["jpg","png","bmp","jpeg"],   // 上傳圖片類型
+    fileSize         : 1024 * 1024 * 10                  // 上傳圖片大小 10MB
+  };
+
+  // 	點選圖片的外框時
+  $(".file").change(function(){
+    var idFile = $(this).attr("id");
+    var file = document.getElementById(idFile);
+    var imgContainer = $(this).parents(".z_photo"); //存放圖片的父元素
+    var fileList = file.files; //獲取圖片檔案
+    var input = $(this).parent(); //獲取文本框
+
+    //遍歷
+
+    var numUp = imgContainer.find(".up-section").length;
+    var totalNum = numUp + fileList.length;  //總數量
+
+    console.log("存圖片物件狀態")
+    console.log(newImgMap)
+    console.log("totoalNum: "+totalNum)
+
+    if(fileList.length > 20 || totalNum > 20 ){
+      alert("上傳圖片不可超過20張");
+    }
+    else if(numUp <= 20){
+      fileList = validateUp(fileList);
+
+      console.log("總數量")
+      console.log(totalNum)
+      console.log("本次點選上傳數量")
+      console.log(fileList.length)
+
+      for(var i = 0;i<fileList.length;i++){
+        var imgUrl = window.URL.createObjectURL(fileList[i]);
+
+        console.log("單圖片網址")
+        console.log(imgUrl)
+
+        newImgMap.set(numUp+i, imgUrl);
+        var $section = $("<section class='up-section fl loading'>");
+        imgContainer.append($section);
+        var $span = $("<span class='up-span'>");
+        $span.appendTo($section);
+
+        var $img0 = $("<img class='close-upimg'>").on("click",function(event){
+          event.preventDefault();
+          event.stopPropagation();
+          $(".works-mask").show();
+          delParent = $(this).parent();
+        });
+        $img0.attr("src","/src/assets/Picture/upload/deleteButton.png").appendTo($section);
+        const $img = $("<img class='up-img up-opcity'>");
+
+        console.log(i)
+        console.log("本次存入後物件狀態")
+        console.log(newImgMap)
+
+        $img.attr("arrId",numUp+i);
+        $img.attr("src",imgUrl);
+        $img.appendTo($section);
+        var $p = $("<p class='img-name-p'>");
+        $p.html(fileList[i].name).appendTo($section);
+        var $input = $("<input id='taglocation' name='taglocation' value='' type='hidden'>");
+        $input.appendTo($section);
+        var $input2 = $("<input id='tags' name='tags' value='' type='hidden'/>");
+        $input2.appendTo($section);
+      }
+    }
+    setTimeout(function(){
+      $(".up-section").removeClass("loading");
+      $(".up-img").removeClass("up-opcity");
+    },450);
+    numUp = imgContainer.find(".up-section").length;
+    if(numUp > 20){
+      $(this).parent().hide();
+    }
+  });
+
+
+
+  $(".z_photo").delegate(".close-upimg","click",function(){
+    $(".works-mask").show();
+    delParent = $(this).parent();
+  });
+
+  $(".wsdel-ok").click(function(){
+    $(".works-mask").hide();
+    var numUp = delParent.siblings().length;
+    if(numUp < 20){
+      delParent.parent().find(".z_file").show();
+    }
+    delParent.remove();
+
+    //先找到父元件arrId屬性的值，根據此值移除map中的正確資料
+    var arrId = delParent.find(".up-img").attr("arrId");
+    console.log("要移除key為 "+arrId+" 的圖片");
+    newImgMap.delete(parseInt(arrId));
+
+  });
+
+  $(".wsdel-no").click(function(){
+    $(".works-mask").hide();
+  });
+
+  function validateUp(files){
+    var arrFiles = [];//替換文件陣列
+    for(var i = 0, file; file = files[i]; i++){
+      //名稱上傳的後綴名稱
+      var newStr = file.name.split("").reverse().join("");
+      if(newStr.split(".")[0] != null){
+        var type = newStr.split(".")[0].split("").reverse().join("");
+        console.log(type+"===type===");
+        if(jQuery.inArray(type, defaults.fileType) > -1){
+          // 類型符合才可上傳
+          if (file.size >= defaults.fileSize) {
+            alert(file.size);
+            alert('檔案名稱: "'+ file.name +'"的項目太大');
+          } else {
+            // 判斷所有文件
+            arrFiles.push(file);
+          }
+        }else{
+          alert('檔案名稱: "'+ file.name +'"上傳類型不符合');
+        }
+      }else{
+        alert('檔案名稱: "'+ file.name +'"類型無法識別');
+      }
+    }
+    return arrFiles;
+  }
+})
+
+const submitForm = (newImgMap) => {
+  //map轉成字串陣列
+  const imgArr = Array.from(newImgMap.values());
+
   const formattedDescription = postDescription.value.replace(/\n/g, '<br/>');
   const postData = {
     title: postTitle.value,
@@ -55,22 +198,15 @@ const submitForm = () => {
     nsfw: nsfw.value,
     isPublic: isPublic.value,
     tags: tags.value,
+    images: imgArr,
   };
 
-  console.log("自我介紹内容：", formattedDescription);
+  console.log('hi')
+
+  console.log(imgArr);
+
   console.log('JSON內容： ', postData);
 };
-
-
-function loadLibrary(libraryPath) {
-  let newScript = document.createElement('script')
-  newScript.setAttribute('src', libraryPath)
-  document.head.appendChild(newScript)
-}
-
-onMounted(() => {
-  loadLibrary("/src/assets/js/upload/imgUp.js")
-});
 
 
 </script>
@@ -202,7 +338,7 @@ onMounted(() => {
           </div>
         </div>
 
-        <v-btn @click="submitForm" block class="mt-2" size="60px">推送貼文</v-btn>
+        <v-btn @click="submitForm(newImgMap)" block class="mt-2" size="60px">推送貼文</v-btn>
       </div>
     </div>
   </div>

@@ -50,7 +50,6 @@ watch(tags, (newTags) => {
 const postAgeLimit = ref(0);
 const postPublic = ref(0);
 const URL = import.meta.env.VITE_API_Post;
-const IMGURL = import.meta.env.VITE_API_PICTURE;
 
 
 
@@ -69,11 +68,7 @@ const submitForm = async () => {
   console.log(postData)
 
   try {
-    const response = await axios.post(`${URL}/insert`, postData,{
-      headers: {'Authorization': token}
-    });
-    const reponeImg = await axios.post(`${IMGURL}/upload`, pictureData,{
-      headers: {'Authorization': token}
+    const response = await axios.post(`${URL}/insert`, postData,{headers: {'Authorization': token}
     });
     if (response.status === 200) {
       // 重定向到成功页面或其他页面

@@ -3,12 +3,35 @@ import Navbar from "@/components/Navbar.vue";
 import AvatarCropper from "vue-avatar-cropper";
 
 import {onMounted, ref, watch, defineEmits} from "vue";
+import axios from "axios";
 
 
 // 輸入限制區塊
 const subscribeTitle = ref("");
 const subscribePrice = ref("");
 const subscribeDescription = ref("");
+const getData = ref([]);
+const URL = import.meta.env.VITE_API_PLAN;
+
+const getPlanData = async () => {
+  const planId = 1
+
+  try {
+    const response = await axios.get(`${URL}/${planId}`);
+    getData.value = response.data;
+    subscribeTitle.value = getData.value.data.planName;
+    subscribePrice.value=getData.value.data.planPrice;
+    subscribeDescription.value= getData.value.data.planDescription;
+
+    console.log(getData.value)
+    console.log(response)
+
+  }catch (error){
+    console.error('提交表单时出错：', error);
+  }
+}
+getPlanData();
+
 
 const subscribeTitleRules = [
   (value) => {

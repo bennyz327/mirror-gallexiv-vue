@@ -72,7 +72,7 @@ const routes = [
     {
         path: '/testconfig',
         name: 'Testconfig',
-        component: () => import("../views/TestConfig.vue"),
+        component: () => import("../components/NeverUsed/TestConfig.vue"),
     },
     //訊息頁面
     {

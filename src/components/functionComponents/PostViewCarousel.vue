@@ -25,7 +25,7 @@ const slideTo = (val) => {
       <Carousel id="gallery" :items-to-show="1" :wrap-around="false" v-model="currentSlide">
         <Slide v-for="(item, index) in items" :key="index">
           <div class="carousel__item">
-            <img :src="item" class="slideImgs card-img-top" @click="currentSlide = index">
+            <img :src="item.url" class="slideImgs card-img-top" @click="currentSlide = index">
           </div>
         </Slide>
       </Carousel>
@@ -40,7 +40,7 @@ const slideTo = (val) => {
       >
         <Slide v-for="(item, index) in items" :key="index">
           <div class="carousel__item">
-            <img :src="item" class="slideImgs card-img-top" @click="currentSlide = index">
+            <img :src="item.url" class="slideImgs card-img-top" @click="currentSlide = index">
           </div>
         </Slide>
       </Carousel>

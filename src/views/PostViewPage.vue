@@ -4,23 +4,40 @@ import Navbar from "../components/Navbar.vue";
 import PostViewCarousel from "../components/functionComponents/PostViewCarousel.vue";
 import DescriptionArea from "@/components/functionComponents/CollapseFunction.vue";
 
-import {ref, onMounted, reactive, computed} from 'vue';
+import { ref, onMounted, reactive, computed } from 'vue';
 import MessageArea from "@/components/functionComponents/MessageArea.vue";
 // 圖片區假資料
-const imgDataReference = ref([
-  {
-    "pictureId": "0",
-    "imgPath": "https://cdn.discordapp.com/attachments/940525773457072169/1143597896827162654/101585724_p1.png",
-  },
-  {
-    "pictureId": "1",
-    "imgPath": "https://cdn.discordapp.com/attachments/940525773457072169/1143599997208776757/101317845_p0.png",
-  },
-  {
-    "pictureId": "2",
-    "imgPath": "https://cdn.discordapp.com/attachments/940525773457072169/1143601111375286352/RABBIT_108010979_p0.jpg",
+const postId = 1;
+//const imgDataReference = ref([
+// {
+//   "pictureId": "0",
+//   "https://cdn.discordapp.com/attachments/940525773457072169/1143597896827162654/101585724_p1.png",
+// },
+// {
+//   "pictureId": "1",
+//   "imgPath": "https://cdn.discordapp.com/attachments/940525773457072169/1143599997208776757/101317845_p0.png",
+// },
+// {
+//   "pictureId": "2",
+//   "imgPath": "https://cdn.discordapp.com/attachments/940525773457072169/1143601111375286352/RABBIT_108010979_p0.jpg",
+// }
+//]);
+
+const imgDataReference = ref([]);
+
+onMounted(async () => {
+  try {
+    const response = await axios.get(`http://localhost:8080/test/p?postId=${postId}`);
+    console.log("urls:", response.data);
+    const imageUrls = response.data;
+
+    for (const imageUrl of imageUrls) {
+      imgDataReference.value.push({ url: imageUrl, type: 'image/png' });
+    }
+  } catch (error) {
+    console.error('Error fetching images:', error);
   }
-]);
+});
 
 //留言區假資料
 import messageAreaJsonFile from "@/assets/messageArea.json";
@@ -28,7 +45,7 @@ const jsonDataImportMessageAreaVue = ref(messageAreaJsonFile);
 
 // 匯入資料到carousel
 const imgDataImportToCarousel = reactive(
-    imgDataReference.value.map(item => item.imgPath)
+  imgDataReference.value
 );
 
 // 其他區域假資料
@@ -138,14 +155,14 @@ const messageInputRules = [
           <div class="like-and-collect-block">
             <div class="like-button-block" style="margin-right: 5px">
               <button type="button" class="btn" @click="toggleLike" @mouseenter="hovered = true"
-                      @mouseleave="hovered = false">
+                @mouseleave="hovered = false">
                 <i :class="heartClass" style="color: #da2b2b;"></i>
               </button>
             </div>
 
             <div class="favorite-button-block">
               <button :class="collected ? 'btn btn-primary' : 'btn btn-outline-secondary'" type="button"
-                      @click="toggleCollect">
+                @click="toggleCollect">
                 <span v-text="collected ? '已收藏' : '收藏'"></span>
               </button>
             </div>
@@ -157,22 +174,16 @@ const messageInputRules = [
             <div class="message-user-avatar-block" style="align-items: center">
               <div class="rounded-circle" style="display:flex">
                 <img :src="testData.userImageURL" alt="User" width="64" height="64" class="rounded-circle"
-                     style="object-fit:cover;"/>
+                  style="object-fit:cover;" />
               </div>
             </div>
 
             <!-- 輸入框區塊 -->
             <div class="message-input-block">
-              <v-text-field
-                  v-model="messageInput"
-                  :rules="messageInputRules"
-                  :counter="120"
-                  :maxlength="120"
-                  label="留言"
-                  bg-color="white"
-                  style="margin-bottom: 16px;"
-              ></v-text-field>
-              <button class="btn btn-outline-info me-2" style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出</button>
+              <v-text-field v-model="messageInput" :rules="messageInputRules" :counter="120" :maxlength="120" label="留言"
+                bg-color="white" style="margin-bottom: 16px;"></v-text-field>
+              <button class="btn btn-outline-info me-2"
+                style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出</button>
             </div>
 
           </div>
@@ -199,13 +210,9 @@ const messageInputRules = [
 
             <!--Menu按鈕區塊-->
             <div class="menu-block">
-              <v-menu
-                  open-on-click
-              >
+              <v-menu open-on-click>
                 <template v-slot:activator="{ props }">
-                  <button
-                      v-bind="props"
-                  >
+                  <button v-bind="props">
                     <i class="fa-solid fa-bars fa-xl" style="color: #d88d4f;"></i>
                   </button>
                 </template>
@@ -213,7 +220,8 @@ const messageInputRules = [
                 <v-btn>檢舉</v-btn>
 
                 <!--如果是作者本人的話-->
-                <v-btn v-if="!isOwner"><router-link to="/post/edit" style="text-decoration:none;color:black;">編輯作品</router-link></v-btn>
+                <v-btn v-if="!isOwner"><router-link to="/post/edit"
+                    style="text-decoration:none;color:black;">編輯作品</router-link></v-btn>
               </v-menu>
             </div>
 
@@ -228,7 +236,7 @@ const messageInputRules = [
               <div class="author-icon-div">
                 <div class="rounded-circle" style="display:flex">
                   <img :src="testData.postUserImageURL" alt="User" width="64" height="64" class="rounded-circle"
-                       style="object-fit:contain;"/>
+                    style="object-fit:contain;" />
                 </div>
 
                 <!-- 名稱 -->
@@ -402,6 +410,4 @@ a.link-color-avoid {
   color: black;
 
 }
-
-
 </style>

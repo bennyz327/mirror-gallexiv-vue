@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar.vue";
 import AvatarCropper from "vue-avatar-cropper";
 
 import {onMounted, ref, watch, defineEmits} from "vue";
+import {useRoute} from "vue-router";
 
 
 // 輸入限制區塊
@@ -91,6 +92,16 @@ const removePhoto = () => {
   message.value = "";
 };
 
+
+const route = useRoute();
+const planId = ref('');
+
+// 在组件挂载后获取 planId 值
+onMounted(() => {
+  planId.value = route.query.planId || '';
+});
+
+
 </script>
 
 <template>
@@ -100,7 +111,7 @@ const removePhoto = () => {
   <div class="container">
 
     <div class="page-title-div">
-      <h3>新增方案</h3>
+      <h3>修改方案</h3>
     </div>
 
     <!--全區塊-->
@@ -117,7 +128,8 @@ const removePhoto = () => {
               <div class="text-center">
                 <img v-if="user.avatar" :src="user.avatar" class="rounded img-fluid"
                      style="max-width: 180px; max-height: 120px;" alt="index">
-                <img v-else src="../assets/Picture/presetPlanIcon.jpg" class="rounded img-fluid" alt="" style="max-width: 180px; max-height: 120px;"/>
+                <img v-else src="../assets/Picture/presetPlanIcon.jpg" class="rounded img-fluid" alt=""
+                     style="max-width: 180px; max-height: 120px;"/>
               </div>
             </div>
 
@@ -125,12 +137,17 @@ const removePhoto = () => {
             <div class="card-body">
 
               <!-- 方案名稱 -->
-              <h4 class="my-4 fw-normal">{{ subscribeTitle }}</h4>
+              <h4 class="my-4 fw-normal">{{ planTitle }}</h4>
 
               <!-- 方案價格 -->
-              <h3 class="card-title pricing-card-title">NT${{ subscribePrice }}<small
+              <h3 class="card-title pricing-card-title">NT${{ planPrice }}<small
                   class="text-muted fw-light">/mo</small>
               </h3>
+
+              <!--要刪掉的東西-->
+              <div>
+                傳來的參數:{{ planId }}(記得刪掉)
+              </div>
 
               <!-- 方案內容 -->
               <ul class="list-unstyled mt-3 mb-4">
@@ -148,7 +165,7 @@ const removePhoto = () => {
                     <div id="collapse" class="accordion-collapse collapse"
                          aria-labelledby="heading" data-bs-parent="#accordion" style="max-width: 440px">
                       <div class="accordion-body">
-                        {{ subscribeDescription }}
+                        {{ planDescription }}
                       </div>
                     </div>
                   </div>
@@ -159,9 +176,9 @@ const removePhoto = () => {
         </div>
 
         <div class="button-div" style="display: flex; justify-content: center">
-        <v-btn type="button" @click="" style="width: 400px">
-         送出方案
-        </v-btn>
+          <v-btn type="button" @click="" style="width: 400px">
+            送出方案
+          </v-btn>
         </div>
       </div>
 

@@ -289,7 +289,6 @@ const submitForm = (newImgMap) => {
                     placeholder
                     label="敘述你的圖片或相關內容"
                     no-resize
-                    style="height: 320px"
                     class="v-text-field-css"
                 />
               </v-form>

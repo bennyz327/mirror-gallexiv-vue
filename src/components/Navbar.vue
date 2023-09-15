@@ -116,7 +116,9 @@ const search = async () => {
           <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">
 
             <!-- 登入前狀態 -->
-            <button v-if="isLoggedIn" @click="login" class="btn btn-outline-secondary">登入</button>
+            <router-link to="/login" class="dropdown-item">
+              <button v-if="!isLogin" @click="login" class="btn btn-outline-secondary">登入</button>
+            </router-link>
 
             <!-- 登入後狀態 -->
             <div class="dropdown align-self-start" v-if="isLogin">

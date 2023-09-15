@@ -4,12 +4,15 @@ import AvatarCropper from "vue-avatar-cropper";
 
 import {onMounted, ref, watch, defineEmits} from "vue";
 import axios from "axios";
+import {useUserStore} from "@/store/userStore.js";
+const {token} = useUserStore();
 
 
 // 輸入限制區塊
 const planName = ref("");
 const planPrice = ref("");
 const planDescription = ref("");
+
 const subscribeTitleRules = [
   (value) => {
     if (value && value.length <= 20 && value.trim().length > 0) {
@@ -102,7 +105,7 @@ const submitForm = async () => {
     planStatusByStatusId:{
       statusId:17
     },
-    planPicture:user.avatar.value
+    planPicture: user.avatar
   };
   console.log(planData)
 

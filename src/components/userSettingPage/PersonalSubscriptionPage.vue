@@ -26,7 +26,7 @@ const getPlanData = async () => {
     // subscriptionName.value = getData.value.data.planName;
     // subscriptionPrice.value = getData.value.data.planPrice;
 
-    console.log(getData.value)
+
 
   }catch (error){
     console.error('提交表单时出错：', error);

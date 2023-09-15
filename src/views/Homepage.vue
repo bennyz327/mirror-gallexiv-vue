@@ -12,7 +12,6 @@ import PostPictureView from "@/components/PostPictureView.vue";
 
 // import jsonFile from "../assets/tag.json"
 // import imgJsonFile from "../assets/imgList.json"
-import TagFunctionTest from "@/components/functionComponents/TagFunctionTest.vue";
 
 // const json = ref(jsonFile)
 const json = ref([])

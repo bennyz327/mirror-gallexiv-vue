@@ -1,16 +1,39 @@
 <script setup>
 import {computed, reactive, ref} from "vue";
+import axios from "axios";
+
 
 // 傳回物件
 const props = defineProps({
-  imgUrlList: Array,
+  imgUrlList: Object
 })
-
 // 將物件取出
 const items = reactive(props.imgUrlList);
 
+const datas  = reactive({
+  imgPath: "",
+  postName:"",
+  userImg:"",
+  userName:"",
+  likeId:0,
+  postId:""
+})
+
+const URL =  import.meta.env.VITE_API_Post
 const liked = ref([]);
 const hovered = ref([]);
+
+const loadAllPost = async () => {
+  try{
+    const response = await axios.get(URL)
+    console.log(response.data)
+    datas.postName = response.data.postName
+    console.log(datas.postName)
+    datas.postId = response.data.postId
+  }catch (error){
+    console.error('加载本地 JSON 文件失败：', error);
+  }
+};
 
 const toggleLike = (index) => {
   liked.value[index] = !liked.value[index];
@@ -27,46 +50,47 @@ const heartClass = computed(() => {
     }
   };
 });
+loadAllPost();
 
 </script>
 
 <template>
 
-  <div v-if="items">
+  <div v-if="datas">
 
     <div class="galley-middle-block">
       <div class="picture-galley-block">
-        <div class="picture-item-div" v-for="(item, index) in items" :key="index">
-          <router-link :to="{ name: 'PostViewPage', params: { postId: item.postId }}">
-            <img :src="item.imgPath" alt="pic"
+        <div class="picture-item-div" v-for="item in imgUrlList.value">
+          <a target="_blank" :href="'/posts/' + item.postId">
+            <img v-if="item.blobUrl" :src="item.blobUrl" alt="pic"
                  style="width: 240px; height: 240px; object-fit: cover; border-radius: 8px;"
-                 class="picure-div">
-          </router-link>
+                 class="picture-div">
+          </a>
           <!-- TODO 吃飽太閒寫hover按鈕浮現功能-->
           <div class="picture-item-text-button-div">
 
             <div class="picture-text-div">
-              <p>{{ item.pictureName }}</p>
+              <p>{{ item.postTitle }}</p>
             </div>
 
 
             <div class="picture-item-user-div">
               <div class="picture-item-user-icon-div">
-                <router-link :to="{ name: 'UserPage', params: { userId: item.userId }}">
-                <img :src="item.userImg" alt="User" width="32" height="32" class="rounded-circle"
-                     style="object-fit: cover;border: 1px solid #ccc;"/>
+                <router-link :to="'/user/' + item.userId">
+                  <img :src="item.userImg" alt="User" width="32" height="32" class="rounded-circle"
+                       style="object-fit: cover;border: 1px solid #ccc;"/>
                 </router-link>
               </div>
 
               <div class="picture-item-user-name-div">
-                <router-link :to="{ name: 'UserPage', params: { userId: item.userId }}" style="text-decoration:none; color:inherit; float: left">
-                <p>{{ item.userName }}</p>
+                <router-link :to="'/user/' + item.userId" style="text-decoration:none; color:inherit; float: left">
+                  <p>{{ item.userName }}</p>
                 </router-link>
               </div>
 
               <div class="like-button-div">
                 <button type="button" class="btn" @click="toggleLike(index)" @mouseenter="hovered[index] = true"
-                        @mouseleave="hovered[index] = false" :id="item.postId" style="padding: 0">
+                        @mouseleave="hovered[index] = false" style="padding: 0">
                   <i :class="heartClass(index)" style="color: #da2b2b;"></i>
                 </button>
               </div>
@@ -143,7 +167,7 @@ const heartClass = computed(() => {
   width: 224px;
 }
 
-.picture-item-user-icon-div{
+.picture-item-user-icon-div {
   width: 20%;
 }
 
@@ -157,7 +181,7 @@ const heartClass = computed(() => {
   text-overflow: ellipsis;
 }
 
-.like-button-div{
+.like-button-div {
   width: 15%;
   padding-left: 8px;
 }

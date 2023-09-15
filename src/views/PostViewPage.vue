@@ -275,7 +275,7 @@ function formatTime(times) {
 
   <Navbar></Navbar>
 
-  <div class="container-sm" v-if="postData">
+  <div class="container-sm" v-if="testData">
     <div class="container-postViewPageStyle">
 
       <!--------------------------------左半部區塊----------------------------------------->

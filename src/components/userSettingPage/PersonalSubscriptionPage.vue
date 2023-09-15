@@ -102,7 +102,7 @@ const deleteItem = async (id) => {
                       </router-link>
 
                       <!--刪除功能-->
-                      <button :id="item.planId" type="button"
+                      <button :id="'subscribeSettingId' + index" type="button"
                               class="w-100 btn btn-outline-secondary" data-bs-toggle="modal"
                               :data-bs-target="'#exampleModal'+ index"
                               style="margin-top: 16px">

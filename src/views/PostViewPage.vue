@@ -3,10 +3,11 @@ import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import PostViewCarousel from "../components/functionComponents/PostViewCarousel.vue";
 import DescriptionArea from "@/components/functionComponents/CollapseFunction.vue";
-
+import { useUserStore } from "@/store/userStore.js";
 import { ref, onMounted, reactive, computed } from 'vue';
 import MessageArea from "@/components/functionComponents/MessageArea.vue";
 // 圖片區假資料
+const { token } = useUserStore();
 const postId = 1;
 
 const imgDataReference = ref([]);
@@ -54,14 +55,14 @@ onMounted(() => {
 
 //新增留言
 const comment = {
-  "postId": "",
-  "commentText": "",
-  "parentCommentId": null
+  postId,
+  commentText: "",
+  parentCommentId: null
 }
 async function insertCommnet() {
   const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
   try {
-    const resInsertComment = await axios.post(`${URL_COMMENT}/insert`, comment)
+    const resInsertComment = await axios.post(`${URL_COMMENT}/insert`, comment, { headers: { 'Authorization': token } })
     console.log(resInsertComment.status)
     comment.commentText = ""//清空input
     console.log('Response from server:', resInsertComment.data);
@@ -98,18 +99,18 @@ const heartClass = computed(() => {
 });
 
 // 留言區塊限制
-// const messageInput = ref("");
-// const messageInputRules = [
-//   (value) => {
-//     if (value && value.length <= 120 && value.trim().length > 0) {
-//       return true;
-//     } else if (!value || value.trim().length === 0) {
-//       return "至少必須輸入1個字元";
-//     } else {
-//       return "字數不能超過 120 個字";
-//     }
-//   },
-// ];
+const messageInput = ref("");
+const messageInputRules = [
+  (value) => {
+    if (value && value.length <= 120 && value.trim().length > 0) {
+      return true;
+    } else if (!value || value.trim().length === 0) {
+      return "至少必須輸入1個字元";
+    } else {
+      return "字數不能超過 120 個字";
+    }
+  },
+];
 
 // const messageEdit = ref(new Array(jsonDataImportMessageArea.value.length).fill(false));
 //
@@ -196,8 +197,8 @@ const heartClass = computed(() => {
 
             <!-- 輸入框區塊 -->
             <div class="message-input-block">
-              <v-text-field v-model="comment.commentText" :counter="120" :maxlength="120" label="留言" bg-color="white"
-                style="margin-bottom: 16px;"></v-text-field>
+              <v-text-field v-model="comment.commentText" :rules="messageInputRules" :counter="120" :maxlength="120"
+                label="留言" bg-color="white" style="margin-bottom: 16px;"></v-text-field>
               <button class="btn btn-outline-info me-2" style="width: 80px; margin-bottom: 32px; margin-left: 16px"
                 type="button" @click="insertCommnet">送出</button>
 <!--              <v-text-field-->

@@ -336,7 +336,7 @@ const submitForm = (newImgMap, fileMap) => {
                 <h6 style="text-align: left; display: block">年齡及閱覽限制</h6>
               </div>
               <div style="margin-top: 8px">
-                <div class="form-check">
+                <div class="form-check-inline">
                   <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" value="0" v-model="nsfwValue">
                   <label class="form-check-label" for="NSFWFalse" style="margin-left: 8px">
                     無限制

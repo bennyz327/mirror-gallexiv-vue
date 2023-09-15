@@ -1,9 +1,9 @@
 <script setup>
 
 import {reactive, ref} from "vue";
+import {useRoute} from "vue-router";
 import axios from "axios";
 import {useUserStore} from "@/store/userStore.js";
-import {useRoute} from "vue-router";
 
 // 傳回拿到的物件
 const props = defineProps({
@@ -34,6 +34,25 @@ const getPlanData = async () => {
   }
 }
 getPlanData();
+
+
+//  刪除功能
+const route = useRoute();
+const planId = ref(route.query.planId || '');
+
+const deleteItem = async (planIdToDelete) => {
+  try {
+    //發送請求到特定API
+    await axios.delete(`/api/delete/${planIdToDelete}`);
+    console.error(planIdToDelete);
+
+  } catch (error) {
+    console.error('刪除失敗', error);
+    console.error(planIdToDelete);
+  }
+
+};
+
 
 
 //  刪除功能

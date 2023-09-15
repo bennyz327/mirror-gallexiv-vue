@@ -98,7 +98,7 @@ const messageInputRules = [
   },
 ];
 
-const messageEdit = ref(new Array(jsonDataImportMessageArea.value.length).fill(false));
+const messageEdit = ref(new Array(jsonDataImportMessageArea.value.length).fill(''));
 
 // 送出按鈕
 const isEditingArray = ref([]);
@@ -108,13 +108,25 @@ jsonDataImportMessageArea.value.forEach(() => {
   isEditingArray.value.push(false);
 });
 
+for (let i = 0; i < jsonDataImportMessageArea.value.length; i++) {
+  console.log('hi')
+  messageEdit.value[i] = jsonDataImportMessageArea.value[i].userDescription;
+}
+console.log(messageEdit.value)
+
 const isOwnerAndEditing = (index) => {
   return isEditingArray.value[index];
 };
 
 const startEditing = (index) => {
   isEditingArray.value[index] = true;
+
 };
+
+const submitEditCancelMessageArea = (index) => {
+  isEditingArray.value[index] = false;
+}
+
 
 
 // const testData = reactive({
@@ -264,14 +276,14 @@ const startEditing = (index) => {
                       ></v-text-field>
 
                       <div class="message-edit-button-div" style="display: flex; align-items: center">
-                      <button class="btn btn-outline-info me-2" @click="submitEditAndRefreshMessageArea"
+                      <button class="btn btn-outline-info me-2" @click="submitEditAndRefreshMessageArea(index)"
                               style="width: 80px; margin-left: 16px">
                         送出
                       </button>
                       </div>
 
                       <div class="message-edit-cancel-button-div" style="display: flex; align-items: center">
-                        <button class="btn btn-outline-secondary me-2" @click="submitEditCancelMessageArea"
+                        <button class="btn btn-outline-secondary me-2" @click="submitEditCancelMessageArea(index)"
                                 style="width: 80px; margin-left: 16px">
                           取消
                         </button>

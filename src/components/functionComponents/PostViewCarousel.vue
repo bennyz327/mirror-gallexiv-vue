@@ -39,7 +39,7 @@ const slideTo = (val) => {
           ref="carousel"
       >
         <Slide v-for="(item, index) in items" :key="index">
-          <div class="carousel__item">
+          <div class="carousel__item" style="width: 240px; margin: 0 12px">
             <img :src="item" class="slideImgs card-img-top" @click="currentSlide = index">
           </div>
         </Slide>
@@ -64,6 +64,7 @@ const slideTo = (val) => {
 
 .carousel-down img {
   max-height: 120px;
+  object-fit: cover;
 }
 
 </style>

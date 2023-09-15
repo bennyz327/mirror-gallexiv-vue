@@ -76,7 +76,7 @@ const search = async () => {
             <router-link to="" class="nav-link px-2 link-secondary">創作者</router-link>
           </li>
           <li>
-            <router-link to="/postviewpage" class="nav-link px-2 link-secondary">單頁</router-link>
+            <router-link to="/post" class="nav-link px-2 link-secondary">單頁</router-link>
           </li>
           <li>
             <router-link to="" class="nav-link px-2 link-secondary">會員相關</router-link>

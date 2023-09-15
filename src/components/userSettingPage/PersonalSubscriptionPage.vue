@@ -1,6 +1,8 @@
 <script setup>
 
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
+import axios from "axios";
+import {useUserStore} from "@/store/userStore.js";
 
 // 傳回拿到的物件
 const props = defineProps({
@@ -8,12 +10,35 @@ const props = defineProps({
 })
 // 將物件取出
 const items = reactive(props.subscribeList);
+const {token} = useUserStore();
+const getData = ref([]);
+const subscriptionImg = ref("");
+const subscriptionName = ref("");
+const subscriptionPrice = ref("");
+const URL = import.meta.env.VITE_API_PLAN
+const getPlanData = async () => {
+
+  try {
+    const response = await axios.get(`${URL}/test`,{headers: {'Authorization': token}
+    });
+    getData.value = response.data.data;
+    // subscriptionImg.value = getData.value.data.planPicture;
+    // subscriptionName.value = getData.value.data.planName;
+    // subscriptionPrice.value = getData.value.data.planPrice;
+
+
+
+  }catch (error){
+    console.error('提交表单时出错：', error);
+  }
+}
+getPlanData();
 
 </script>
 
 <template>
 
-  <div class="setting-subscribe-block" v-if="items">
+  <div class="setting-subscribe-block" v-if="getData">
 
     <div class="setting-subscribe-view-whole-div ">
       <div class="album py-3">
@@ -24,14 +49,14 @@ const items = reactive(props.subscribeList);
 
               <!-- Subscribe Tier (for loop) -->
 
-              <div v-for="(item, index) in items" :key="index">
+              <div v-for="(item, index) in getData" :key="index">
                 <div class="col">
                   <div class="card mb-4 rounded-3 shadow-sm">
 
                     <!-- 圖片 -->
                     <div class="card-header py-3 custom-header">
                       <div class="text-center">
-                        <img :src="item.subscriptionImg" class="rounded img-fluid"
+                        <img :src="item.planPicture" class="rounded img-fluid"
                              style="max-width: 180px; max-height: 120px;" alt="index">
                       </div>
                     </div>
@@ -40,10 +65,10 @@ const items = reactive(props.subscribeList);
                     <div class="card-body">
 
                       <!-- 方案名稱 -->
-                      <h4 class="my-4 fw-normal">{{ item.subscriptionName }}</h4>
+                      <h4 class="my-4 fw-normal">{{ item.planName }}</h4>
 
                       <!-- 方案價格 -->
-                      <h3 class="card-title pricing-card-title">NT${{ item.subscriptionPrice }}
+                      <h3 class="card-title pricing-card-title">NT${{ item.planPrice}}
                         <small class="text-muted fw-light">/mo</small>
                       </h3>
 

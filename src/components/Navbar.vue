@@ -4,6 +4,7 @@ import {NBackTop} from "naive-ui";
 import {useUserStore} from "@/store/userStore.js";
 
 const {token, isLogin} = useUserStore()
+import axios from "axios";
 
 
 // 使用 ref 創建響應式vue
@@ -23,8 +24,19 @@ watch(selectedOption, (newVal) => {
   }
 });
 
+const URL = import.meta.env.VITE_API_Post;
+const inputString = ref("");
 // 創建搜尋方法
-const search = () => {
+const search = async () => {
+  try {
+    const response = await  axios.get(`${URL}/postTitle`,inputString)
+
+    if (response.status === 200) {
+    }
+  }catch (error) {
+    console.error('提交表单时出错：', error);
+  }
+
   // 使用 apiUrl 發送api請求
   // 例如使用 axios 發送到 apiUrl
   // axios.get(apiUrl.value).then(response => {
@@ -63,7 +75,7 @@ const search = () => {
             <router-link to="" class="nav-link px-2 link-secondary">創作者</router-link>
           </li>
           <li>
-            <router-link to="/post" class="nav-link px-2 link-secondary">單頁</router-link>
+            <router-link to="/postviewpage" class="nav-link px-2 link-secondary">單頁</router-link>
           </li>
           <li>
             <router-link to="" class="nav-link px-2 link-secondary">會員相關</router-link>
@@ -77,7 +89,7 @@ const search = () => {
           <form class="d-flex">
 
             <div class="d-flex flex-wrap align-items-center justify-content-center search-bar">
-              <input type="search" class="form-control me-1" placeholder="Search" aria-label="Search">
+              <input type="search" class="form-control me-1" placeholder="Search" aria-label="Search" v-model="inputString">
             </div>
 
             <div class="d-flex flex-wrap align-items-center justify-content-center">
@@ -105,7 +117,7 @@ const search = () => {
 
             <!-- 登入前狀態 -->
             <router-link to="/login" class="dropdown-item">
-            <button v-if="!isLogin" @click="login" class="btn btn-outline-secondary">登入</button>
+              <button v-if="!isLogin" @click="login" class="btn btn-outline-secondary">登入</button>
             </router-link>
 
             <!-- 登入後狀態 -->
@@ -134,8 +146,9 @@ const search = () => {
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
                 <!-- 下拉選單 -->
-                <router-link to="/user" class="dropdown-item">個人資料</router-link>
+                <router-link to="/userpage" class="dropdown-item">個人資料</router-link>
                 <router-link to="/backend" class="dropdown-item">後台管理</router-link>
+                <router-link to="/login" class="dropdown-item" v-if="!isNotLogin">登入</router-link>
                 <router-link to="/setting" class="dropdown-item">設定</router-link>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" @click="logout">登出</a>

@@ -3,6 +3,8 @@
 import {ref, watch, defineProps} from 'vue'
 import {useField, useForm} from 'vee-validate'
 import {NDatePicker} from "naive-ui";
+import axios from "axios";
+import {useUserStore} from "@/store/userStore.js";
 
 const selectedCountry = ref(null);
 const email = useField('email')
@@ -64,6 +66,36 @@ watch(formattedValue, (newValue) => {
   }
 });
 
+const {token} = useUserStore();
+const getData = ref([]);
+const gender = ref("")
+const URL = import.meta.env.VITE_API_USER
+
+const getUserData = async () => {
+  const userId=1;
+  try {
+    const response = await axios.get(`${URL}/${userId}`,{headers: {'Authorization': token}
+    });
+    getData.value = response.data.data;
+    email.value.value = getData.value.userEmail;
+    console.log(email.value.value);
+    personalNickName.value = getData.value.userName;
+    personalDescription.value = getData.value.intro;
+    // selectedCountry.value =
+    gender.value = getData.value.gender;
+    console.log(gender.value)
+    formattedValue.value = getData.value.birthday;
+    console.log(formattedValue.value)
+    console.log(getData.value)
+
+
+  }catch (error){
+    console.error('提交表单时出错：', error);
+  }
+}
+getUserData();
+
+
 
 </script>
 
@@ -81,7 +113,7 @@ watch(formattedValue, (newValue) => {
             :error-messages="email.errorMessage.value"
             class="form-email-text"
             disabled="true"
-        >benny0917@gmail.com
+        >
         </v-text-field>
         <v-btn style="margin-left:16px">更換電子郵件</v-btn>
       </div>
@@ -152,15 +184,15 @@ watch(formattedValue, (newValue) => {
       <div class="gender-radio-div">
         <h6>性別</h6>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="male" value="option1">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="male" value="M" v-model="gender">
           <label class="form-check-label" for="male">男性</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="female" value="option2">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="female" value="F" v-model="gender">
           <label class="form-check-label" for="female">女性</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="unknowGender" value="option3">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="unknowGender" value="N" v-model="gender">
           <label class="form-check-label" for="unknowGender">不予透露</label>
         </div>
       </div>
@@ -170,7 +202,7 @@ watch(formattedValue, (newValue) => {
         <div class="date-selector-div" style="width: 240px; align-items: center">
           <n-date-picker
               v-model:formatted-value="formattedValue"
-              value-format="yyyy.MM.dd"
+              value-format="yyyy-MM-dd"
               type="date"
               clearable
           />

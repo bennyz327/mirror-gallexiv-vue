@@ -3,12 +3,21 @@ import Navbar from "@/components/Navbar.vue";
 import AvatarCropper from "vue-avatar-cropper";
 
 import {onMounted, ref, watch, defineEmits} from "vue";
+import axios from "axios";
+import {useUserStore} from "@/store/userStore.js";
 
 
 // 輸入限制區塊
 const subscribeTitle = ref("");
 const subscribePrice = ref("");
 const subscribeDescription = ref("");
+const previewPicture = ref("");
+const getData = ref([]);
+const URL = import.meta.env.VITE_API_PLAN;
+const {token} = useUserStore();
+
+
+
 
 const subscribeTitleRules = [
   (value) => {
@@ -24,7 +33,8 @@ const subscribeTitleRules = [
 
 const subscribePriceRules = [
   (value) => {
-    if (!value || value.trim().length === 0) {
+    console.log(value)
+    if (!value || value.length === 0) {
       return '必須輸入一個數字';
     } else if (!/^\d+$/.test(value)) {
       return '只能輸入數字';
@@ -61,6 +71,7 @@ const user = ref({
   planPicture: "",
 });
 
+
 const handleUploaded = (data) => {
   const base64str = data.url.substring(data.url.indexOf(",") + 1);
   const decoded = atob(base64str);
@@ -89,6 +100,55 @@ const onChanged = (event) => {
 const removePhoto = () => {
   user.value.avatar = "";
   message.value = "";
+}
+
+const getPlanData = async () => {
+  const planId = 1
+
+  try {
+    const response = await axios.get(`${URL}/${planId}`,{headers: {'Authorization': token}
+    });
+    getData.value = response.data;
+    subscribeTitle.value = getData.value.data.planName;
+    subscribePrice.value=getData.value.data.planPrice;
+    subscribeDescription.value= getData.value.data.planDescription;
+    previewPicture.value = getData.value.data.planPicture
+
+    console.log(getData.value)
+    console.log(response)
+
+  }catch (error){
+    console.error('提交表单时出错：', error);
+  }
+}
+getPlanData();
+
+const submitForm = async () => {
+
+  const planData = getData.value.data;
+  planData.planName = subscribeTitle.value;
+  planData.planPrice = subscribePrice.value;
+  planData.planDescription = subscribeDescription.value;
+  planData.planPicture = previewPicture.value;
+  console.log('planData')
+  console.log(planData)
+
+  try {
+    const response = await axios.put(`${URL}/update`, planData,{headers: {'Authorization': token}
+    });
+
+    if (response.status === 200) {
+      // 重定向到成功页面或其他页面
+      // 注意：你需要使用Vue Router的实例来导航，这里假设已经安装并配置了Vue Router
+      // import { useRouter } from 'vue-router';
+      // const router = useRouter();
+      // router.push('/success');
+      console.log("回應")
+      console.log(response.data)
+    }
+  } catch (error) {
+    console.error('提交表单时出错：', error);
+  }
 };
 
 </script>
@@ -117,7 +177,7 @@ const removePhoto = () => {
               <div class="text-center">
                 <img v-if="user.avatar" :src="user.avatar" class="rounded img-fluid"
                      style="max-width: 180px; max-height: 120px;" alt="index">
-                <img v-else src="../assets/Picture/presetPlanIcon.jpg" class="rounded img-fluid" alt="" style="max-width: 180px; max-height: 120px;"/>
+                <img v-else :src="previewPicture" class="rounded img-fluid" alt="" style="max-width: 180px; max-height: 120px;"/>
               </div>
             </div>
 
@@ -159,7 +219,7 @@ const removePhoto = () => {
         </div>
 
         <div class="button-div" style="display: flex; justify-content: center">
-        <v-btn type="button" @click="" style="width: 400px">
+        <v-btn type="button" @click="submitForm" style="width: 400px">
          送出方案
         </v-btn>
         </div>

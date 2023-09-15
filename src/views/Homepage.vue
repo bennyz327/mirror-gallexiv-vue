@@ -1,5 +1,5 @@
 <script setup>
-import {ref, computed, onMounted} from 'vue';
+import {ref, computed, onMounted, reactive} from 'vue';
 import axios from 'axios';
 import Navbar from "../components/Navbar.vue";
 import TagFunction from "../components/functionComponents/TagFunction.vue";
@@ -8,15 +8,37 @@ import {useUserStore} from "@/store/userStore.js";
 const {isLogin,token,name} = useUserStore()
 
 let decodeName = eval("'"+name+"'")
+import PostPictureView from "@/components/PostPictureView.vue";
 
-import jsonFile from "../assets/tag.json"
-import imgJsonFile from "../assets/imgList.json"
+// import jsonFile from "../assets/tag.json"
+// import imgJsonFile from "../assets/imgList.json"
 
-
-const json = ref(jsonFile)
+// const json = ref(jsonFile)
+const json = ref([])
 
 // HomePage 假資料
-const imgDataImportHomePage = ref(imgJsonFile);
+// const imgDataImportHomePage = ref(imgJsonFile);
+const URL =  import.meta.env.VITE_API_Post
+const PostDetail = reactive({});
+
+const loadAllPost = async () => {
+  try{
+    const response = await axios.get(URL)
+    console.log(response.data.data)
+    PostDetail.value = response.data.data;
+
+    PostDetail.value.forEach((item) => {
+      // console.log(imgUrlList.value)
+      console.log("進迴圈"+item)
+      loadblobUrl(item);
+    });
+
+  }catch (error){
+    console.error('加载本地 JSON 文件失败：', error);
+  }
+};
+
+loadAllPost();
 
 // 圖片功能
 
@@ -26,6 +48,44 @@ const imgDataImportHomePage = ref(imgJsonFile);
 onMounted(() => {
   console.log(useUserStore())
 })
+
+//GPT
+
+const loadblobUrl = async (item) => {
+  if (!item || !item.picturesByPostId || item.picturesByPostId.length === 0) {
+    return;
+  }
+  const IMGURL = import.meta.env.VITE_API_PICTURE
+  const a = item.picturesByPostId[0].pictureId;
+  try {
+    const blob = await load(`${IMGURL}/test/${a}`);
+    item.blobUrl = window.URL.createObjectURL(blob);
+  } catch (error) {
+    console.error('Failed to load image:', error);
+  }
+};
+
+// 定义加载函数
+const load = async (src) => {
+  const config = { url: src, method: 'get', responseType: 'blob' };
+  const response = await axios.request(config);
+  return response.data; // the blob
+};
+
+// 为每个项目调用loadblobUrl
+//   console.log("hook")
+//   console.log(imgUrlList)
+//   console.log(imgUrlList.value)
+//   if ( imgUrlList.value && Array.isArray(imgUrlList.value)) {
+//     imgUrlList.value.forEach((item) => {
+//       console.log(imgUrlList.value)
+//       console.log("進迴圈"+item)
+//       loadblobUrl(item);
+//     });
+//   }
+
+
+//GPT
 
 </script>
 
@@ -63,7 +123,7 @@ onMounted(() => {
 
     <!-- 呈現圖片內容 -->
 
-    <UserHomePage :imgUrlList="imgDataImportHomePage"></UserHomePage>
+    <PostPictureView :imgUrlList="PostDetail"></PostPictureView>
 
   </div>
 

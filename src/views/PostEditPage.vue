@@ -1,5 +1,77 @@
 <script setup>
 import Navbar from "@/components/Navbar.vue";
+
+import {ref} from 'vue';
+import axios from 'axios';
+import {useUserStore} from "@/store/userStore.js";
+
+const id = ref(0)
+const getData = ref([]);
+
+const postTitle = ref('');
+const postDescription = ref('');
+const tags = ref([]);
+const postAgeLimit = ref(0);
+const postPublic = ref(0);
+const URL = import.meta.env.VITE_API_Post;
+const tagsArray = ref([]);
+const {token} = useUserStore();
+
+const getPostData = async () => {
+    const postId = 2
+
+  try {
+    const response = await axios.get(`${URL}/${postId}`,{headers: {'Authorization': token}})
+    getData.value = response.data;
+    postTitle.value = getData.value.data.postTitle;
+    postDescription.value=getData.value.data.postContent;
+    postPublic.value= getData.value.data.postPublic;
+    postAgeLimit.value=getData.value.data.postAgeLimit;
+    tags.value=getData.value.data.tagsByPostId;
+
+    console.log(getData.value)
+    console.log(tags.value)
+    console.log(response)
+
+    tagsArray.value = tags.value.map(tag => tag.tagName);
+
+    console.log(tagsArray)
+
+  }catch (error){
+    console.error('提交表单时出错：', error);
+  }
+}
+getPostData();
+
+
+const submitForm = async () => {
+
+  const postData = getData.value.data;
+  postData.postTitle = postTitle.value;
+  postData.postContent = postDescription.value;
+  postData.postAgeLimit = postAgeLimit.value;
+  postData.postPublic = postPublic.value;
+  postData.tagsByPostId = tagsArray.value;
+
+  console.log(postData)
+
+  try {
+    const response = await axios.put(`${URL}/update`, postData);
+
+    if (response.status === 200) {
+      // 重定向到成功页面或其他页面
+      // 注意：你需要使用Vue Router的实例来导航，这里假设已经安装并配置了Vue Router
+      // import { useRouter } from 'vue-router';
+      // const router = useRouter();
+      // router.push('/success');
+      console.log("回應")
+      console.log(response.data)
+    }
+  } catch (error) {
+    console.error('提交表单时出错：', error);
+  }
+};
+
 </script>
 
 <template>
@@ -50,13 +122,13 @@ import Navbar from "@/components/Navbar.vue";
               </div>
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" checked>
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" value="0" v-model="postAgeLimit" checked>
                   <label class="form-check-label" for="NSFWFalse">
                     無限制
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWTrue">
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWTrue" value="1" v-model="postAgeLimit">
                   <label class="form-check-label" for="NSFWTrue">
                     未成年不宜觀看
                   </label>
@@ -72,13 +144,13 @@ import Navbar from "@/components/Navbar.vue";
               </div>
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" checked>
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" value="0" v-model="postPublic" checked>
                   <label class="form-check-label" for="publicTrue">
                     公開
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse">
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse" value="1" v-model="postPublic">
                   <label class="form-check-label" for="publicFalse">
                     不公開
                   </label>
@@ -90,9 +162,10 @@ import Navbar from "@/components/Navbar.vue";
 
             <h5 style="text-align: left; display: block">Tag</h5>
             <div class="tag-div" style="margin: 8px">
-              <n-dynamic-tags v-model:value="tags"
+              <n-dynamic-tags v-model:value="tagsArray"
                               max="10"
                               size="large"
+
               />
             </div>
 
@@ -109,7 +182,7 @@ import Navbar from "@/components/Navbar.vue";
 
 .edit-form-block {
   width: 100%;
-margin-top: 32px;
+  margin-top: 32px;
 }
 
 .form-data-block {

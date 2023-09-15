@@ -1,6 +1,7 @@
 <script setup>
 
 import {reactive, ref} from "vue";
+import {useRoute} from "vue-router";
 import axios from "axios";
 import {useUserStore} from "@/store/userStore.js";
 
@@ -33,6 +34,44 @@ const getPlanData = async () => {
   }
 }
 getPlanData();
+
+
+//  刪除功能
+const route = useRoute();
+const planId = ref(route.query.planId || '');
+
+const deleteItem = async (planIdToDelete) => {
+  try {
+    //發送請求到特定API
+    await axios.delete(`/api/delete/${planIdToDelete}`);
+    console.error(planIdToDelete);
+
+  } catch (error) {
+    console.error('刪除失敗', error);
+    console.error(planIdToDelete);
+  }
+
+};
+
+
+
+//  刪除功能
+const route = useRoute();
+const planId = ref(route.query.planId || '');
+
+const deleteItem = async (planIdToDelete) => {
+  try {
+    //發送請求到特定API
+    await axios.delete(`/api/delete/${planIdToDelete}`);
+    console.error(planIdToDelete);
+
+  } catch (error) {
+    console.error('刪除失敗', error);
+    console.error(planIdToDelete);
+  }
+
+};
+
 
 </script>
 
@@ -68,18 +107,47 @@ getPlanData();
                       <h4 class="my-4 fw-normal">{{ item.planName }}</h4>
 
                       <!-- 方案價格 -->
-                      <h3 class="card-title pricing-card-title">NT${{ item.planPrice}}
+                      <h3 class="card-title pricing-card-title">NT${{ item.planPrice }}
                         <small class="text-muted fw-light">/mo</small>
                       </h3>
 
                       <hr>
 
-                      <!--TODO 編輯設定按鈕 -->
-                      <button :id="'subscribeSettingId' + index" type="button" class="w-100 btn btn-outline-secondary">
-                        <router-link to="/subscribe/edit" style="text-decoration:none;color:black;">
+                      <!--編輯功能導向-->
+                      <router-link :to="{name:'EditPlanPage', query:{planId: item.planId}}"
+                                   style="text-decoration:none;color:black;">
+                        <button :id="'subscribeSettingId' + index" type="button"
+                                class="w-100 btn btn-outline-secondary">
                           編輯
-                        </router-link>
+                        </button>
+                      </router-link>
+
+                      <!--刪除功能-->
+                      <button :id="'subscribeSettingId' + index" type="button"
+                              class="w-100 btn btn-outline-secondary" data-bs-toggle="modal"
+                              :data-bs-target="'#exampleModal'+ index"
+                              style="margin-top: 16px">
+                        刪除
                       </button>
+
+                      <!--確認輸入框-->
+                      <div class="modal fade" :id="'exampleModal' + index" tabindex="-1" :aria-labelledby="'exampleModalLabel' + index"
+                           aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">確定要刪除嗎</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                      aria-label="Close"></button>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                              <button type="button" class="btn btn-primary" @click="deleteItem(item.planId)">確定</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
                 </div>

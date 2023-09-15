@@ -1,8 +1,9 @@
 <script setup>
 import {onMounted, onUnmounted, ref, watch} from 'vue';
 import {NBackTop} from "naive-ui";
-import {useUserStore} from "@/store/userStore.js";
 
+// 登入後取得token跟isLogin狀態
+import {useUserStore} from "@/store/userStore.js";
 const {token, isLogin} = useUserStore()
 import axios from "axios";
 

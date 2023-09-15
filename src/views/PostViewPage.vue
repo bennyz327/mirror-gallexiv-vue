@@ -5,7 +5,7 @@ import PostViewCarousel from "../components/functionComponents/PostViewCarousel.
 import DescriptionArea from "@/components/functionComponents/CollapseFunction.vue";
 
 import {ref, onMounted, reactive, computed} from 'vue';
-import MessageArea from "@/components/functionComponents/MessageArea.vue";
+
 // 圖片區假資料
 const imgDataReference = ref([
   {
@@ -24,7 +24,8 @@ const imgDataReference = ref([
 
 //留言區假資料
 import messageAreaJsonFile from "@/assets/messageArea.json";
-const jsonDataImportMessageAreaVue = ref(messageAreaJsonFile);
+
+const jsonDataImportMessageArea = ref(messageAreaJsonFile);
 
 // 匯入資料到carousel
 const imgDataImportToCarousel = reactive(
@@ -96,6 +97,25 @@ const messageInputRules = [
     }
   },
 ];
+
+const messageEdit = ref(new Array(jsonDataImportMessageArea.value.length).fill(false));
+
+// 送出按鈕
+const isEditingArray = ref([]);
+
+// 初始化isEditingArray狀態
+jsonDataImportMessageArea.value.forEach(() => {
+  isEditingArray.value.push(false);
+});
+
+const isOwnerAndEditing = (index) => {
+  return isEditingArray.value[index];
+};
+
+const startEditing = (index) => {
+  isEditingArray.value[index] = true;
+};
+
 
 // const testData = reactive({
 //   liked: liked.value,
@@ -172,14 +192,97 @@ const messageInputRules = [
                   bg-color="white"
                   style="margin-bottom: 16px;"
               ></v-text-field>
-              <button class="btn btn-outline-info me-2" style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出</button>
+              <div class="message-create-button-div">
+              <button class="btn btn-outline-info me-2" @click="submitInputAndRefreshMessageArea"
+                      style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出
+              </button>
+              </div>
             </div>
 
           </div>
 
           <!-- 底部留言區塊 -->
           <div class="message-show-block">
-            <MessageArea :messageList="jsonDataImportMessageAreaVue"></MessageArea>
+
+            <!--留言區塊-->
+            <div class="follower-block" v-if="jsonDataImportMessageArea">
+              <!--水平置中區塊-->
+              <div class="single-follower-block">
+
+                <div class="single-follower-div" v-for="(item, index) in jsonDataImportMessageArea" :key="index">
+
+                  <!-- 留言者頭像區塊 -->
+                  <div class="follower-avatar-icon-div" style="display: flex">
+                    <div class="rounded-circle">
+                      <img :src="item.userIcon" alt="User" width="64" height="64" class="rounded-circle"
+                           style="object-fit:cover;"/>
+                    </div>
+                    <div class="follower-name-and-account"
+                         style="display: flex; height: 64px; line-height: 64px; padding-left: 16px">
+                      <div class="follower-name-div" style="font-weight:bold; font-size: 18px">{{ item.userName }}</div>
+                      <div class="follower-account-div" style="padding-left: 8px">@{{ item.userAccount }}</div>
+                    </div>
+
+                    <!--檢舉按鈕-->
+                    <div class="users-follow-button-div"
+                         style="display: flex; padding-left: 16px; justify-items: center; text-align: center; align-items: center">
+                      <div class="menu-block">
+                        <v-menu
+                            open-on-click
+                        >
+                          <template v-slot:activator="{ props }">
+                            <button
+                                v-bind="props"
+                            >
+                              <i class="fa-solid fa-arrow-up-from-bracket fa-xl" style="color: #d88d4f;"></i>
+                            </button>
+                          </template>
+                          <v-btn>檢舉</v-btn>
+                          <!--如果是作者本人的話-->
+                          <v-btn v-if="!isOwnerAndEditing(index)" @click="startEditing(index)">編輯</v-btn>
+                        </v-menu>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 留言者文字區塊 -->
+                  <div class="follower-detail-div">
+
+                    <!-- 一般顯示 -->
+                    <div class="follower-description-div" v-if="!isOwnerAndEditing(index)">{{ item.userDescription }}</div>
+
+                    <!-- 編輯時區塊 -->
+                    <div class="message-edit-text-div" v-if="isOwnerAndEditing(index)" style="display: flex">
+                      <v-text-field
+                          v-model="messageEdit[index]"
+                          :rules="messageEditRules"
+                          :counter="120"
+                          :maxlength="120"
+                          label="留言"
+                          bg-color="white"
+                          style="margin: 16px 0;"
+                      ></v-text-field>
+
+                      <div class="message-edit-button-div" style="display: flex; align-items: center">
+                      <button class="btn btn-outline-info me-2" @click="submitEditAndRefreshMessageArea"
+                              style="width: 80px; margin-left: 16px">
+                        送出
+                      </button>
+                      </div>
+
+                      <div class="message-edit-cancel-button-div" style="display: flex; align-items: center">
+                        <button class="btn btn-outline-secondary me-2" @click="submitEditCancelMessageArea"
+                                style="width: 80px; margin-left: 16px">
+                          取消
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -213,7 +316,9 @@ const messageInputRules = [
                 <v-btn>檢舉</v-btn>
 
                 <!--如果是作者本人的話-->
-                <v-btn v-if="!isOwner"><router-link to="/post/edit" style="text-decoration:none;color:black;">編輯作品</router-link></v-btn>
+                <v-btn v-if="!isOwner">
+                  <router-link to="/post/edit" style="text-decoration:none;color:black;">編輯作品</router-link>
+                </v-btn>
               </v-menu>
             </div>
 
@@ -401,6 +506,16 @@ a.link-color-avoid {
   text-decoration: none;
   color: black;
 
+}
+
+.single-follower-div {
+  margin-bottom: 24px;
+}
+
+.follower-description-div {
+  width: 95%;
+  padding: 8px;
+  border-bottom: 1px dotted;
 }
 
 

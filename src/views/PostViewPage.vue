@@ -8,29 +8,13 @@ import { ref, onMounted, reactive, computed } from 'vue';
 import MessageArea from "@/components/functionComponents/MessageArea.vue";
 // 圖片區假資料
 const postId = 1;
-//const imgDataReference = ref([
-// {
-//   "pictureId": "0",
-//   "https://cdn.discordapp.com/attachments/940525773457072169/1143597896827162654/101585724_p1.png",
-// },
-// {
-//   "pictureId": "1",
-//   "imgPath": "https://cdn.discordapp.com/attachments/940525773457072169/1143599997208776757/101317845_p0.png",
-// },
-// {
-//   "pictureId": "2",
-//   "imgPath": "https://cdn.discordapp.com/attachments/940525773457072169/1143601111375286352/RABBIT_108010979_p0.jpg",
-// }
-//]);
 
 const imgDataReference = ref([]);
-
 onMounted(async () => {
   try {
     const response = await axios.get(`http://localhost:8080/test/p?postId=${postId}`);
     console.log("urls:", response.data);
     const imageUrls = response.data;
-
     for (const imageUrl of imageUrls) {
       imgDataReference.value.push({ url: imageUrl, type: 'image/png' });
     }
@@ -38,42 +22,61 @@ onMounted(async () => {
     console.error('Error fetching images:', error);
   }
 });
-
-//留言區假資料
-import messageAreaJsonFile from "@/assets/messageArea.json";
-const jsonDataImportMessageAreaVue = ref(messageAreaJsonFile);
-
 // 匯入資料到carousel
 const imgDataImportToCarousel = reactive(
   imgDataReference.value
 );
 
+//留言區假資料
+import messageAreaJsonFile from "@/assets/messageArea.json";
+const jsonDataImportMessageAreaVue = ref(messageAreaJsonFile);
+
+
 // 其他區域假資料
-const testData = ref(null);
-
-const fetchData = async () => {
+const postData = ref(null);
+const URL_POST = import.meta.env.VITE_API_Post;
+const fackData = {
+  "userImageURL": "https://i.imgur.com/6rpzbog.gif",
+  "postUserImageURL": "https://media.discordapp.net/attachments/782068953899335710/1138768475754598420/83E0E2EE11DE10FD3314E2FE2D1EBDAE.gif",
+};
+const loadPost = async () => {
   try {
-
-    const fakeUserData = {
-      "postUserName": "Aosora",
-      "postDescription": "夏萊的老師有無窮的包容力  還有無限的地下室<br/>還有無限的地下室<br/>還有無限的地下室<br/>還有無限的地下室",
-      "postDate": "2022-10-02",
-      "postTitle": "Fbi Open UP",
-      "userImageURL": "https://i.imgur.com/6rpzbog.gif",
-      "postUserImageURL": "https://media.discordapp.net/attachments/782068953899335710/1138768475754598420/83E0E2EE11DE10FD3314E2FE2D1EBDAE.gif",
-    };
-
-    setTimeout(() => {
-      testData.value = fakeUserData;
-    }, 1000);
+    const response = await axios.get(`http://localhost:8080/posts/post?postId=${postId}`);
+    console.log(response.data);
+    postData.value = response.data.data;
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
 };
-
 onMounted(() => {
-  fetchData();
+  loadPost();
 });
+
+// const testData = ref(null);
+
+// const fetchData = async () => {
+//   try {
+
+//     const fakeUserData = {
+//       "postUserName": "Aosora",
+//       "postDescription": "夏萊的老師有無窮的包容力  還有無限的地下室<br/>還有無限的地下室<br/>還有無限的地下室<br/>還有無限的地下室",
+//       "postDate": "2022-10-02",
+//       "postTitle": "Fbi Open UP",
+//       "userImageURL": "https://i.imgur.com/6rpzbog.gif",
+//       "postUserImageURL": "https://media.discordapp.net/attachments/782068953899335710/1138768475754598420/83E0E2EE11DE10FD3314E2FE2D1EBDAE.gif",
+//     };
+
+//     setTimeout(() => {
+//       testData.value = fakeUserData;
+//     }, 1000);
+//   } catch (error) {
+//     console.error('Error fetching user data:', error);
+//   }
+// };
+
+// onMounted(() => {
+//   fetchData();
+// });
 
 // 按鈕功能
 const liked = ref(false);
@@ -136,7 +139,7 @@ const messageInputRules = [
 
   <Navbar></Navbar>
 
-  <div class="container-sm" v-if="testData">
+  <div class="container-sm" v-if="postData">
     <div class="container-postViewPageStyle">
 
       <!--------------------------------左半部區塊----------------------------------------->
@@ -173,7 +176,7 @@ const messageInputRules = [
             <!-- 留言者頭像區塊 -->
             <div class="message-user-avatar-block" style="align-items: center">
               <div class="rounded-circle" style="display:flex">
-                <img :src="testData.userImageURL" alt="User" width="64" height="64" class="rounded-circle"
+                <img :src="fackData.userImageURL" alt="User" width="64" height="64" class="rounded-circle"
                   style="object-fit:cover;" />
               </div>
             </div>
@@ -205,7 +208,7 @@ const messageInputRules = [
           <div class="picture-name-block">
 
             <div class="picture-name-div">
-              <h4 class="ellipsis" id="mainPostPicName">{{ testData.postTitle }}</h4>
+              <h4 class="ellipsis" id="mainPostPicName">{{ postData.postTitle }}</h4>
             </div>
 
             <!--Menu按鈕區塊-->
@@ -235,26 +238,26 @@ const messageInputRules = [
               <!-- 頭像 -->
               <div class="author-icon-div">
                 <div class="rounded-circle" style="display:flex">
-                  <img :src="testData.postUserImageURL" alt="User" width="64" height="64" class="rounded-circle"
+                  <img :src="fackData.postUserImageURL" alt="User" width="64" height="64" class="rounded-circle"
                     style="object-fit:contain;" />
                 </div>
 
                 <!-- 名稱 -->
                 <div class="author-name-div">
                   <h6 class="ellipsis" id="mainPostUserName">
-                    {{ testData.postUserName }}
+                    {{ postData.userinfoByUserId.userName }}
                   </h6>
                   <br>
                 </div>
               </div>
 
               <div class="picture-date-div">
-                <p>上傳日期：{{ testData.postDate }}</p>
+                <p>上傳日期：{{ postData.postTime }}</p>
               </div>
 
               <!-- 圖片敘述 -->
               <div class="picture-description-div" style="display: flex;justify-content: center">
-                <DescriptionArea :descriptionText="testData.postDescription"></DescriptionArea>
+                <DescriptionArea :descriptionText="postData.postContent"></DescriptionArea>
               </div>
 
             </div>

@@ -144,22 +144,44 @@ const signInSubmit = async () => {
 
   if (signInAccount.value && signInPwd.value && signInVerification.value) {
     try {
-      const signInData = {
-        account: signInAccount.value,
-        password: signInPwd.value,
-        verification: signInVerification.value,
-      };
+      // const signInData = {
+      //   name: signInAccount.value,
+      //   passwd: signInPwd.value,
+      //   code: signInVerification.value,
+      //   token: UUID.value,
+      // };
+      const signInFormData = new FormData();
+      signInFormData.append('name', signInAccount.value);
+      signInFormData.append('passwd', signInPwd.value);
+      signInFormData.append('code', signInVerification.value);
+      signInFormData.append('token', UUID.value);
 
-      const response = await axios.post('http://localhost:8080/login', signInData);
+      console.log("登入資料")
+      console.log(signInFormData)
 
-      if (response.data.code === 200) {
-        // 成功登入處理
-      } else {
-        // 失敗登入處理
-        setTimeout(() => {
-          loginErrorMsg.value = '無此帳號或密碼';
-        }, 3000);
-      }
+      const response = await axios.post('http://localhost:8080/login', signInFormData, {timeout: 3000})
+          .then((response) => {
+            console.log("登入成功");
+            console.log(response);
+            console.log(response.data);
+            console.log(response.data.code);
+          }).catch((error) =>{
+            loginErrorMsg.value = '無此帳號或密碼';
+            console.log(error);
+          })
+
+      // if (response.data.code === 200) {
+      //   // 成功登入處理
+      //   console.log("登入成功");
+      //   console.log(response.data.code);
+      // } else {
+      //   // 失敗登入處理
+      //   console.log(response.data.data)
+      //   setTimeout(() => {
+      //     loginErrorMsg.value = '無此帳號或密碼';
+      //   }, 3000);
+      // }
+
     } catch (error) {
       console.error('發生錯誤：', error);
       setTimeout(() => {

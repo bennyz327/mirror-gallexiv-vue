@@ -4,11 +4,12 @@ import {onMounted, ref} from 'vue';
 import axiosInstance from './api/api.js'
 import {useUserStore} from "@/store/userStore.js";
 
-const {token} = useUserStore()
+const {token, isLogin} = useUserStore()
 
 import backEndJsonFile from "@/assets/backendPage.json";
 import axios from "axios";
 import Default from "vue-upload-component";
+import router from "@/router/router.js";
 
 const jsonDataImportBackendVue = ref(backEndJsonFile);
 let items = ref();
@@ -27,6 +28,14 @@ const deletePost = (postId) => {
   console.log("刪除ID", postId);
 };
 
+//先確認是否登入
+const ifNotLogin = () => {
+  if (!isLogin) {
+    router.push('/login');
+  }
+};
+ifNotLogin();
+
 
 // onMounted(() => {
 function loadPersonPost() {
@@ -36,8 +45,8 @@ function loadPersonPost() {
   //     'Authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5NDQyNjAzNiwiZXhwIjoxNjk0NDI3ODM2fQ.ci4vgyLtaw338kvs9-'
   //   }
   // }
-  const url = 'http://172.18.135.72:8080/posts/person'
-  axiosInstance.post(url, null,{
+  const url = 'http://localhost:8080/posts/person'
+  axiosInstance.post(url, null, {
     headers: {
       'Authorization': token
     }
@@ -52,7 +61,26 @@ function loadPersonPost() {
 }
 
 loadPersonPost();
+
 // })
+
+function testRole() {
+
+  const url = 'http://localhost:8080/role'
+  axiosInstance.get(url, {
+    headers: {
+      'Authorization': token+'22rr'
+    }
+  })
+      .then((response) => {
+        console.log(response.data.msg);
+      })
+      .catch((error) => {
+        router.push('/401')
+        console.error(error.response.data.msg);
+      });
+}
+
 
 </script>
 
@@ -65,8 +93,9 @@ loadPersonPost();
     <div class="title-text">
       <h3>貼文管理</h3>
     </div>
+    <v-btn @click="testRole">測試不合法 token 跳轉401</v-btn>
 
-    <div>{{token}}</div>
+    <div>{{ token }}</div>
 
     <table class="table">
       <thead>

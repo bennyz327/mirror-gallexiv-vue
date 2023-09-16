@@ -2,6 +2,7 @@
 import {onMounted, onUnmounted, ref, watch} from 'vue';
 import {NBackTop} from "naive-ui";
 import {useUserStore} from "@/store/userStore.js";
+import router from "@/router/router.js";
 
 const {token, isLogin} = useUserStore()
 
@@ -30,6 +31,14 @@ const search = () => {
   // axios.get(apiUrl.value).then(response => {
   // });
   console.log('API request URL: ', apiUrl.value);
+};
+
+const logout = () => {
+  console.log('logout');
+  localStorage.removeItem('token');
+  localStorage.removeItem('username');
+  console.log('準備登出')
+  location.reload();
 };
 
 </script>

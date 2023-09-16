@@ -87,6 +87,11 @@ const routes = [
         component: () => component404,
     },
     {
+        path: '/401',
+        name: '401',
+        component: () => import("@/components/Page401.vue"),
+    },
+    {
         path: '/:pathMatch(.*)',
         redirect: '/404'
     }
@@ -98,19 +103,39 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    // 每次路由切換時就重新加載javascript
+
+    // 每次路由切換時就重新加載
     const store = useUserStore();
+
     //如果路徑開頭是/200 就擷取後面token的參數放到localStorage
+    // if (to.path.startsWith('/200')) {
+    //     localStorage.setItem('token', to.query.token);
+    //     localStorage.setItem('username', to.query.username);
+    // }
+
+    //如果原始路徑是login 且目標路徑是200
     if (to.path.startsWith('/200')) {
-        localStorage.setItem('token', to.query.token);
-        localStorage.setItem('username', to.query.username);
+        //google OAuth登入 成功 的情況
+        if (to.query.token !== undefined) {
+            localStorage.setItem('token', to.query.token);
+            localStorage.setItem('username', to.query.username);
+        }
+        //一般登入 成功 的情況
+        if (to.query.formLogin === true) {
+        }
+    }
+    if (to.path.startsWith('/401')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
     }
 
+    //最後若本地有登入資料就將資料放到store，並將isLogin設為true
     store.token = localStorage.getItem('token');
     store.name = localStorage.getItem('username');
-    if(store.token!==null){
+    if (store.token !== null) {
         store.isLogin = true
     }
+
     next()
 })
 

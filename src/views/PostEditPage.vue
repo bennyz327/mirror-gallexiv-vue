@@ -18,7 +18,7 @@ const tagsArray = ref([]);
 const {token} = useUserStore();
 
 const getPostData = async () => {
-    const postId = 2
+    const postId = 5
 
   try {
     const response = await axios.get(`${URL}/${postId}`,{headers: {'Authorization': token}})
@@ -56,7 +56,7 @@ const submitForm = async () => {
   console.log(postData)
 
   try {
-    const response = await axios.put(`${URL}/update`, postData);
+    const response = await axios.put(`${URL}/update`, postData,{headers: {'Authorization': token}});
 
     if (response.status === 200) {
       // 重定向到成功页面或其他页面

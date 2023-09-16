@@ -23,37 +23,12 @@ const getPlanData = async () => {
     const response = await axios.get(`${URL}/test`,{headers: {'Authorization': token}
     });
     getData.value = response.data.data;
-    // subscriptionImg.value = getData.value.data.planPicture;
-    // subscriptionName.value = getData.value.data.planName;
-    // subscriptionPrice.value = getData.value.data.planPrice;
-
-
 
   }catch (error){
     console.error('提交表单时出错：', error);
   }
 }
 getPlanData();
-
-
-//  刪除功能
-const route = useRoute();
-const planId = ref(route.query.planId || '');
-
-const deleteItem = async (planIdToDelete) => {
-  try {
-    //發送請求到特定API
-    await axios.delete(`/api/delete/${planIdToDelete}`);
-    console.error(planIdToDelete);
-
-  } catch (error) {
-    console.error('刪除失敗', error);
-    console.error(planIdToDelete);
-  }
-
-};
-
-
 
 //  刪除功能
 const route = useRoute();

@@ -10,13 +10,19 @@ import '../assets/css/upload/common.css'
 
 import {onMounted, ref, watch} from "vue";
 import axios from "axios";
+import {useUserStore} from "@/store/userStore.js";
 
+const {token} = useUserStore();
 const postTitle = ref("");
 const postDescription = ref("");
+const nsfwValue = ref(0);
+const isPublic = ref(0);
+
 //先用MAP處理刪除操作
 const newImgMap = new Map();
 const fileArrMap = new Map();
 
+//貼文Title限制
 const postTitleRules = [
   (value) => {
     if (value && value.length <= 30 && value.trim().length > 0) {
@@ -29,6 +35,7 @@ const postTitleRules = [
   },
 ];
 
+//貼文description限制
 const postDescriptionRules = [
   (value) => {
     if (value && value.length <= 250) {
@@ -49,10 +56,6 @@ watch(tags, (newTags) => {
   tagsAsJson.value = JSON.stringify(newTags);
 });
 
-// json傳入功能
-const nsfw = ref(0);
-const isPublic = ref(0);
-
 
 $(function () {
   var delParent;
@@ -70,7 +73,6 @@ $(function () {
     var input = $(this).parent(); //獲取文本框
 
     //遍歷
-
     var numUp = imgContainer.find(".up-section").length;
     var totalNum = numUp + fileList.length;  //總數量
 
@@ -192,6 +194,20 @@ $(function () {
   }
 })
 
+const PLANURL = import.meta.env.VITE_API_PLAN;
+const planData = ref();
+const selectedPlan = ref();
+const getPlanData = async () => {
+  try {
+    const response = await axios.get(`${PLANURL}/test`,{headers: {'Authorization': token}})
+    planData.value = response.data.data;
+    console.log(planData.value)
+  }catch (error){
+    console.error('提交表单时出错：', error);
+  }
+}
+getPlanData();
+
 const submitForm = (newImgMap, fileMap) => {
 
   //map轉成字串陣列，只是看看，沒有用到
@@ -217,12 +233,14 @@ const submitForm = (newImgMap, fileMap) => {
   const postData = {
     title: postTitle.value,
     description: postDescription.value,
-    nsfw: nsfw.value,
+    nsfw: nsfwValue.value,
     isPublic: isPublic.value,
     tags: tags.value.toString(),
+    planId: selectedPlan.value,
   };
 
   const formData = new FormData();
+  console.log(postData)
   console.log('送formData');
 
   //放入所有圖片和JSON資料
@@ -234,6 +252,7 @@ const submitForm = (newImgMap, fileMap) => {
   //送出
   axios.post('http://localhost:8080/post/upload', formData, {
     headers: {
+      'Authorization': token,
       'Content-Type': 'multipart/form-data'
     }
   })
@@ -359,13 +378,13 @@ const submitForm = (newImgMap, fileMap) => {
               </div>
               <div style="margin-top: 8px">
                 <div class="form-check-inline">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" value="1" v-model="isPublic">
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" value="0" v-model="isPublic">
                   <label class="form-check-label" for="publicTrue" style="margin-left: 8px">
                     公開
                   </label>
                 </div>
                 <div class="form-check-inline">
-                  <input class="form-check-input" type="radio" name="publicRadio" value="0" id="publicFalse" v-model="isPublic">
+                  <input class="form-check-input" type="radio" name="publicRadio" value="1" id="publicFalse" v-model="isPublic">
                   <label class="form-check-label" for="publicFalse" style="margin-left: 8px">
                     不公開
                   </label>
@@ -381,7 +400,7 @@ const submitForm = (newImgMap, fileMap) => {
               </div>
               <div style="margin-top: 8px">
                 <div class="form-check-inline" style="width: 200px">
-                  <input class="form-check-input" type="radio" name="planRadio" value="0" id="planNone" v-model="selectedPlan">
+                  <input class="form-check-input" type="radio" name="planRadio" value="null" id="planNone" v-model="selectedPlan">
                   <label class="form-check-label" for="planNone" style="margin-left: 8px">
                     無限制
                   </label>

@@ -23,17 +23,18 @@ const URL =  import.meta.env.VITE_API_Post
 const liked = ref([]);
 const hovered = ref([]);
 
-const loadAllPost = async () => {
-  try{
-    const response = await axios.get(URL)
-    console.log(response.data)
-    datas.postName = response.data.postName
-    console.log(datas.postName)
-    datas.postId = response.data.postId
-  }catch (error){
-    console.error('加载本地 JSON 文件失败：', error);
-  }
-};
+// const loadAllPost = async () => {
+//   try{
+//     const response = await axios.get(URL)
+//     console.log(response.data)
+//     datas.postName = response.data.postName
+//     console.log(datas.postName)
+//     datas.postId = response.data.postId
+//
+//   }catch (error){
+//     console.error('加载本地 JSON 文件失败：', error);
+//   }
+// };
 
 const toggleLike = (index) => {
   liked.value[index] = !liked.value[index];
@@ -50,13 +51,13 @@ const heartClass = computed(() => {
     }
   };
 });
-loadAllPost();
+// loadAllPost();
 
 </script>
 
 <template>
 
-  <div v-if="datas">
+  <div v-if="imgUrlList">
 
     <div class="galley-middle-block">
       <div class="picture-galley-block">
@@ -77,14 +78,14 @@ loadAllPost();
             <div class="picture-item-user-div">
               <div class="picture-item-user-icon-div">
                 <router-link :to="'/user/' + item.userId">
-                  <img :src="item.userImg" alt="User" width="32" height="32" class="rounded-circle"
+                  <img :src="item.userinfoByUserId.avatar" alt="User" width="32" height="32" class="rounded-circle"
                        style="object-fit: cover;border: 1px solid #ccc;"/>
                 </router-link>
               </div>
 
               <div class="picture-item-user-name-div">
                 <router-link :to="'/user/' + item.userId" style="text-decoration:none; color:inherit; float: left">
-                  <p>{{ item.userName }}</p>
+                  <p>{{ item.userinfoByUserId.userName}}</p>
                 </router-link>
               </div>
 

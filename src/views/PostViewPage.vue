@@ -5,11 +5,11 @@ import PostViewCarousel from "../components/functionComponents/PostViewCarousel.
 import DescriptionArea from "@/components/functionComponents/CollapseFunction.vue";
 import { useUserStore } from "@/store/userStore.js";
 import { ref, onMounted, reactive, computed } from 'vue';
-import MessageArea from "@/components/functionComponents/MessageArea.vue";
-// 圖片區假資料
+//import MessageArea from "@/components/functionComponents/MessageArea.vue";
 const { token } = useUserStore();
 const postId = 1;
 
+// 圖片資料
 const imgDataReference = ref([]);
 onMounted(async () => {
   try {
@@ -29,11 +29,29 @@ const imgDataImportToCarousel = reactive(
 );
 
 //留言區假資料
-import messageAreaJsonFile from "@/assets/messageArea.json";
-const jsonDataImportMessageAreaVue = ref(messageAreaJsonFile);
+// import messageAreaJsonFile from "@/assets/messageArea.json";
+// const jsonDataImportMessageAreaVue = ref(messageAreaJsonFile);
+
+const replyText = ref("");
+
+//依 postId 找到 userName, commentTest, commentTime
+const comments = ref([]);
+const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
+const loadComments = async () => {
+  try {
+    const response = await axios.get(`${URL_COMMENT}/findByPostId?postId=${postId}`);
+    console.log(response.data);
+    comments.value = response.data.data; // 假設返回的數據在 response.data 的 data 屬性中
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+  }
+}
+onMounted(() => {
+  loadComments();
+});
 
 
-// 其他區域假資料
+// 其他區域資料
 const postData = ref(null);
 const URL_POST = import.meta.env.VITE_API_Post;
 const fackData = {
@@ -69,9 +87,52 @@ async function insertCommnet() {
   } catch (error) {
     console.error('Error sending comment:', error);
   }
-  //reload loadComments()
+  loadComments();
 
 }
+
+//刪除留言
+const deleteComment = async (commentId) => {
+  if (window.confirm("真的要刪除嗎?")) {
+    console.log("delect ID：", commentId)
+    const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
+    try {
+      const resDeleteComment = await axios.delete(`${URL_COMMENT}/delete?commentId=${commentId}`, { headers: { 'Authorization': token } });
+      console.log(resDeleteComment.status)
+      console.log('Response from server:', resDeleteComment.data);
+    } catch (error) {
+      console.error('Error sending comment:', error);
+    }
+  }
+  loadComments();
+}
+
+//------------更新留言-----------------//
+//取得初始值
+const editingCommentId = ref(null); // 取得要編輯的 commentId
+const originalCommentText = ref(''); // 取得原本的 commentText
+const editedCommentText = ref(''); // 取得編輯過的 commentId
+// 點擊‘更新’後進入編輯
+const editComment = (commentId) => {
+  editingCommentId.value = commentId;
+  originalCommentText.value = comments.value.find(c => c.commentId === commentId).commentText;//確認 commentId 一致
+  editedCommentText.value = originalCommentText.value; // 將原本的 commentText 設為初始值
+};
+// 將編輯後的 commentText 傳到後端
+const updateComment = async (commentId) => {
+  console.log("commentId: ", commentId);
+  const commentText = editedCommentText.value;// 取得新commentText
+  console.log("commentText: ", commentText);
+  const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
+  const resUpdateComment = await axios.put(`${URL_COMMENT}/update?commentId=${commentId}&commentText=${commentText}`, { headers: { 'Authorization': token } });
+  console.log('Saving edited comment:', resUpdateComment.value);
+  // 清空初始值
+  editingCommentId.value = null;
+  originalCommentText.value = '';
+  editedCommentText.value = '';
+  loadComments();
+};
+//---------------------------------------------//
 
 // 按鈕功能
 const liked = ref(false);
@@ -138,12 +199,32 @@ const messageInputRules = [
 //     // 这里放要传递给后端的数据
 //   },
 // });
+//格式化 commentTime
+function formatTime(times) {
+  const now = new Date();
+  const commentTime = new Date(times);
+  const diffInSeconds = now - commentTime;
 
-
-// const sendDataToBackend = (data) => {
-//   // const res = axios.post('',data);
-//
-// };
+  if (diffInSeconds < (60 * 1000)) {
+    const timeDifferent = Math.floor(diffInSeconds / 1000)
+    return `${timeDifferent}秒前`;
+  } else if (diffInSeconds < (60 * 60 * 1000)) {
+    const timeDifferent = Math.floor(diffInSeconds / (60 * 1000))
+    return `${timeDifferent}分鐘前`;
+  } else if (diffInSeconds < (24 * 60 * 60 * 1000)) {
+    const timeDifferent = Math.floor(diffInSeconds / (60 * 60 * 1000))
+    return `${timeDifferent}小時前`;
+  } else if (diffInSeconds < (30 * 24 * 60 * 60 * 1000)) {
+    const timeDifferent = Math.floor(diffInSeconds / (24 * 60 * 60 * 1000))
+    return `${timeDifferent}天前`;
+  } else if (diffInSeconds < (365 * 24 * 60 * 60 * 1000)) {
+    const timeDifferent = Math.floor(diffInSeconds / (30 * 24 * 60 * 60 * 1000))
+    return `${timeDifferent}個月前`;
+  } else {
+    const timeDifferent = Math.floor(diffInSeconds / (365 * 24 * 60 * 60 * 1000))
+    return `${timeDifferent}年前`;
+  }
+}
 
 
 </script>
@@ -225,81 +306,83 @@ const messageInputRules = [
 
           <!-- 底部留言區塊 -->
           <div class="message-show-block">
+            <div class="follower-block" v-if="comments">
 
-            <!--留言區塊-->
-            <div class="follower-block" v-if="jsonDataImportMessageArea">
               <!--水平置中區塊-->
               <div class="single-follower-block">
 
-                <div class="single-follower-div" v-for="(item, index) in jsonDataImportMessageArea" :key="index">
+                <div class="single-follower-div" v-for="comment in comments" :key="comment.commentId">
 
                   <!-- 留言者頭像區塊 -->
                   <div class="follower-avatar-icon-div" style="display: flex">
                     <div class="rounded-circle">
-                      <img :src="item.userIcon" alt="User" width="64" height="64" class="rounded-circle"
-                           style="object-fit:cover;"/>
+                      <img src="" alt="User" width="64" height="64" class="rounded-circle" style="object-fit:cover;" />
                     </div>
                     <div class="follower-name-and-account"
-                         style="display: flex; height: 64px; line-height: 64px; padding-left: 16px">
-                      <div class="follower-name-div" style="font-weight:bold; font-size: 18px">{{ item.userName }}</div>
-                      <div class="follower-account-div" style="padding-left: 8px">@{{ item.userAccount }}</div>
+                      style="display: flex; height: 64px; line-height: 64px; padding-left: 16px">
+                      <div class="follower-name-div" style="font-weight:bold; font-size: 18px">
+                        {{ comment.userinfoByUserId.userName }}
+                      </div>
+
+
+
+                      <!-- <div class="follower-account-div" style="padding-left: 8px">@{{ comment.userinfoByUserId.account }}
+                      </div> -->
+                    </div>
+                    <div class="single-message-userContextTime-div">{{
+                      formatTime(comment.commentTime) }}
+                    </div>
+                    <div>
+                      <button class="update-button" type="button" @click="editComment(comment.commentId)"
+                        style="margin-left: 10px; border: 1px solid gainsboro; margin-top: 19px; border-radius: 5px; padding: 1px;">更新</button>
+                    </div>
+                    <div>
+                      <button class="delete-button" type="button" @click="deleteComment(comment.commentId)"
+                        style="margin-left: 10px; border: 1px solid gainsboro; margin-top: 19px; border-radius: 5px; padding: 1px;">刪除</button>
+
                     </div>
 
                     <!--檢舉按鈕-->
-                    <div class="users-follow-button-div"
-                         style="display: flex; padding-left: 16px; justify-items: center; text-align: center; align-items: center">
+                    <!-- <div class="users-follow-button-div"
+                      style="display: flex; padding-left: 16px; justify-items: center; text-align: center; align-items: center">
                       <div class="menu-block">
-                        <v-menu
-                            open-on-click
-                        >
+                        <v-menu open-on-click>
                           <template v-slot:activator="{ props }">
-                            <button
-                                v-bind="props"
-                            >
+                            <button v-bind="props">
                               <i class="fa-solid fa-arrow-up-from-bracket fa-xl" style="color: #d88d4f;"></i>
                             </button>
                           </template>
-                          <v-btn>檢舉</v-btn>
-                          <!--如果是作者本人的話-->
-                          <v-btn v-if="!isOwnerAndEditing(index)" @click="startEditing(index)">編輯</v-btn>
+                          <v-btn>檢舉</v-btn> -->
+                    <!--如果是作者本人的話-->
+                    <!-- <v-btn v-if="!isOwner">編輯</v-btn>
                         </v-menu>
                       </div>
-                    </div>
+                    </div> -->
                   </div>
 
                   <!-- 留言者文字區塊 -->
                   <div class="follower-detail-div">
-
-                    <!-- 一般顯示 -->
-                    <div class="follower-description-div" v-if="!isOwnerAndEditing(index)">{{ item.userDescription }}</div>
-
-                    <!-- 編輯時區塊 -->
-                    <div class="message-edit-text-div" v-if="isOwnerAndEditing(index)" style="display: flex">
-                      <v-text-field
-                          v-model="messageEdit[index]"
-                          :rules="messageEditRules"
-                          :counter="120"
-                          :maxlength="120"
-                          label="留言"
-                          bg-color="white"
-                          style="margin: 16px 0;"
-                      ></v-text-field>
-
-                      <div class="message-edit-button-div" style="display: flex; align-items: center">
-                      <button class="btn btn-outline-info me-2" @click="submitEditAndRefreshMessageArea"
-                              style="width: 80px; margin-left: 16px">
-                        送出
-                      </button>
-                      </div>
-
-                      <div class="message-edit-cancel-button-div" style="display: flex; align-items: center">
-                        <button class="btn btn-outline-secondary me-2" @click="submitEditCancelMessageArea"
-                                style="width: 80px; margin-left: 16px">
-                          取消
-                        </button>
-                      </div>
-
+                    <div class="single-message-userContext-div">
+                      <template v-if="editingCommentId === comment.commentId">
+                        <input class="sub-comment-input" v-model="editedCommentText">
+                        <button class="sub-comment-send" type="button"
+                          @click="updateComment(comment.commentId)">保存</button>
+                      </template>
+                      <template v-else>
+                        <div class="follower-description-div">{{ comment.commentText }}</div>
+                      </template>
+                      <!-- <form action="" class="reply-form">
+                        <div class="">
+                          <input class="sub-comment-input" v-model="comment.subCommentText">
+                          <button class="sub-comment-send" type="button"
+                            @click="insertSubComment(comment.commentId, comment.subCommentText)">送出</button>
+                          <button class="sub-comment-reset" type="reset">取消</button>
+                        </div>
+                      </form> -->
                     </div>
+
+                    <!-- <div class="follower-description-div">{{ comment.commentText }}</div> -->
+
                   </div>
 
                 </div>
@@ -536,5 +619,30 @@ a.link-color-avoid {
   border-bottom: 1px dotted;
 }
 
+.single-message-userContextTime-div {
+  display: flex;
+  align-items: center;
 
+  margin-left: 15px;
+
+  color: rgb(130, 130, 130);
+  /* padding: 5px; */
+  /* margin-top: 10px; */
+}
+
+.update-button {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border: 1px, solid, gainsboro;
+  color: rgb(130, 130, 130);
+}
+
+.delete-button {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border: 1px, solid, gainsboro;
+  color: rgb(130, 130, 130);
+}
 </style>

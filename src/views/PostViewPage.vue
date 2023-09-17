@@ -101,7 +101,7 @@ const insertSubComment = async (commentId, subCommentText) => {
       commentText: subCommentText,
       parentCommentId: commentId,
     }
-    const resSubComment = await axios.post(`${URL_COMMENT}/insert`, subComment)
+    const resSubComment = await axios.post(`${URL_COMMENT}/insert`, subComment, { headers: { 'Authorization': token } })
     console.log(resSubComment.status);
     subComment.commentText = ""
     console.log('Response from server:', resSubComment.data);

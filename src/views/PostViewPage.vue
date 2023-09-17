@@ -91,6 +91,26 @@ async function insertCommnet() {
 
 }
 
+//新增子留言
+const insertSubComment = async (commentId, subCommentText) => {
+  const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
+  try {
+    console.log(comment.value);
+    const subComment = {
+      postId: comment.postId,
+      commentText: subCommentText,
+      parentCommentId: commentId,
+    }
+    const resSubComment = await axios.post(`${URL_COMMENT}/insert`, subComment)
+    console.log(resSubComment.status);
+    subComment.commentText = ""
+    console.log('Response from server:', resSubComment.data);
+  } catch (error) {
+    console.error('Error sending comment:', error);
+  }
+  loadComments();
+}
+
 //刪除留言
 const deleteComment = async (commentId) => {
   if (window.confirm("真的要刪除嗎?")) {
@@ -114,6 +134,7 @@ const originalCommentText = ref(''); // 取得原本的 commentText
 const editedCommentText = ref(''); // 取得編輯過的 commentId
 // 點擊‘更新’後進入編輯
 const editComment = (commentId) => {
+  console.log("token:", token);
   editingCommentId.value = commentId;
   originalCommentText.value = comments.value.find(c => c.commentId === commentId).commentText;//確認 commentId 一致
   editedCommentText.value = originalCommentText.value; // 將原本的 commentText 設為初始值
@@ -124,8 +145,11 @@ const updateComment = async (commentId) => {
   const commentText = editedCommentText.value;// 取得新commentText
   console.log("commentText: ", commentText);
   const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
-  const resUpdateComment = await axios.put(`${URL_COMMENT}/update?commentId=${commentId}&commentText=${commentText}`, { headers: { 'Authorization': token } });
-  console.log('Saving edited comment:', resUpdateComment.value);
+  console.log("URL_COMMENT:", URL_COMMENT);
+  console.log("token:", token);
+  const resUpdateComment = await axios.put(`http://localhost:8080/comments/update?commentId=${commentId}&commentText=${commentText}`, { headers: { 'Authorization': token } });
+  console.log("token:", token);
+  console.log('Saving edited comment:', resUpdateComment.data);
   // 清空初始值
   editingCommentId.value = null;
   originalCommentText.value = '';
@@ -327,14 +351,14 @@ function formatTime(times) {
                       <template v-else>
                         <div class="follower-description-div">{{ comment.commentText }}</div>
                       </template>
-                      <!-- <form action="" class="reply-form">
+                      <form action="" class="reply-form">
                         <div class="">
                           <input class="sub-comment-input" v-model="comment.subCommentText">
                           <button class="sub-comment-send" type="button"
                             @click="insertSubComment(comment.commentId, comment.subCommentText)">送出</button>
                           <button class="sub-comment-reset" type="reset">取消</button>
                         </div>
-                      </form> -->
+                      </form>
                     </div>
 
                     <!-- <div class="follower-description-div">{{ comment.commentText }}</div> -->

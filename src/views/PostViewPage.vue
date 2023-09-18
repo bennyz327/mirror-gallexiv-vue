@@ -394,7 +394,7 @@ const submitEditCancelMessageArea = (index) => {
 
 .container-left-block {
   float: left;
-  width: auto;
+  width: 70%;
   margin-right: 16px;
 }
 

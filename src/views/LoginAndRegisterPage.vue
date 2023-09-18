@@ -252,7 +252,7 @@ const signInSubmit = async () => {
 
             <div class="verification-picture-div">
               <img class="captchaImg" :src="captchaImg" @click="getCaptcha"
-                   style="position: relative; right: 32px; top:8px" alt="載入失敗">
+                   style="max-width: 180px; position: relative; margin-top: 8px" alt="載入失敗">
               <!--              <span>{{UUID}}</span>-->
             </div>
           </div>
@@ -307,7 +307,7 @@ const signInSubmit = async () => {
             </div>
             <div class="verification-picture-div">
               <img class="captchaImg" :src="captchaImg" @click="getCaptcha"
-                   style="position: relative; right: 32px; top:8px" alt="載入失敗">
+                   style="max-width: 180px; position: relative; margin-top: 8px" alt="載入失敗">
               <!--              <span>{{UUID}}</span>-->
             </div>
           </div>

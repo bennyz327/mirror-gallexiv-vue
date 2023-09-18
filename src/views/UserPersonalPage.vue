@@ -76,7 +76,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
       <div class="user-block">
 
         <!--個人背景圖片-->
-        <div class="background-div">
+        <div class="background-div" style="object-fit: contain">
           <img :src="testData.backgroundPictureSrc" class="background-picture-src" alt="">
         </div>
 
@@ -268,7 +268,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 }
 
 .background-picture-src {
-  max-width: 100%;
+  width: 100%;
 }
 
 .user-introduce-block{

@@ -6,30 +6,27 @@ import axios from "axios";
 let tags = ref([]);
 const currentPage = ref(1);
 const itemsPerPage = 5;
-const URL = import.meta.env.VITE_API_TAG
 
-  const loadPopularTags = async () => {
-    try {
-      // 導入數據
-      const response =await axios.get(URL)
-      tags.value = response.data.data;
-      // console.log(response.data.data);
-    } catch (error) {
-      console.error('加载本地 JSON 文件失败：', error);
-    }
-  };
+const props = defineProps({
+  tagjson: Object,
+})
+// 將物件取出
+// const items = reactive(props.tagjson);
 
-onMounted(() => {
-  loadPopularTags();
+const tagJsonData = computed(() => {
+  return props.tagjson;
 });
+
+console.log(tagJsonData)
+
 
 const paginatedTags = computed(() => {
   const startIndex = (currentPage.value - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  return tags.value.slice(startIndex, endIndex);
+  return tagJsonData.value.tagName.slice(startIndex, endIndex);
 });
 
-const totalPages = computed(() => Math.ceil(tags.value.length / itemsPerPage));
+const totalPages = computed(() => Math.ceil(tagJsonData.value.length / itemsPerPage));
 
 const prevPage = () => {
   if (currentPage.value > 1) {
@@ -46,6 +43,8 @@ const nextPage = () => {
 
 <template>
   <div class="tag-div">
+{{tagJsonData}}
+{{tagJsonData.length}}
 
     <!-- 左側按鈕 -->
     <div class="d-flex justify-content-between align-items-center">
@@ -60,7 +59,7 @@ const nextPage = () => {
       <div class="d-flex flex-row">
         <div class="d-flex justify-content-between align-items-center"
              style="margin: 16px; background-color:#ffffff ">
-          <router-link :to="{ name: 'TagsSearchPage', params: { tagId: tag.tagId }}" class="text-decoration-none" v-for="(tag, index) in paginatedTags"
+          <router-link :to="{ name: 'TagSearchPage', params: { tagName: tag.tagName }}" class="text-decoration-none" v-for="(tag, index) in tagjson"
                        :key="index">
             <v-btn style="color: #0c4128;margin-left: 8px;">
               #{{ tag.tagName }}

@@ -275,7 +275,7 @@ function formatTime(times) {
 
   <Navbar></Navbar>
 
-  <div class="container-sm" v-if="testData">
+  <div class="container" v-if="testData">
     <div class="container-postViewPageStyle">
 
       <!--------------------------------左半部區塊----------------------------------------->
@@ -508,7 +508,6 @@ function formatTime(times) {
 <style scoped>
 .container-postViewPageStyle {
   display: flex;
-  overflow: hidden;
 }
 
 .container-left-block {
@@ -555,11 +554,10 @@ function formatTime(times) {
 }
 
 .container-right-block {
-  float: right;
   width: 480px;
   border-radius: 16px;
-  margin: 8px;
-  box-shadow: 0px 0px 3px rgba(0, 0, 0, 1);
+  margin: 8px 0;
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 1);
 }
 
 .container-button-block {

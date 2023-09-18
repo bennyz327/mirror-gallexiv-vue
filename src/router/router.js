@@ -35,25 +35,31 @@ const routes = [
         component: () => import("../views/PostCreatePage.vue"),
     },
     {
-        path: '/tags/',
-        name: 'TagsSearchPage',
-        component: () => import("../views/TagSearch.vue"),
-    },
-    {
-        path: '/search/follower/',
-        name: 'UserSearchPage',
-        component: () => import("../views/CreatorSearchPage.vue"),
-    },
-    {
         path: '/subscribe/create',
         name: 'PlanCreatePage',
         component: () => import("../views/PlanCreatePage.vue"),
+        props: (route) => route.params
     },
     {
         path: '/subscribe/edit',
-        name: 'EditPlanPage',
+        name: 'PlanEditPage',
         component: () => import("../views/PlanEditPage.vue"),
         props: (route) => route.query
+    },
+    {
+        path: '/search/user/:userName',
+        name: 'UserSearchPage',
+        component: () => import("../views/UserSearchPage.vue"),
+    },
+    {
+        path: '/search/post',
+        name: 'PostSearchPage',
+        component: () => import("../views/PostSearchPage.vue"),
+    },
+    {
+        path: '/search/tag/:tagName',
+        name: 'TagSearchPage',
+        component: () => import("../views/TagSearchPage.vue"),
     },
     {
         path: '/setting',

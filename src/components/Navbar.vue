@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, onUnmounted, ref, watch} from 'vue';
+import {ref} from 'vue';
 import {NBackTop} from "naive-ui";
 
 // 登入後取得token跟isLogin狀態
@@ -16,9 +16,22 @@ const router = useRouter();
 const inputString = ref('');
 const selectedOption = ref('作品名稱')
 
+// 切換搜尋功能
 const navigateOnEnter = () => {
   if (inputString.value.trim()) {
-    router.push({name: 'PostSearchPage', query: {postTitle: inputString.value}});
+    let routeName = 'PostSearchPage';
+    let paramName = 'postTitle';
+
+    if (selectedOption.value === '創作者名稱') {
+      routeName = 'UserSearchPage';
+      paramName = 'userName';
+    } else if (selectedOption.value === '標籤搜尋') {
+      routeName = 'TagSearchPage';
+      paramName = 'tagName';
+    }
+
+    const routeParams = { [paramName]: inputString.value };
+    router.push({ name: routeName, query: routeParams });
   }
 };
 

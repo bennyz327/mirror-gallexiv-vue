@@ -22,7 +22,7 @@ import NoneFoundPage from "@/components/functionComponents/NoneFoundPage.vue";
 
 // 取到的postTitle
 const route = useRoute();
-const postTitle = ref(route.query.postTitle || ''); // 使用 ref 创建响应式字符串
+const postTitle = ref(route.query.postTitle || ''); //  接收來自router的值以外要讓他成為ref可以更新資料
 
 const URL = import.meta.env.VITE_API_Post
 const PostDetail = reactive({});
@@ -44,8 +44,10 @@ const loadAllPost = async () => {
   }
 };
 
+// 執行第一次
 loadAllPost();
 
+// 重新載入postTitle的值送入axios
 watch(() => route.query.postTitle, (newPostTitle) => {
   postTitle.value = newPostTitle; // 更新 postTitle 的值
   loadAllPost();

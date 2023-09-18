@@ -63,9 +63,10 @@ const routes = [
         component: () => import("../views/TagSearchPage.vue"),
     },
     {
-        path: '/search/user/',
+        path: '/search/user',
         name: 'UserSearchPage',
         component: () => import("../views/UserSearchPage.vue"),
+        props: (route) => ({ userName: route.query.userName || '' })
     },
     {
         path: '/search/post',
@@ -74,9 +75,10 @@ const routes = [
         props: (route) => ({ postTitle: route.query.postTitle || '' })
     },
     {
-        path: '/search/tag/:tagName',
+        path: '/search/tag',
         name: 'TagSearchPage',
         component: () => import("../views/TagSearchPage.vue"),
+        props: (route) => ({ tagName: route.query.tagName || '' })
     },
     {
         path: '/setting',

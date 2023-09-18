@@ -47,7 +47,7 @@ const routes = [
         props: (route) => route.query
     },
     {
-        path: '/search/user/:userName',
+        path: '/search/user/',
         name: 'UserSearchPage',
         component: () => import("../views/UserSearchPage.vue"),
     },
@@ -55,6 +55,7 @@ const routes = [
         path: '/search/post',
         name: 'PostSearchPage',
         component: () => import("../views/PostSearchPage.vue"),
+        props: (route) => ({ postTitle: route.query.postTitle || '' })
     },
     {
         path: '/search/tag/:tagName',

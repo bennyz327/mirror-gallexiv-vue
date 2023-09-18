@@ -4,22 +4,38 @@ import {NBackTop} from "naive-ui";
 
 // 登入後取得token跟isLogin狀態
 import {useUserStore} from "@/store/userStore.js";
-
 const {token, isLogin} = useUserStore()
 import axios from "axios";
 
-import {useRouter} from 'vue-router';
-
-const router = useRouter();
 
 // 創建輸入的內容
 const inputString = ref('');
-const selectedOption = ref('作品名稱')
+const selectedOption = ref('作品名稱'); // 初始選項
 
-const navigateOnEnter = () => {
-  if (inputString.value.trim()) {
-    router.push({name: 'PostSearchPage', query: {postTitle: inputString.value}});
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute();
+const router = useRouter();
+
+const searchAndNavigate = () => {
+  // inputString 的值是否為空值
+  if (!inputString.value.trim()) {
+    return;
   }
+
+  let routeName = 'PostSearchPage';
+  let paramName = 'postTitle';
+
+  if (selectedOption.value === '創作者名稱') {
+    routeName = 'UserSearchPage';
+    paramName = 'userName';
+  } else if (selectedOption.value === '標籤搜尋') {
+    routeName = 'TagSearchPage';
+    paramName = 'tagName';
+  }
+
+  const routeParams = { [paramName]: inputString.value };
+  router.push({ name: routeName, query: routeParams });
 };
 
 </script>
@@ -64,36 +80,31 @@ const navigateOnEnter = () => {
 
         <div class="d-flex align-content-center flex-wrap">
 
-          <!--          <form class="d-flex">-->
+          <form class="d-flex">
 
-          <div class="d-flex flex-wrap align-items-center justify-content-center search-bar">
-            <input type="search"
-                   class="form-control me-1"
-                   placeholder="Search"
-                   aria-label="Search"
-                   v-model="inputString"
-                   @keydown.enter="navigateOnEnter">
-          </div>
+            <div class="d-flex flex-wrap align-items-center justify-content-center search-bar">
+              <input type="search" class="form-control me-1" placeholder="Search" aria-label="Search" v-model="inputString">
+            </div>
 
-          <div class="d-flex flex-wrap align-items-center justify-content-center">
-            <select v-model="selectedOption" class="form-select form-select" aria-label=".form-select-lg example">
-              <option value="作品名稱">作品名稱</option>
-              <option value="創作者名稱">創作者名稱</option>
-              <option value="標籤搜尋">標籤搜尋</option>
-            </select>
-          </div>
+            <div class="d-flex flex-wrap align-items-center justify-content-center">
+              <select v-model="selectedOption" class="form-select form-select" aria-label=".form-select-lg example">
+                <option value="作品名稱">作品名稱</option>
+                <option value="創作者名稱">創作者名稱</option>
+                <option value="標籤搜尋">標籤搜尋</option>
+              </select>
+            </div>
 
-          <!--            <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">-->
-          <!--              <button @click="searchAndNavigate" type="button" class="btn btn-outline-secondary">搜尋</button>-->
-          <!--            </div>-->
+            <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">
+              <button @click="searchAndNavigate" type="button" class="btn btn-outline-secondary">搜尋</button>
+            </div>
 
-          <div class="d-flex flex-wrap align-items-center justify-content-center">
-            <router-link to="/post/create">
-              <button type="button" class="btn btn-outline-info me-2">發文</button>
-            </router-link>
-          </div>
+            <div class="d-flex flex-wrap align-items-center justify-content-center">
+              <router-link to="/post/create">
+                <button type="button" class="btn btn-outline-info me-2">發文</button>
+              </router-link>
+            </div>
 
-          <!--          </form>-->
+          </form>
 
           <!-- 登入按鈕 -->
           <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">
@@ -144,18 +155,17 @@ const navigateOnEnter = () => {
       </div>
     </div>
   </div>
-
   <router-view></router-view>
 </template>
 
 <style scoped>
 
 .navbar-container {
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   position: sticky;
   top: 0;
   background-color: #fff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
 
@@ -172,6 +182,7 @@ const navigateOnEnter = () => {
     max-width: 120px;
   }
 }
+
 
 
 </style>

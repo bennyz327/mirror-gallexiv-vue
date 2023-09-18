@@ -72,9 +72,8 @@ const gender = ref("")
 const URL = import.meta.env.VITE_API_USER
 
 const getUserData = async () => {
-  const userId=1;
   try {
-    const response = await axios.get(`${URL}/${userId}`,{headers: {'Authorization': token}
+    const response = await axios.get(`${URL}/profile`,{headers: {'Authorization': token}
     });
     getData.value = response.data.data;
     email.value.value = getData.value.userEmail;
@@ -84,6 +83,7 @@ const getUserData = async () => {
     gender.value = getData.value.gender;
     // formattedValue.value = getData.value.birthday
     const inputDateString = formattedValue.value;
+    // TODO 空的生日日期不會留空
 
     const date = new Date(inputDateString);
 

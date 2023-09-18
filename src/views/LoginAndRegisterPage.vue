@@ -12,6 +12,7 @@ import {ref, watch} from "vue";
 
 const captchaImg = ref('');
 const pre = 'data:image/jpeg;base64,';
+const isReisterBtnAble = ref(false);
 const UUID = ref('');
 
 // const JavaBaseUrl = ref(import.meta.env.JAVA_API_BASEURL)
@@ -32,8 +33,12 @@ const getCaptcha = async () => {
   const response = await instance.get('/captcha')
   captchaImg.value = response.data.data.base64Img;
   UUID.value = response.data.data.token;
+  signUpErrorMsg.value = '';
 }
 getCaptcha();
+setTimeout(() => {
+  signUpErrorMsg.value = '驗證碼已過期，請點擊圖片重新取得'
+}, 120000);
 
 // 錯誤訊息
 const loginErrorMsg = ref('');
@@ -59,8 +64,8 @@ const {handleSubmit} = useForm({
       return '與第一次輸入比較不匹配'
     },
     signUpVerification(value) {
-      if (value?.length >= 4) return true
-      return '驗證碼至少有4個字元'
+      if (value?.length >= 5) return true
+      return '驗證碼至少有5個字元'
     }
   },
 })
@@ -78,26 +83,49 @@ const signUpSubmit = handleSubmit(async values => {
     account: values.signUpAccount,
     email: values.signUpEmail,
     password: values.signUpPwd,
-    verification: values.signUpVerification
+    verification: values.signUpVerification,
+    token: UUID.value,
   };
+  console.log("註冊資料")
+  console.log(modifiedSignUpValues)
   console.log(JSON.stringify(modifiedSignUpValues, null, 2))
 
   // 註冊送出資料
   try {
-    const response = await axios.post('http://localhost:8080/rigisterrequest', modifiedSignUpValues);
+    const url = import.meta.env.VITE_API_BASEURL + '/register';
+    const response = await axios.post(url, modifiedSignUpValues);
 
     if (response.data.code === 200) {
-      // 若註冊成功的話應該要怎麼做
-    } else {
-      // 註冊失敗處理
-      signUpErrorMsg.value = '註冊失敗，請稍後再試';
+      console.log("註冊成功");
+      console.log(response.data);
+      signUpErrorMsg.value = '註冊成功，請重新登入';
       setTimeout(() => {
         signUpErrorMsg.value = '';
+        window.location.href = "/login";
       }, 3000);
+    } else {
+      getCaptcha();
+      if(response.data.code === 400){
+        if (response.data.msg === '驗證失敗') {
+          signUpErrorMsg.value = '驗證碼錯誤，請檢查後再試';
+          isReisterBtnAble.value = true;
+          setTimeout(() => {
+            signUpErrorMsg.value = '';
+            isReisterBtnAble.value = false;
+          }, 3000);
+        }
+        if (response.data.msg === '電子郵件或帳號已被註冊') {
+          signUpErrorMsg.value = '帳號已存在，請更換後再試';
+          isReisterBtnAble.value = true;
+          setTimeout(() => {
+            signUpErrorMsg.value = '';
+            isReisterBtnAble.value = false;
+          }, 3000);
+        }
+      }
     }
   } catch (error) {
     console.error('發生錯誤：', error);
-    // 例外處理
     signUpErrorMsg.value = '目前無法登入，請稍後在試';
     setTimeout(() => {
       signUpErrorMsg.value = '';
@@ -260,7 +288,7 @@ const signInSubmit = async () => {
             <span style="font-size: 18px">{{ signUpErrorMsg }}</span>
           </div>
         </div>
-        <button @click="signUpSubmit">註冊</button>
+        <button @click="signUpSubmit" :disabled="isReisterBtnAble">註冊</button>
       </form>
     </div>
 

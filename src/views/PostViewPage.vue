@@ -9,6 +9,12 @@ import { ref, onMounted, reactive, computed } from 'vue';
 const { token } = useUserStore();
 const postId = 1;
 
+const comment = {
+  postId,
+  commentText: "",
+  parentCommentId: null
+}
+
 // 圖片資料
 const imgDataReference = ref([]);
 onMounted(async () => {
@@ -49,11 +55,45 @@ const loadComments = async () => {
 onMounted(() => {
   loadComments();
 });
+//find subComments
+// const subComments = ref([]);
+// const loadSubComments = async () => {
+//   try {
+//     const response = await axios.get(`${URL_COMMENT}/findSubByPostId?postId=${postId}`);
+//     console.log(response.data);
+//     subComments.value = response.data.data; // 假設返回的數據在 response.data 的 data 屬性中
+//     console.log("subComments:", subComments.value);
+//     // comments.value.forEach(comment => {
+//     //   comment.subComments = subComments.value.filter(subComment => subComment.parentCommentId === comment.commentId);
+//     // });
+//   } catch (error) {
+//     console.error('Error fetching comments:', error);
+//   }
+// }
+// onMounted(() => {
+//   loadSubComments();
+// });
 
+const subCommentsDtos = ref([]);
+const loadSubCommentsDto = async () => {
+  try {
+    const response = await axios.get(`${URL_COMMENT}/findSubByPostIdDto?postId=${postId}`);
+    console.log("SubCommentsDto:", response.data);
+    subCommentsDtos.value = response.data.data; // 假設返回的數據在 response.data 的 data 屬性中
+    console.log("subCommentDtos:", subCommentsDtos.value);
+    // comments.value.forEach(comment => {
+    //   comment.subComments = subComments.value.filter(subComment => subComment.parentCommentId === comment.commentId);
+    // });
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+  }
+}
+onMounted(() => {
+  loadSubCommentsDto();
+});
 
 // 其他區域資料
 const postData = ref(null);
-const URL_POST = import.meta.env.VITE_API_Post;
 const fackData = {
   "userImageURL": "https://i.imgur.com/6rpzbog.gif",
   "postUserImageURL": "https://media.discordapp.net/attachments/782068953899335710/1138768475754598420/83E0E2EE11DE10FD3314E2FE2D1EBDAE.gif",
@@ -72,11 +112,6 @@ onMounted(() => {
 });
 
 //新增留言
-const comment = {
-  postId,
-  commentText: "",
-  parentCommentId: null
-}
 async function insertCommnet() {
   const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
   try {
@@ -109,6 +144,7 @@ const insertSubComment = async (commentId, subCommentText) => {
     console.error('Error sending comment:', error);
   }
   loadComments();
+  loadSubCommentsDto();
 }
 
 //刪除留言
@@ -303,9 +339,6 @@ function formatTime(times) {
                       <div class="follower-name-div" style="font-weight:bold; font-size: 18px">
                         {{ comment.userinfoByUserId.userName }}
                       </div>
-
-
-
                       <!-- <div class="follower-account-div" style="padding-left: 8px">@{{ comment.userinfoByUserId.account }}
                       </div> -->
                     </div>
@@ -321,23 +354,6 @@ function formatTime(times) {
                         style="margin-left: 10px; border: 1px solid gainsboro; margin-top: 19px; border-radius: 5px; padding: 1px;">刪除</button>
 
                     </div>
-
-                    <!--檢舉按鈕-->
-                    <!-- <div class="users-follow-button-div"
-                      style="display: flex; padding-left: 16px; justify-items: center; text-align: center; align-items: center">
-                      <div class="menu-block">
-                        <v-menu open-on-click>
-                          <template v-slot:activator="{ props }">
-                            <button v-bind="props">
-                              <i class="fa-solid fa-arrow-up-from-bracket fa-xl" style="color: #d88d4f;"></i>
-                            </button>
-                          </template>
-                          <v-btn>檢舉</v-btn> -->
-                    <!--如果是作者本人的話-->
-                    <!-- <v-btn v-if="!isOwner">編輯</v-btn>
-                        </v-menu>
-                      </div>
-                    </div> -->
                   </div>
 
                   <!-- 留言者文字區塊 -->
@@ -347,13 +363,14 @@ function formatTime(times) {
                         <input class="sub-comment-input" v-model="editedCommentText">
                         <button class="sub-comment-send" type="button"
                           @click="updateComment(comment.commentId)">保存</button>
+                        <button class="sub-comment-reset" type="reset">取消</button>
                       </template>
                       <template v-else>
                         <div class="follower-description-div">{{ comment.commentText }}</div>
                       </template>
                       <form action="" class="reply-form">
                         <div class="">
-                          <input class="sub-comment-input" v-model="comment.subCommentText">
+                          <input class="sub-comment-input" label="留言" v-model="comment.subCommentText">
                           <button class="sub-comment-send" type="button"
                             @click="insertSubComment(comment.commentId, comment.subCommentText)">送出</button>
                           <button class="sub-comment-reset" type="reset">取消</button>
@@ -364,6 +381,13 @@ function formatTime(times) {
                     <!-- <div class="follower-description-div">{{ comment.commentText }}</div> -->
 
                   </div>
+
+                  <div v-for="subCommentDto in subCommentsDtos" :key="subCommentDto.commentId">
+                    <div v-if="subCommentDto.parentCommentId === comment.commentId">{{ subCommentDto.userName }}
+                      @{{ comment.userinfoByUserId.userName }} {{ subCommentDto.commentText }}
+                    </div>
+                  </div>
+
 
                 </div>
               </div>
@@ -623,5 +647,30 @@ a.link-color-avoid {
   box-sizing: border-box;
   border: 1px, solid, gainsboro;
   color: rgb(130, 130, 130);
+}
+
+.sub-comment-input {
+  float: left;
+  display: flex;
+  height: 30px;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid gainsboro;
+}
+
+.sub-comment-send {
+  margin: 0, 5px, 0, 5px;
+  padding: 3px;
+  box-sizing: border-box;
+  border: 1px solid gainsboro;
+  border-radius: 5px;
+}
+
+.sub-comment-reset {
+  margin: 0, 5px, 0, 5px;
+  padding: 3px;
+  box-sizing: border-box;
+  border: 1px solid gainsboro;
+  border-radius: 5px;
 }
 </style>

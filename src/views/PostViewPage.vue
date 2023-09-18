@@ -27,6 +27,11 @@ import messageAreaJsonFile from "@/assets/messageArea.json";
 
 const jsonDataImportMessageArea = ref(messageAreaJsonFile);
 
+//子留言區假資料
+import childMessageAreaJsonFile from "@/assets/messageArea.json";
+
+const jsonDataImportChileMessageArea = ref(childMessageAreaJsonFile);
+
 // 匯入資料到carousel
 const imgDataImportToCarousel = reactive(
     imgDataReference.value.map(item => item.imgPath)
@@ -84,6 +89,39 @@ const heartClass = computed(() => {
   }
 });
 
+// 計算取得時間差
+const getTimeDifference = (commentTime) => {
+  // 解析string to time
+  const commentDate = new Date(commentTime);
+
+  // 獲取當前時間
+  const currentDate = new Date();
+
+  // 計算時間差
+  const timeDifferenceInMilliseconds = currentDate - commentDate;
+
+  // 計算天數差
+  const daysDifference = Math.floor(timeDifferenceInMilliseconds / (1000 * 60 * 60 * 24));
+
+  // 計算小時差
+  const hoursDifference = Math.floor(timeDifferenceInMilliseconds / (1000 * 60 * 60));
+
+  // 生成時間差文字
+  if (daysDifference === 0) {
+    if (hoursDifference === 0) {
+      return '剛剛';
+    } else {
+      return `${hoursDifference}小時前`;
+    }
+  } else if (daysDifference === 1) {
+    return '昨天';
+  } else if (daysDifference > 1) {
+    return `${daysDifference}天前`;
+  } else {
+    return '未知的時間';
+  }
+};
+
 // 留言區塊限制
 const messageInput = ref("");
 const messageInputRules = [
@@ -126,7 +164,6 @@ const startEditing = (index) => {
 const submitEditCancelMessageArea = (index) => {
   isEditingArray.value[index] = false;
 }
-
 
 
 // const testData = reactive({
@@ -233,6 +270,10 @@ const submitEditCancelMessageArea = (index) => {
                          style="display: flex; height: 64px; line-height: 64px; padding-left: 16px">
                       <div class="follower-name-div" style="font-weight:bold; font-size: 18px">{{ item.userName }}</div>
                       <div class="follower-account-div" style="padding-left: 8px">@{{ item.userAccount }}</div>
+                      <div class="follower-time-div" style="padding-left: 8px">{{
+                          getTimeDifference(item.commentTime)
+                        }}
+                      </div>
                     </div>
 
                     <!--檢舉按鈕-->
@@ -249,9 +290,16 @@ const submitEditCancelMessageArea = (index) => {
                               <i class="fa-solid fa-arrow-up-from-bracket fa-xl" style="color: #d88d4f;"></i>
                             </button>
                           </template>
-                          <v-btn>檢舉</v-btn>
+
+                          <!--如果不是本人的話-->
+                          <v-btn v-if="isOwnerAndEditing(item.commentId)" @click="reportMessage(item.commentId)">檢舉
+                          </v-btn>
                           <!--如果是作者本人的話-->
-                          <v-btn v-if="!isOwnerAndEditing(index)" @click="startEditing(index)">編輯</v-btn>
+                          <v-btn v-if="!isOwnerAndEditing(item.commentId)" @click="startEditing(item.commentId)">編輯
+                          </v-btn>
+                          <v-btn v-if="!isOwnerAndEditing(item.commentId)" @click="deleteMessage(item.commentId)">刪除
+                          </v-btn>
+
                         </v-menu>
                       </div>
                     </div>
@@ -261,12 +309,22 @@ const submitEditCancelMessageArea = (index) => {
                   <div class="follower-detail-div">
 
                     <!-- 一般顯示 -->
-                    <div class="follower-description-div" v-if="!isOwnerAndEditing(index)">{{ item.userDescription }}</div>
+                    <div class="follower-message-div" v-if="!isOwnerAndEditing(item.commentId)">
+                      <!--留言區塊-->
+                      <div class="follower-description-div">
+                        {{ item.userDescription }}
+                      </div>
 
+                      <!--回文功能-->
+                      <div class="follower-recommend-button">
+                        <button class="btn btn-outline-secondary" @click="recommend">回覆</button>
+                      </div>
+
+                    </div>
                     <!-- 編輯時區塊 -->
-                    <div class="message-edit-text-div" v-if="isOwnerAndEditing(index)" style="display: flex">
+                    <div class="message-edit-text-div" v-if="isOwnerAndEditing(item.commentId)" style="display: flex">
                       <v-text-field
-                          v-model="messageEdit[index]"
+                          v-model="messageEdit[item.commentId]"
                           :rules="messageEditRules"
                           :counter="120"
                           :maxlength="120"
@@ -276,20 +334,44 @@ const submitEditCancelMessageArea = (index) => {
                       ></v-text-field>
 
                       <div class="message-edit-button-div" style="display: flex; align-items: center">
-                        <button class="btn btn-outline-info me-2" @click="submitEditAndRefreshMessageArea(index)"
+                        <button class="btn btn-outline-info me-2"
+                                @click="submitEditAndRefreshMessageArea(item.commentId)"
                                 style="width: 80px; margin-left: 16px">
                           送出
                         </button>
                       </div>
 
                       <div class="message-edit-cancel-button-div" style="display: flex; align-items: center">
-                        <button class="btn btn-outline-secondary me-2" @click="submitEditCancelMessageArea(index)"
+                        <button class="btn btn-outline-secondary me-2"
+                                @click="submitEditCancelMessageArea(item.commentId)"
                                 style="width: 80px; margin-left: 16px">
                           取消
                         </button>
                       </div>
-
                     </div>
+
+                    <!-- 子留言區塊 -->
+
+
+                    <button class="btn btn-outline-secondary me-2" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="margin-top: 4px">
+                      查看回覆
+                    </button>
+
+                    <div class="collapse" id="collapseExample">
+                      <div class="card card-body">
+                        <div class="child-message-block" style="margin-left: 24px">
+
+                          <div class="rounded-circle">
+                            <img :src="item.userIcon" alt="User" width="48" height="48" class="rounded-circle"
+                                 style="object-fit:cover;"/>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+
                   </div>
 
                 </div>
@@ -436,10 +518,13 @@ const submitEditCancelMessageArea = (index) => {
 }
 
 .container-right-block {
-  width: 480px;
-  border-radius: 16px;
-  margin: 8px 0;
+  //margin: 8px 0;
+}
+
+.whole-picture-name-block{
   box-shadow: 0 0 2px rgba(0, 0, 0, 1);
+  border-radius: 16px;
+  width: 480px;
 }
 
 .container-button-block {
@@ -522,11 +607,25 @@ a.link-color-avoid {
   margin-bottom: 24px;
 }
 
-.follower-description-div {
-  width: 95%;
-  padding: 8px;
-  border-bottom: 1px dotted;
+.follower-message-div {
+  display: flex;
 }
 
+.follower-description-div {
+  width: 90%;
+  padding: 8px;
+  border-bottom: 1px dotted;
+  display: flex;
+}
+
+.follower-time-div {
+  color: #8E8E8E;
+}
+
+.follower-recommend-button {
+  flex-direction: column;
+  justify-content: flex-end;
+  display: flex;
+}
 
 </style>

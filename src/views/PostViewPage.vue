@@ -30,7 +30,7 @@ const jsonDataImportMessageArea = ref(messageAreaJsonFile);
 //子留言區假資料
 import childMessageAreaJsonFile from "@/assets/childMessageArea.json";
 
-const jsonDataImportChileMessageArea = ref(childMessageAreaJsonFile);
+const jsonDataImportChildMessageArea = ref(childMessageAreaJsonFile);
 
 // 匯入資料到carousel
 const imgDataImportToCarousel = reactive(
@@ -136,7 +136,7 @@ const messageInputRules = [
   },
 ];
 
-const messageEdit = ref(new Array(jsonDataImportMessageArea.value.length).fill(''));
+
 
 // 送出按鈕
 const isEditingArray = ref([]);
@@ -146,23 +146,30 @@ jsonDataImportMessageArea.value.forEach(() => {
   isEditingArray.value.push(false);
 });
 
+const messageEdit = ref(new Array(jsonDataImportMessageArea.value.length).fill(''));
+
 for (let i = 0; i < jsonDataImportMessageArea.value.length; i++) {
-  console.log('hi')
   messageEdit.value[i] = jsonDataImportMessageArea.value[i].commentText;
 }
-console.log(messageEdit.value)
 
-const isOwnerAndEditing = (index) => {
-  return isEditingArray.value[index];
+
+const messageEditTexts = ref(new Array(jsonDataImportChildMessageArea.value.length).fill(''));
+
+for (let i = 0; i < jsonDataImportChildMessageArea.value.length; i++) {
+  messageEditTexts.value[i] = jsonDataImportChildMessageArea.value[i].commentText;
+}
+
+const isOwnerAndEditing = (commentId) => {
+  return isEditingArray.value[commentId];
 };
 
-const startEditing = (index) => {
-  isEditingArray.value[index] = true;
+const startEditing = (commentId) => {
+  isEditingArray.value[commentId] = true;
 
 };
 
-const submitEditCancelMessageArea = (index) => {
-  isEditingArray.value[index] = false;
+const submitEditCancelMessageArea = (commentId) => {
+  isEditingArray.value[commentId] = false;
 }
 
 
@@ -324,7 +331,7 @@ const submitEditCancelMessageArea = (index) => {
                     <!-- 編輯時區塊 -->
                     <div class="message-edit-text-div" v-if="isOwnerAndEditing(item.commentId)" style="display: flex">
                       <v-text-field
-                          v-model="messageEdit[item.commentId]"
+                          v-model="messageEdit[index]"
                           :rules="messageEditRules"
                           :counter="120"
                           :maxlength="120"
@@ -366,7 +373,7 @@ const submitEditCancelMessageArea = (index) => {
 
                           <!-- 子留言迴圈 -->
                           <div class="child-message-detail-for-every-cycle"
-                               v-for="(childItem, index) in jsonDataImportChileMessageArea"
+                               v-for="(childItem, index) in jsonDataImportChildMessageArea"
                                :key="index">
 
                             <div v-if="childItem.parentCommentId === item.commentId">
@@ -437,7 +444,7 @@ const submitEditCancelMessageArea = (index) => {
                                 <div class="message-edit-text-div" v-if="isOwnerAndEditing(childItem.commentId)"
                                      style="display: flex">
                                   <v-text-field
-                                      v-model="messageEdit[childItem.commentId]"
+                                      v-model="messageEditTexts[index]"
                                       :rules="messageEditRules"
                                       :counter="120"
                                       :maxlength="120"
@@ -730,6 +737,7 @@ a.link-color-avoid {
   flex-direction: column;
   justify-content: flex-end;
   display: flex;
+  padding-left: 8px;
 }
 
 .child-message-detail {

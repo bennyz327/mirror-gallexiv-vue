@@ -18,6 +18,9 @@ import subscribePictureJsonFile from "../assets/imgListForSubscription.json"
 import followerJsonFile from "../assets/followerList.json"
 
 import {onMounted, reactive, ref} from "vue";
+import axios from "axios";
+import {useUserStore} from "@/store/userStore.js";
+import PostPictureViewForPersonal from "@/components/userPage/PostPictureViewForPersonal.vue";
 
 // 追隨按鈕功能(以及發送到後端)
 const followed = ref(false);
@@ -34,28 +37,39 @@ const tagHomePageJson = ref(tagHomepageJsonFile)
 const jsonDataImportTagPage = ref(tagSubscribePageJsonFile)
 
 // UserPage 假資料
-const testData = ref(null);
+const URl = import.meta.env.VITE_API_USER
+const POSTURL = import.meta.env.VITE_API_Post
+const {token} = useUserStore();
+const userData = ref();
+// SubscribePicturePage 假資料
+const postDataWithPlan = ref();
+const postDataNoPlan = ref();
 const fetchData = async () => {
   try {
-    const fakeUserData = userHomePageJsonFile[0];
+    const response = await axios.get(`${URl}/profile`,{headers: {'Authorization': token}})
+    userData.value = response.data.data;
 
-    setTimeout(() => {
-      testData.value = fakeUserData;
-    }, 1000);
+    const postWithPlanResponse = await axios.get(`${POSTURL}?p=0`,{headers: {'Authorization': token}})
+    postDataWithPlan.value = postWithPlanResponse.data.data;
+    console.log(postDataWithPlan.value)
+
+    const postNoPlanResponse = await axios.get(`${POSTURL}?p=1`,{headers: {'Authorization': token}})
+    postDataNoPlan.value = postNoPlanResponse.data.data;
+    console.log(postDataNoPlan.value)
+
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
 };
-
-onMounted(() => {
+onMounted( () => {
   fetchData();
-});
+})
+
+
 
 // HomePage 假資料
 const imgDataImportHomePage = ref(imgJsonFile);
 
-// SubscribePicturePage 假資料
-const imgDataImportSubscribePage = ref(subscribePictureJsonFile);
 
 // SubscriptionPage 假資料
 const jsonDataImportSubscriptionPage = ref(subscriptionJsonFile);
@@ -69,7 +83,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 
   <Navbar></Navbar>
 
-  <div class="container" v-if="testData">
+  <div class="container" v-if="userData">
     <div class="container-userpage-style">
 
       <!--使用者個人欄位-->
@@ -77,7 +91,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 
         <!--個人背景圖片-->
         <div class="background-div">
-          <img :src="testData.backgroundPictureSrc" class="background-picture-src" alt="">
+          <img :src="userData.background_image" class="background-picture-src" alt="">
         </div>
 
         <!--個人介紹大區塊(切割頭像/名稱/帳號/連結/跟隨按鈕)-->
@@ -88,7 +102,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 
             <div class="user-icon-src-div">
               <div class="rounded-circle" style="display:flex">
-                <img :src="testData.postUserImageURL" alt="User" width="176" height="176" class="rounded-circle"
+                <img :src="userData.avatar" alt="User" width="176" height="176" class="rounded-circle"
                      style="object-fit: cover;"/>
               </div>
             </div>
@@ -100,35 +114,35 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
             <!--名稱及帳號名稱-->
             <div class="user-name-account-div">
               <div class="user-name-text">
-                <h3>{{ testData.userName }}</h3>
+                <h3>{{ userData.userName }}</h3>
               </div>
               <div class="user-account-text">
-                <h6>@{{ testData.userAccount }}</h6>
+                <h6>@{{ userData.account }}</h6>
               </div>
             </div>
 
             <!--跟隨數-->
             <div class="user-follower-hyperlink-div">
               <div class="user-follower-number-text">
-                <h5>{{ testData.followerNums }} 個追蹤者</h5>
+                <h5>{{ userData.followerNums }} 個追蹤者</h5>
               </div>
 
               <!--TODO 外部連結部分內容(網址判斷圖示)-->
               <div class="user-hyperlink-div">
                 <div class="facebook-icon-div">
-                  <a :href="testData.facebookLink" target="_blank"><i class="fa-brands fa-facebook fa-2xl"
+                  <a :href="userData.facebookLink" target="_blank"><i class="fa-brands fa-facebook fa-2xl"
                                                                       style="color: #2369e1;"></i></a>
                 </div>
                 <div class="twitter-icon-div">
-                  <a :href="testData.twitterLink" target="_blank"><i class="fa-brands fa-twitter fa-2xl"
+                  <a :href="userData.twitterLink" target="_blank"><i class="fa-brands fa-twitter fa-2xl"
                                                                      style="color: #1a6eff;"></i></a>
                 </div>
                 <div class="youtube-icon-div">
-                  <a :href="testData.youtubeLink" target="_blank"><i class="fa-brands fa-youtube fa-2xl"
+                  <a :href="userData.youtubeLink" target="_blank"><i class="fa-brands fa-youtube fa-2xl"
                                                                      style="color: #fa0000;"></i></a>
                 </div>
                 <div class="other-icon-div">
-                  <a :href="testData.youtubeLink" target="_blank"><i class="fa-solid fa-link fa-2xl"
+                  <a :href="userData.youtubeLink" target="_blank"><i class="fa-solid fa-link fa-2xl"
                                                                      style="color: #d88d4f; font-size: 32px;"></i></a>
                 </div>
               </div>
@@ -154,16 +168,13 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
         <!--自我介紹內容-->
         <div class="user-description-container-div">
           <div class="user-description-detail-div">
-            <DescriptionArea :descriptionText="testData.introduceDetail"></DescriptionArea>
+            <DescriptionArea :descriptionText="userData.intro"></DescriptionArea>
           </div>
         </div>
 
         <div class="user-reserve-div-right"></div>
 
       </div>
-
-
-
 
       <div class="menu-block">
         <!--切換menu選項-->
@@ -199,7 +210,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
                 </div>
 
                 <div class="menu-home-page-picture-div">
-                  <UserHomePage :imgUrlList="imgDataImportHomePage"></UserHomePage>
+                  <PostPictureViewForPersonal :imgUrlList="imgDataImportHomePage"></PostPictureViewForPersonal>
                 </div>
 
               </div>
@@ -216,7 +227,8 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
                 </div>
 
                 <div class="menu-subscribe-img-page-picture-div">
-                  <UserSubscribePicturePage :imgUrlList="imgDataImportSubscribePage"></UserSubscribePicturePage>
+                  <UserSubscribePicturePage></UserSubscribePicturePage>
+<!--                  :subscriptionList="postDataWithPlan"-->
                 </div>
 
               </div>
@@ -268,7 +280,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 }
 
 .background-picture-src {
-  max-width: 100%;
+  width: 100%;
 }
 
 .user-introduce-block{

@@ -63,6 +63,22 @@ const routes = [
         component: () => import("../views/TagSearchPage.vue"),
     },
     {
+        path: '/search/user/',
+        name: 'UserSearchPage',
+        component: () => import("../views/UserSearchPage.vue"),
+    },
+    {
+        path: '/search/post',
+        name: 'PostSearchPage',
+        component: () => import("../views/PostSearchPage.vue"),
+        props: (route) => ({ postTitle: route.query.postTitle || '' })
+    },
+    {
+        path: '/search/tag/:tagName',
+        name: 'TagSearchPage',
+        component: () => import("../views/TagSearchPage.vue"),
+    },
+    {
         path: '/setting',
         name: 'SettingPage',
         component: () => import("../views/UserSettingPage.vue"),

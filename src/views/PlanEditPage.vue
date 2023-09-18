@@ -2,10 +2,11 @@
 import Navbar from "@/components/Navbar.vue";
 import AvatarCropper from "vue-avatar-cropper";
 
-import { ref } from "vue";
+import {onMounted, ref, watch, defineEmits} from "vue";
 import axios from "axios";
 import {useUserStore} from "@/store/userStore.js";
 import {useRoute} from "vue-router";
+
 
 // 輸入限制區塊
 const subscribeTitle = ref("");
@@ -15,6 +16,7 @@ const previewPicture = ref("");
 const getData = ref([]);
 const URL = import.meta.env.VITE_API_PLAN;
 const {token} = useUserStore();
+
 
 const subscribeTitleRules = [
   (value) => {
@@ -30,6 +32,7 @@ const subscribeTitleRules = [
 
 const subscribePriceRules = [
   (value) => {
+    console.log(value)
     if (!value || value.length === 0) {
       return '必須輸入一個數字';
     } else if (!/^\d+$/.test(value)) {
@@ -61,12 +64,9 @@ const subscribeDescriptionRules = [
 const maxFileSize = 2;
 const showCropper = ref(true);
 const message = ref("");
-const route = useRoute();
-const planId = ref('');
-
-planId.value = route.query.planId;
 
 const user = ref({
+  id: 1,
   planPicture: "",
 });
 
@@ -100,22 +100,29 @@ const removePhoto = () => {
   message.value = "";
 }
 
+const route = useRoute();
+const planId = ref('');
+
+// 在組件掛載時取得傳入的planId
+onMounted(() => {
+  planId.value = route.query.planId || '';
+});
+
 const getPlanData = async () => {
 
   try {
-    const response = await axios.get(`${URL}/${planId.value}`, {
-      headers: {'Authorization': token}
+    const response = await axios.get(`${URL}/${planId}`,{headers: {'Authorization': token}
     });
     getData.value = response.data;
     subscribeTitle.value = getData.value.data.planName;
-    subscribePrice.value = getData.value.data.planPrice;
-    subscribeDescription.value = getData.value.data.planDescription;
+    subscribePrice.value=getData.value.data.planPrice;
+    subscribeDescription.value= getData.value.data.planDescription;
     previewPicture.value = getData.value.data.planPicture
 
     console.log(getData.value)
     console.log(response)
 
-  } catch (error) {
+  }catch (error){
     console.error('提交表单时出错：', error);
   }
 }
@@ -127,15 +134,12 @@ const submitForm = async () => {
   planData.planName = subscribeTitle.value;
   planData.planPrice = subscribePrice.value;
   planData.planDescription = subscribeDescription.value;
-  planData.planPicture = user.value.avatar;
+  planData.planPicture = previewPicture.value;
   console.log('planData')
-  // console.log(user.value.avatar)
-  console.log(previewPicture.value)
-  console.log(planData.planPicture)
+  console.log(planData)
 
   try {
-    const response = await axios.put(`${URL}/update`, planData, {
-      headers: {'Authorization': token}
+    const response = await axios.put(`${URL}/update`, planData,{headers: {'Authorization': token}
     });
 
     if (response.status === 200) {
@@ -144,12 +148,14 @@ const submitForm = async () => {
       // import { useRouter } from 'vue-router';
       // const router = useRouter();
       // router.push('/success');
-
+      console.log("回應")
+      console.log(response.data)
     }
   } catch (error) {
     console.error('提交表单时出错：', error);
   }
 };
+
 
 
 </script>
@@ -178,8 +184,7 @@ const submitForm = async () => {
               <div class="text-center">
                 <img v-if="user.avatar" :src="user.avatar" class="rounded img-fluid"
                      style="max-width: 180px; max-height: 120px;" alt="index">
-                <img v-else :src="previewPicture" class="rounded img-fluid" alt=""
-                     style="max-width: 180px; max-height: 120px;"/>
+                <img v-else :src="previewPicture" class="rounded img-fluid" alt="" style="max-width: 180px; max-height: 120px;"/>
               </div>
             </div>
 
@@ -221,9 +226,9 @@ const submitForm = async () => {
         </div>
 
         <div class="button-div" style="display: flex; justify-content: center">
-          <v-btn type="button" @click="submitForm" style="width: 400px">
-            送出方案
-          </v-btn>
+        <v-btn type="button" @click="submitForm" style="width: 400px">
+         送出方案
+        </v-btn>
         </div>
       </div>
 
@@ -274,7 +279,7 @@ const submitForm = async () => {
               <img :src="user.avatar" class="avatar" alt=""/>
             </div>
             <div class="avatar-div" v-else>
-              <img :src="previewPicture" class="avatar" alt=""/>
+              <img src="../assets/Picture/presetPlanIcon.jpg" class="avatar" alt=""/>
             </div>
 
             <div class="upload-and-delete-button-div" style="display: flex; justify-content: center">

@@ -47,7 +47,7 @@ const {handleSubmit} = useForm({
       return '建立帳號至少需要輸入4個字元'
     },
     signUpEmail(value) {
-      if (/^[a-z.-]+@[a-z.-]+\.[a-z]+$/i.test(value)) return true
+      if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\.[a-zA-Z]{2,})?$/.test(value)) return true
       return '請輸入有效的電子郵件'
     },
     signUpPwd(value) {

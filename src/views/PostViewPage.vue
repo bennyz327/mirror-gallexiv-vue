@@ -55,25 +55,8 @@ const loadComments = async () => {
 onMounted(() => {
   loadComments();
 });
-//find subComments
-// const subComments = ref([]);
-// const loadSubComments = async () => {
-//   try {
-//     const response = await axios.get(`${URL_COMMENT}/findSubByPostId?postId=${postId}`);
-//     console.log(response.data);
-//     subComments.value = response.data.data; // 假設返回的數據在 response.data 的 data 屬性中
-//     console.log("subComments:", subComments.value);
-//     // comments.value.forEach(comment => {
-//     //   comment.subComments = subComments.value.filter(subComment => subComment.parentCommentId === comment.commentId);
-//     // });
-//   } catch (error) {
-//     console.error('Error fetching comments:', error);
-//   }
-// }
-// onMounted(() => {
-//   loadSubComments();
-// });
 
+//由Dto找subComments
 const subCommentsDtos = ref([]);
 const loadSubCommentsDto = async () => {
   try {
@@ -81,9 +64,6 @@ const loadSubCommentsDto = async () => {
     console.log("SubCommentsDto:", response.data);
     subCommentsDtos.value = response.data.data; // 假設返回的數據在 response.data 的 data 屬性中
     console.log("subCommentDtos:", subCommentsDtos.value);
-    // comments.value.forEach(comment => {
-    //   comment.subComments = subComments.value.filter(subComment => subComment.parentCommentId === comment.commentId);
-    // });
   } catch (error) {
     console.error('Error fetching comments:', error);
   }
@@ -179,11 +159,12 @@ const editComment = (commentId) => {
 const updateComment = async (commentId) => {
   console.log("commentId: ", commentId);
   const commentText = editedCommentText.value;// 取得新commentText
+  console.log("commentTextValue: ", editedCommentText);
   console.log("commentText: ", commentText);
   const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
   console.log("URL_COMMENT:", URL_COMMENT);
   console.log("token:", token);
-  const resUpdateComment = await axios.put(`http://localhost:8080/comments/update?commentId=${commentId}&commentText=${commentText}`, { headers: { 'Authorization': token } });
+  const resUpdateComment = await axios.put(`http://localhost:8080/comments/update?commentId=${commentId}&commentText=${commentText}`, null, { headers: { 'Authorization': token } });
   console.log("token:", token);
   console.log('Saving edited comment:', resUpdateComment.data);
   // 清空初始值
@@ -362,7 +343,7 @@ function formatTime(times) {
                       <template v-if="editingCommentId === comment.commentId">
                         <input class="sub-comment-input" v-model="editedCommentText">
                         <button class="sub-comment-send" type="button"
-                          @click="updateComment(comment.commentId)">保存</button>
+                          @click="updateComment(comment.commentId, editedCommentText)">保存</button>
                         <button class="sub-comment-reset" type="reset">取消</button>
                       </template>
                       <template v-else>

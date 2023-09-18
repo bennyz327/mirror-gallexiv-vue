@@ -53,7 +53,7 @@ const routes = [
         path: '/subscribe/edit',
         name: 'EditPlanPage',
         component: () => import("../views/PlanEditPage.vue"),
-        props: (route) => route.params
+        props: (route) => route.query
     },
     {
         path: '/setting',

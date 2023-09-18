@@ -17,17 +17,14 @@ const subscriptionImg = ref("");
 const subscriptionName = ref("");
 const subscriptionPrice = ref("");
 const URL = import.meta.env.VITE_API_PLAN
+
+
 const getPlanData = async () => {
 
   try {
-    const response = await axios.get(`${URL}/test`,{headers: {'Authorization': token}
+    const response = await axios.get(`${URL}/personalPlan`,{headers: {'Authorization': token}
     });
     getData.value = response.data.data;
-    // subscriptionImg.value = getData.value.data.planPicture;
-    // subscriptionName.value = getData.value.data.planName;
-    // subscriptionPrice.value = getData.value.data.planPrice;
-
-
 
   }catch (error){
     console.error('提交表单时出错：', error);
@@ -35,39 +32,21 @@ const getPlanData = async () => {
 }
 getPlanData();
 
-
 //  刪除功能
-const route = useRoute();
-const planId = ref(route.query.planId || '');
 
-const deleteItem = async (planIdToDelete) => {
+
+const id = ref([])
+const deleteItem = async (id) => {
+
+  console.log(id)
   try {
     //發送請求到特定API
-    await axios.delete(`/api/delete/${planIdToDelete}`);
-    console.error(planIdToDelete);
+    await axios.put(`${URL}/${id}/delete`,{headers: {'Authorization': token}
+    });
+
 
   } catch (error) {
     console.error('刪除失敗', error);
-    console.error(planIdToDelete);
-  }
-
-};
-
-
-
-//  刪除功能
-const route = useRoute();
-const planId = ref(route.query.planId || '');
-
-const deleteItem = async (planIdToDelete) => {
-  try {
-    //發送請求到特定API
-    await axios.delete(`/api/delete/${planIdToDelete}`);
-    console.error(planIdToDelete);
-
-  } catch (error) {
-    console.error('刪除失敗', error);
-    console.error(planIdToDelete);
   }
 
 };
@@ -123,7 +102,7 @@ const deleteItem = async (planIdToDelete) => {
                       </router-link>
 
                       <!--刪除功能-->
-                      <button :id="'subscribeSettingId' + index" type="button"
+                      <button :id="item.planId" type="button"
                               class="w-100 btn btn-outline-secondary" data-bs-toggle="modal"
                               :data-bs-target="'#exampleModal'+ index"
                               style="margin-top: 16px">

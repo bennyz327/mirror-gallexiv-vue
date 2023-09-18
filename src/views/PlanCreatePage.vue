@@ -105,7 +105,7 @@ const submitForm = async () => {
     planStatusByStatusId:{
       statusId:17
     },
-    planPicture: user.avatar
+    planPicture: user.value.avatar
   };
   console.log(planData)
 

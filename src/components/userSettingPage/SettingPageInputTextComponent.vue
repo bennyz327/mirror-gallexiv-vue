@@ -78,15 +78,22 @@ const getUserData = async () => {
     });
     getData.value = response.data.data;
     email.value.value = getData.value.userEmail;
-    console.log(email.value.value);
     personalNickName.value = getData.value.userName;
     personalDescription.value = getData.value.intro;
     // selectedCountry.value =
     gender.value = getData.value.gender;
-    console.log(gender.value)
-    formattedValue.value = getData.value.birthday;
-    console.log(formattedValue.value)
-    console.log(getData.value)
+    // formattedValue.value = getData.value.birthday
+    const inputDateString = formattedValue.value;
+
+    const date = new Date(inputDateString);
+
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    const dateFormatter = new Intl.DateTimeFormat('en-US', options);
+
+    const formattedDateString = dateFormatter.format(date);
+    console.log(formattedDateString)
+    formattedValue.value = formattedDateString
+
 
 
   }catch (error){
@@ -94,7 +101,6 @@ const getUserData = async () => {
   }
 }
 getUserData();
-
 
 
 </script>
@@ -202,7 +208,7 @@ getUserData();
         <div class="date-selector-div" style="width: 240px; align-items: center">
           <n-date-picker
               v-model:formatted-value="formattedValue"
-              value-format="yyyy-MM-dd"
+              value-format="MM/dd/yyyy"
               type="date"
               clearable
           />

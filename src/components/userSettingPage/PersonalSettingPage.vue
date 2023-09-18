@@ -11,7 +11,7 @@ const showCropper = ref(true);
 const message = ref("");
 
 const user = ref({
-  id: 1,
+  id: "",
   avatar: "",
 });
 
@@ -20,21 +20,26 @@ const getData = ref([]);
 const URL = import.meta.env.VITE_API_USER
 
 const getUserData = async () => {
-      const userId=1;
+
   try {
-    const response = await axios.get(`${URL}/${userId}`,{headers: {'Authorization': token}
+
+    //todo 變成perfume
+    const response = await axios.get(`${URL}/profile`,{headers: {'Authorization': token}
     });
     getData.value = response.data.data;
-    user.avatar = getData.value.avatar;
+    user.value.avatar = getData.value.avatar;
 
-    console.log(getData.value.avatar)
-
+    console.log(user.value.avatar)
 
   }catch (error){
     console.error('提交表单时出错：', error);
   }
 }
 getUserData();
+
+
+
+// todo update功能
 
 const handleUploaded = (data) => {
   const base64str = data.url.substring(data.url.indexOf(",") + 1);
@@ -77,7 +82,7 @@ const removePhoto = () => {
       <div class="user-icon-setting-div">
         <div class="wrapper">
           <div>
-            <div class="avatar-div" v-if="user.avatar">
+            <div class="avatar-div" v-if="true">
               <img :src="user.avatar" class="avatar" alt=""/>
             </div>
             <div class="avatar-div" v-else>

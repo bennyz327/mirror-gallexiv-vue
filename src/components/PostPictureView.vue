@@ -12,6 +12,8 @@ const URL =  import.meta.env.VITE_API_Post
 const liked = ref([]);
 const hovered = ref([]);
 
+
+
 const toggleLike = (index) => {
   liked.value[index] = !liked.value[index];
 };
@@ -27,7 +29,6 @@ const heartClass = computed(() => {
     }
   };
 });
-// loadAllPost();
 
 </script>
 
@@ -53,14 +54,14 @@ const heartClass = computed(() => {
 
             <div class="picture-item-user-div">
               <div class="picture-item-user-icon-div">
-                <router-link :to="'/user/' + item.userId">
+                <router-link :to="'/user/' + item.userinfoByUserId.userId">
                   <img :src="item.userinfoByUserId.avatar" alt="User" width="32" height="32" class="rounded-circle"
                        style="object-fit: cover;border: 1px solid #ccc;"/>
                 </router-link>
               </div>
 
               <div class="picture-item-user-name-div">
-                <router-link :to="'/user/' + item.userId" style="text-decoration:none; color:inherit; float: left">
+                <router-link :to="'/user/' + item.userinfoByUserId.userId" style="text-decoration:none; color:inherit; float: left">
                   <p>{{ item.userinfoByUserId.userName}}</p>
                 </router-link>
               </div>

@@ -72,9 +72,8 @@ const gender = ref("")
 const URL = import.meta.env.VITE_API_USER
 
 const getUserData = async () => {
-  const userId=1;
   try {
-    const response = await axios.get(`${URL}/${userId}`,{headers: {'Authorization': token}
+    const response = await axios.get(`${URL}/profile`,{headers: {'Authorization': token}
     });
     getData.value = response.data.data;
     email.value.value = getData.value.userEmail;

@@ -23,7 +23,7 @@ const PostDetail = reactive({});
 
 const loadAllPost = async () => {
   try{
-    const response = await axios.get(URL)
+    const response = await axios.get(`${URL}?p=2`)
     console.log(response.data.data)
     PostDetail.value = response.data.data;
 

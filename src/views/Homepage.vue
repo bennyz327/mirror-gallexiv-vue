@@ -49,8 +49,6 @@ onMounted(() => {
   console.log(useUserStore())
 })
 
-//GPT
-
 const loadblobUrl = async (item) => {
   if (!item || !item.picturesByPostId || item.picturesByPostId.length === 0) {
     return;
@@ -71,21 +69,6 @@ const load = async (src) => {
   const response = await axios.request(config);
   return response.data; // the blob
 };
-
-// 为每个项目调用loadblobUrl
-//   console.log("hook")
-//   console.log(imgUrlList)
-//   console.log(imgUrlList.value)
-//   if ( imgUrlList.value && Array.isArray(imgUrlList.value)) {
-//     imgUrlList.value.forEach((item) => {
-//       console.log(imgUrlList.value)
-//       console.log("進迴圈"+item)
-//       loadblobUrl(item);
-//     });
-//   }
-
-
-//GPT
 
 </script>
 

@@ -1,5 +1,5 @@
 <script setup>
-import {ref, computed, onMounted, reactive} from 'vue';
+import {ref, computed, onMounted, reactive, watch} from 'vue';
 import {useRoute} from "vue-router";
 const {isLogin,token,name} = useUserStore()
 import {useUserStore} from "@/store/userStore.js";
@@ -30,6 +30,7 @@ const PostDetail = reactive({});
 const loadAllPost = async () => {
   try{
     const response = await axios.get(`${URL}/search?postTitle=${postTitle}`)
+    // const response = await axios.get(`${URL}/${postTitle}`)
     console.log(response.data.data)
     PostDetail.value = response.data.data;
 
@@ -46,16 +47,15 @@ const loadAllPost = async () => {
 
 loadAllPost();
 
-// 圖片功能
+watch(() => route.query.postTitle, (newPostTitle) => {
+  loadAllPost(newPostTitle);
+});
+
 
 //拿出使用者狀態
-
-
 onMounted(() => {
   console.log(useUserStore())
 })
-
-//GPT
 
 const loadblobUrl = async (item) => {
   if (!item || !item.picturesByPostId || item.picturesByPostId.length === 0) {

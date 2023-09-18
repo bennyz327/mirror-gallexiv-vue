@@ -195,7 +195,7 @@ const sendDataToBackend = (user) => {
 }
 
 .creator-picture-preview:hover {
-  transform: scale(1.2);
+  transform: scale(1.15);
   transition: transform 0.3s;
 }
 
@@ -210,7 +210,7 @@ const sendDataToBackend = (user) => {
   }
 
   .creator-picture-preview:hover {
-    transform: scale(1.5);
+    transform: scale(1.15);
     transition: transform 0.3s;
   }
 

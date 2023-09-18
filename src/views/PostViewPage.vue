@@ -205,9 +205,9 @@ const submitEditCancelMessageArea = (index) => {
                   style="margin-bottom: 16px;"
               ></v-text-field>
               <div class="message-create-button-div">
-              <button class="btn btn-outline-info me-2" @click="submitInputAndRefreshMessageArea"
-                      style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出
-              </button>
+                <button class="btn btn-outline-info me-2" @click="submitInputAndRefreshMessageArea"
+                        style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出
+                </button>
               </div>
             </div>
 
@@ -276,10 +276,10 @@ const submitEditCancelMessageArea = (index) => {
                       ></v-text-field>
 
                       <div class="message-edit-button-div" style="display: flex; align-items: center">
-                      <button class="btn btn-outline-info me-2" @click="submitEditAndRefreshMessageArea(index)"
-                              style="width: 80px; margin-left: 16px">
-                        送出
-                      </button>
+                        <button class="btn btn-outline-info me-2" @click="submitEditAndRefreshMessageArea(index)"
+                                style="width: 80px; margin-left: 16px">
+                          送出
+                        </button>
                       </div>
 
                       <div class="message-edit-cancel-button-div" style="display: flex; align-items: center">
@@ -439,7 +439,7 @@ const submitEditCancelMessageArea = (index) => {
   width: 480px;
   border-radius: 16px;
   margin: 8px 0;
-  box-shadow: 0px 0px 2px rgba(0, 0, 0, 1);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 1);
 }
 
 .container-button-block {

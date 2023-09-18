@@ -18,8 +18,6 @@ const URL = import.meta.env.VITE_API_PLAN;
 const {token} = useUserStore();
 
 
-
-
 const subscribeTitleRules = [
   (value) => {
     if (value && value.length <= 20 && value.trim().length > 0) {
@@ -102,8 +100,15 @@ const removePhoto = () => {
   message.value = "";
 }
 
+const route = useRoute();
+const planId = ref('');
+
+// 在組件掛載時取得傳入的planId
+onMounted(() => {
+  planId.value = route.query.planId || '';
+});
+
 const getPlanData = async () => {
-  const planId = 1
 
   try {
     const response = await axios.get(`${URL}/${planId}`,{headers: {'Authorization': token}
@@ -151,14 +156,6 @@ const submitForm = async () => {
   }
 };
 
-
-const route = useRoute();
-const planId = ref('');
-
-// 在组件挂载后获取 planId 值
-onMounted(() => {
-  planId.value = route.query.planId || '';
-});
 
 
 </script>

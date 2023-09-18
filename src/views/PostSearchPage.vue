@@ -1,28 +1,35 @@
 <script setup>
 import {ref, computed, onMounted, reactive} from 'vue';
+import {useRoute} from "vue-router";
+const {isLogin,token,name} = useUserStore()
+import {useUserStore} from "@/store/userStore.js";
 import axios from 'axios';
+
 import Navbar from "../components/Navbar.vue";
 import TagFunction from "../components/functionComponents/TagFunction.vue";
-import {useUserStore} from "@/store/userStore.js";
-const {isLogin,token,name} = useUserStore()
+
 
 let decodeName = eval("'"+name+"'")
 import PostPictureView from "@/components/PostPictureView.vue";
+import NoneFoundPage from "@/components/functionComponents/NoneFoundPage.vue";
 
 // import jsonFile from "../assets/tag.json"
 // import imgJsonFile from "../assets/imgList.json"
 
 // const json = ref(jsonFile)
-const json = ref([])
+// const json = ref([])
 
-// HomePage 假資料
-// const imgDataImportHomePage = ref(imgJsonFile);
-const URLPost =  import.meta.env.VITE_API_Post
+// 取到的postTitle
+
+const route = useRoute();
+const postTitle = route.query.postTitle || '';
+
+const URL =  import.meta.env.VITE_API_Post
 const PostDetail = reactive({});
 
 const loadAllPost = async () => {
   try{
-    const response = await axios.get(URLPost)
+    const response = await axios.get(`${URL}/search?postTitle=${postTitle}`)
     console.log(response.data.data)
     PostDetail.value = response.data.data;
 
@@ -38,22 +45,6 @@ const loadAllPost = async () => {
 };
 
 loadAllPost();
-
-
-const tags = ref([]);
-const URLTag = import.meta.env.VITE_API_TAG
-const loadPopularTags = async () => {
-  try {
-    // 導入數據
-    const response =await axios.get(URLTag)
-    tags.value = response.data.data;
-    console.log(response.data.data);
-  } catch (error) {
-    console.error('加载本地 JSON 文件失败：', error);
-  }
-};
-
-loadPopularTags();
 
 // 圖片功能
 
@@ -80,7 +71,7 @@ const loadblobUrl = async (item) => {
   }
 };
 
-// 加載定義函數
+// 定义加载函数
 const load = async (src) => {
   const config = { url: src, method: 'get', responseType: 'blob' };
   const response = await axios.request(config);
@@ -100,7 +91,6 @@ const load = async (src) => {
 //   }
 
 
-//GPT
 
 </script>
 
@@ -111,6 +101,19 @@ const load = async (src) => {
   <!-- 整個頁面的容器大小 -->
 
   <div class="container">
+
+    {{postTitle}}
+
+    <template v-if="!PostDetail">
+      <div class="none-found-block">
+        <div class="none-found-center">
+          <NoneFoundPage></NoneFoundPage>
+        </div>
+      </div>
+    </template>
+
+
+    <template v-if="PostDetail">
 
     <div v-if="isLogin">
       已登入
@@ -132,19 +135,29 @@ const load = async (src) => {
 
     <!-- Tag 區塊 -->
 
-    <div class="tag-div">
-      <TagFunction :tagjson="tags"></TagFunction>
-    </div>
+<!--    <div class="tag-div">-->
+<!--      <TagFunction :tagjson="json"></TagFunction>-->
+<!--    </div>-->
 
     <!-- 呈現圖片內容 -->
 
     <PostPictureView :imgUrlList="PostDetail"></PostPictureView>
+
+    </template>
 
   </div>
 
 </template>
 
 <style scoped>
+
+.none-found-block{
+  width: 100%;
+}
+
+.none-found-center{
+  text-align: center;
+}
 
 
 .text-center {

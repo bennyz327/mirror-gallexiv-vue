@@ -1,7 +1,7 @@
 <script setup>
 
 import {reactive, ref} from "vue";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import axios from "axios";
 import {useUserStore} from "@/store/userStore.js";
 const {token} = useUserStore();
@@ -33,7 +33,20 @@ const getPlanData = async () => {
 }
 getPlanData();
 
-//  刪除功能
+
+// 新增方案前檢查
+const router = useRouter();
+const isMoreThanThree = () => {
+
+  if (getData.length > 3) {
+
+    alert('已經擁有三個方案了，請先嘗試刪除原有方案或透過原有方案編輯');
+  } else {
+    router.push('/subscribe/create');
+  }
+};
+
+//  刪除方案功能
 const route = useRoute();
 const planId = ref(route.query.planId || '');
 
@@ -91,7 +104,7 @@ const deleteItem = async (planIdToDelete) => {
                       <hr>
 
                       <!--編輯功能導向-->
-                      <router-link :to="{name:'EditPlanPage', query:{planId: item.planId}}"
+                      <router-link :to="{name:'PlanEditPage', query:{planId: item.planId}}"
                                    style="text-decoration:none;color:black;">
                         <button :id="'subscribeSettingId' + index" type="button"
                                 class="w-100 btn btn-outline-secondary">
@@ -137,7 +150,7 @@ const deleteItem = async (planIdToDelete) => {
     </div>
 
 
-    <router-link to="/subscribe/create" class="setting-subscribe-plus-new-router-link">
+    <router-link to="/subscribe/create" class="setting-subscribe-plus-new-router-link" @click="isMoreThanThree">
       <div class="setting-subscribe-plus-new-div">
         <div style="display:flex; align-items: center">
           <img src="../../assets/Picture/plusIcon.png" width="48" height="48" alt="plus-icon">

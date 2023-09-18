@@ -9,40 +9,33 @@ import axios from "axios";
 
 
 // 使用 ref 創建響應式vue
-const selectedOption = ref('作品名稱');
-const apiUrl = ref('');
+const inputString = ref('');
+const selectedOption = ref('作品名稱'); // 初始選項
 
-// 監聽selectedOption
-watch(selectedOption, (newVal) => {
-  if (newVal === '作品名稱') {
-    apiUrl.value = '/localhost:8080/posts/byTitle';
-  } else if (newVal === '1') {
-    apiUrl.value = '/localhost:8080/posts/byAuthor';
-  } else if (newVal === '2') {
-    apiUrl.value = '/localhost:8080/posts/byHashtag';
-  } else {
-    apiUrl.value = '';
-  }
-});
+import { useRoute, useRouter } from 'vue-router';
 
-const URL = import.meta.env.VITE_API_Post;
-const inputString = ref("");
-// 創建搜尋方法
-const search = async () => {
-  try {
-    const response = await  axios.get(`${URL}/postTitle`,inputString)
+const route = useRoute();
+const router = useRouter();
 
-    if (response.status === 200) {
-    }
-  }catch (error) {
-    console.error('提交表单时出错：', error);
+const searchAndNavigate = () => {
+  // inputString 的值是否為空值
+  if (!inputString.value.trim()) {
+    return;
   }
 
-  // 使用 apiUrl 發送api請求
-  // 例如使用 axios 發送到 apiUrl
-  // axios.get(apiUrl.value).then(response => {
-  // });
-  console.log('API request URL: ', apiUrl.value);
+  let routeName = 'PostSearchPage';
+  let paramName = 'postTitle';
+
+  if (selectedOption.value === '創作者名稱') {
+    routeName = 'UserSearchPage';
+    paramName = 'userName';
+  } else if (selectedOption.value === '標籤搜尋') {
+    routeName = 'TagSearchPage';
+    paramName = 'tagName';
+  }
+
+  const routeParams = { [paramName]: inputString.value };
+  router.push({ name: routeName, query: routeParams });
 };
 
 </script>
@@ -96,13 +89,13 @@ const search = async () => {
             <div class="d-flex flex-wrap align-items-center justify-content-center">
               <select v-model="selectedOption" class="form-select form-select" aria-label=".form-select-lg example">
                 <option value="作品名稱">作品名稱</option>
-                <option value="1">創作者名稱</option>
-                <option value="2">標籤搜尋</option>
+                <option value="創作者名稱">創作者名稱</option>
+                <option value="標籤搜尋">標籤搜尋</option>
               </select>
             </div>
 
             <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">
-              <button @click="searchPosts" type="button" class="btn btn-outline-secondary">搜尋</button>
+              <button @click="searchAndNavigate" type="button" class="btn btn-outline-secondary">搜尋</button>
             </div>
 
             <div class="d-flex flex-wrap align-items-center justify-content-center">
@@ -147,7 +140,7 @@ const search = async () => {
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
                 <!-- 下拉選單 -->
-                <router-link to="/userpage" class="dropdown-item">個人資料</router-link>
+                <router-link to="/user" class="dropdown-item">個人資料</router-link>
                 <router-link to="/backend" class="dropdown-item">後台管理</router-link>
                 <router-link to="/login" class="dropdown-item" v-if="!isNotLogin">登入</router-link>
                 <router-link to="/setting" class="dropdown-item">設定</router-link>

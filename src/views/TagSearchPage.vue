@@ -1,64 +1,52 @@
 <script setup>
 import {ref, computed, onMounted, reactive} from 'vue';
-import axios from 'axios';
-import Navbar from "../components/Navbar.vue";
-import TagFunction from "../components/functionComponents/TagFunction.vue";
+import {useRoute} from "vue-router";
 import {useUserStore} from "@/store/userStore.js";
-const {isLogin,token,name} = useUserStore()
+const {isLogin, token, name} = useUserStore()
+import axios from 'axios';
 
-let decodeName = eval("'"+name+"'")
+import Navbar from "../components/Navbar.vue";
 import PostPictureView from "@/components/PostPictureView.vue";
+import NoneFoundPage from "@/components/functionComponents/NoneFoundPage.vue";
+
+let decodeName = eval("'" + name + "'")
 
 // import jsonFile from "../assets/tag.json"
 // import imgJsonFile from "../assets/imgList.json"
-
 // const json = ref(jsonFile)
-const json = ref([])
+// const json = ref([])
 
 // HomePage 假資料
 // const imgDataImportHomePage = ref(imgJsonFile);
-const URLPost =  import.meta.env.VITE_API_Post
+const URL = import.meta.env.VITE_API_Post
 const PostDetail = reactive({});
 
 const loadAllPost = async () => {
-  try{
-    const response = await axios.get(URLPost)
+  try {
+    const response = await axios.get(URL)
     console.log(response.data.data)
     PostDetail.value = response.data.data;
 
     PostDetail.value.forEach((item) => {
       // console.log(imgUrlList.value)
-      console.log("進迴圈"+item)
+      console.log("進迴圈" + item)
       loadblobUrl(item);
     });
 
-  }catch (error){
+  } catch (error) {
     console.error('加载本地 JSON 文件失败：', error);
   }
 };
 
 loadAllPost();
 
-
-const tags = ref([]);
-const URLTag = import.meta.env.VITE_API_TAG
-const loadPopularTags = async () => {
-  try {
-    // 導入數據
-    const response =await axios.get(URLTag)
-    tags.value = response.data.data;
-    console.log(response.data.data);
-  } catch (error) {
-    console.error('加载本地 JSON 文件失败：', error);
-  }
-};
-
-loadPopularTags();
-
 // 圖片功能
 
 //拿出使用者狀態
 
+// 取到的postTitle
+const route = useRoute();
+const tagName = route.params.tagName;
 
 onMounted(() => {
   console.log(useUserStore())
@@ -80,9 +68,9 @@ const loadblobUrl = async (item) => {
   }
 };
 
-// 加載定義函數
+// 定义加载函数
 const load = async (src) => {
-  const config = { url: src, method: 'get', responseType: 'blob' };
+  const config = {url: src, method: 'get', responseType: 'blob'};
   const response = await axios.request(config);
   return response.data; // the blob
 };
@@ -112,33 +100,27 @@ const load = async (src) => {
 
   <div class="container">
 
-    <div v-if="isLogin">
-      已登入
+    <!-- 呈現搜尋圖片內容 -->
+
+    <!--    <template v-if="data">-->
+    <!--    <PostPictureView :imgUrlList="PostDetail"></PostPictureView>-->
+    <!--    </template>-->
+    <!--    -->
+    <!--    <template v-if="!data">-->
+    <!--      -->
+    <!--    </template>-->
+
+    <template v-if="!searchData">
+    <div class="none-found-block">
+      <div class="none-found-center">
+        <NoneFoundPage></NoneFoundPage>
+      </div>
     </div>
-    <div>
-      {{ decodeName }}
-    </div>
-    <div>
-      {{ token }}
-    </div>
+    </template>
 
-    <!-- 熱門Tag的title-->
-
-    <div class="text-center">
-
-      <h3>熱門標籤</h3>
-
-    </div>
-
-    <!-- Tag 區塊 -->
-
-    <div class="tag-div">
-      <TagFunction :tagjson="tags"></TagFunction>
-    </div>
-
-    <!-- 呈現圖片內容 -->
-
-    <PostPictureView :imgUrlList="PostDetail"></PostPictureView>
+    <template v-if="searchData">
+      <PostPictureView :imgUrlList="PostDetail"></PostPictureView>
+    </template>
 
   </div>
 
@@ -146,27 +128,12 @@ const load = async (src) => {
 
 <style scoped>
 
-
-.text-center {
-  background-color: #F8F9FA;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 72px;
-  border-radius: 8px;
+.none-found-block{
+  width: 100%;
 }
 
-.tag-div li {
-  height: 72px;
-  margin: 16px;
-}
-
-.control-button button {
-  height: 96px;
-}
-
-.control-button :hover {
-  background-color: #e6e6fa;
+.none-found-center{
+  text-align: center;
 }
 
 

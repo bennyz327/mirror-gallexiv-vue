@@ -19,7 +19,7 @@ const comment = {
 const imgDataReference = ref([]);
 onMounted(async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/test/p?postId=${postId}`);
+    const response = await axios.get(`http://localhost:8080/p/test/pic?postId=${postId}`);
     console.log("urls:", response.data);
     const imageUrls = response.data;
     for (const imageUrl of imageUrls) {
@@ -323,24 +323,24 @@ function formatTime(times) {
                 label="留言" bg-color="white" style="margin-bottom: 16px;"></v-text-field>
               <button class="btn btn-outline-info me-2" style="width: 80px; margin-bottom: 32px; margin-left: 16px"
                 type="button" @click="insertCommnet">送出</button>
-<!--              <v-text-field-->
-<!--                  v-model="messageInput"-->
-<!--                  :rules="messageInputRules"-->
-<!--                  :counter="120"-->
-<!--                  :maxlength="120"-->
-<!--                  label="留言"-->
-<!--                  bg-color="white"-->
-<!--                  style="margin-bottom: 16px;"-->
-<!--              ></v-text-field>-->
-<!--              <div class="message-create-button-div">-->
-<!--              <button class="btn btn-outline-info me-2" @click="submitInputAndRefreshMessageArea"-->
-<!--                      style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出-->
-<!--              </button>-->
-<!--              </div>-->
-<!--              <v-text-field v-model="messageInput" :rules="messageInputRules" :counter="120" :maxlength="120" label="留言"-->
-<!--                bg-color="white" style="margin-bottom: 16px;"></v-text-field>-->
-<!--              <button class="btn btn-outline-info me-2"-->
-<!--                style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出</button>-->
+              <!--              <v-text-field-->
+              <!--                  v-model="messageInput"-->
+              <!--                  :rules="messageInputRules"-->
+              <!--                  :counter="120"-->
+              <!--                  :maxlength="120"-->
+              <!--                  label="留言"-->
+              <!--                  bg-color="white"-->
+              <!--                  style="margin-bottom: 16px;"-->
+              <!--              ></v-text-field>-->
+              <!--              <div class="message-create-button-div">-->
+              <!--              <button class="btn btn-outline-info me-2" @click="submitInputAndRefreshMessageArea"-->
+              <!--                      style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出-->
+              <!--              </button>-->
+              <!--              </div>-->
+              <!--              <v-text-field v-model="messageInput" :rules="messageInputRules" :counter="120" :maxlength="120" label="留言"-->
+              <!--                bg-color="white" style="margin-bottom: 16px;"></v-text-field>-->
+              <!--              <button class="btn btn-outline-info me-2"-->
+              <!--                style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出</button>-->
             </div>
 
           </div>

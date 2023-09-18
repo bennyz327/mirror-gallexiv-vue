@@ -8,11 +8,11 @@ import '../assets/css/upload/index.css'
 import '../assets/css/upload/common.css'
 
 
-import {onMounted, ref, watch} from "vue";
+import { onMounted, ref, watch } from "vue";
 import axios from "axios";
-import {useUserStore} from "@/store/userStore.js";
+import { useUserStore } from "@/store/userStore.js";
 
-const {token} = useUserStore();
+const { token } = useUserStore();
 const postTitle = ref("");
 const postDescription = ref("");
 const nsfwValue = ref(0);
@@ -199,10 +199,10 @@ const planData = ref();
 const selectedPlan = ref();
 const getPlanData = async () => {
   try {
-    const response = await axios.get(`${PLANURL}/test`,{headers: {'Authorization': token}})
+    const response = await axios.get(`${PLANURL}/personalPlan`, { headers: { 'Authorization': token } })
     planData.value = response.data.data;
     console.log(planData.value)
-  }catch (error){
+  } catch (error) {
     console.error('提交表单时出错：', error);
   }
 }
@@ -247,7 +247,7 @@ const submitForm = (newImgMap, fileMap) => {
   fileArray.forEach((file) => {
     formData.append('files', file);
   });
-  formData.append('other', new Blob([JSON.stringify(postData)], {type: 'application/json'}))
+  formData.append('other', new Blob([JSON.stringify(postData)], { type: 'application/json' }))
 
   //送出
   axios.post('http://localhost:8080/post/upload', formData, {
@@ -256,13 +256,13 @@ const submitForm = (newImgMap, fileMap) => {
       'Content-Type': 'multipart/form-data'
     }
   })
-      .then((res) => {
-        console.log(res);
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    .then((res) => {
+      console.log(res);
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 
@@ -279,7 +279,6 @@ const submitForm = (newImgMap, fileMap) => {
 </script>
 
 <template>
-
   <Navbar></Navbar>
 
   <div class="container">
@@ -297,7 +296,7 @@ const submitForm = (newImgMap, fileMap) => {
               <section class="z_file fl">
                 <img src="/src/assets/Picture/upload/plusButton.png" class="add-img">
                 <input type="file" name="file" id="file" class="file" value=""
-                       accept="image/jpg,image/jpeg,image/png,image/bmp,image/gif" multiple/>
+                  accept="image/jpg,image/jpeg,image/png,image/bmp,image/gif" multiple />
               </section>
             </div>
           </section>
@@ -319,28 +318,12 @@ const submitForm = (newImgMap, fileMap) => {
             <v-sheet class="mx-auto">
               <v-form @submit.prevent>
                 <h6 style="text-align: left">標題</h6>
-                <v-text-field
-                    v-model="postTitle"
-                    :rules="postTitleRules"
-                    :counter="30"
-                    :maxlength="30"
-                    bg-color="white"
-                    label="標題"
-                    class="v-text-field-css"
-                />
+                <v-text-field v-model="postTitle" :rules="postTitleRules" :counter="30" :maxlength="30" bg-color="white"
+                  label="標題" class="v-text-field-css" />
 
                 <h6 style="text-align: left">內文</h6>
-                <v-textarea
-                    v-model="postDescription"
-                    :rules="postDescriptionRules"
-                    :counter="250"
-                    :maxlength="250"
-                    bg-color="white"
-                    placeholder
-                    label="敘述你的圖片或相關內容"
-                    no-resize
-                    class="v-text-field-css"
-                />
+                <v-textarea v-model="postDescription" :rules="postDescriptionRules" :counter="250" :maxlength="250"
+                  bg-color="white" placeholder label="敘述你的圖片或相關內容" no-resize class="v-text-field-css" />
               </v-form>
             </v-sheet>
           </div>
@@ -356,13 +339,15 @@ const submitForm = (newImgMap, fileMap) => {
               </div>
               <div style="margin-top: 8px">
                 <div class="form-check-inline">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" value="0" v-model="nsfwValue">
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" value="0"
+                    v-model="nsfwValue">
                   <label class="form-check-label" for="NSFWFalse" style="margin-left: 8px">
                     無限制
                   </label>
                 </div>
                 <div class="form-check-inline">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" value="1" id="NSFWTrue" v-model="nsfwValue">
+                  <input class="form-check-input" type="radio" name="NSFWRadio" value="1" id="NSFWTrue"
+                    v-model="nsfwValue">
                   <label class="form-check-label" for="NSFWTrue" style="margin-left: 8px">
                     未成年不宜觀看
                   </label>
@@ -378,13 +363,15 @@ const submitForm = (newImgMap, fileMap) => {
               </div>
               <div style="margin-top: 8px">
                 <div class="form-check-inline">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" value="0" v-model="isPublic">
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" value="0"
+                    v-model="isPublic">
                   <label class="form-check-label" for="publicTrue" style="margin-left: 8px">
                     公開
                   </label>
                 </div>
                 <div class="form-check-inline">
-                  <input class="form-check-input" type="radio" name="publicRadio" value="1" id="publicFalse" v-model="isPublic">
+                  <input class="form-check-input" type="radio" name="publicRadio" value="1" id="publicFalse"
+                    v-model="isPublic">
                   <label class="form-check-label" for="publicFalse" style="margin-left: 8px">
                     不公開
                   </label>
@@ -400,13 +387,15 @@ const submitForm = (newImgMap, fileMap) => {
               </div>
               <div style="margin-top: 8px">
                 <div class="form-check-inline" style="width: 200px">
-                  <input class="form-check-input" type="radio" name="planRadio" value="null" id="planNone" v-model="selectedPlan">
+                  <input class="form-check-input" type="radio" name="planRadio" value="null" id="planNone"
+                    v-model="selectedPlan">
                   <label class="form-check-label" for="planNone" style="margin-left: 8px">
                     無限制
                   </label>
                 </div>
                 <div class="form-check-inline" style="width: 200px" v-for="(item, index) in planData" :key="index">
-                  <input class="form-check-input" type="radio" name="planRadio" :id="'planTier'+ (index + 1)" :value="(index + 1)" v-model="selectedPlan">
+                  <input class="form-check-input" type="radio" name="planRadio" :id="'planTier' + (index + 1)"
+                    :value="(index + 1)" v-model="selectedPlan">
                   <label class="form-check-label" :for="'planTier' + (index + 1)" style="margin-left: 8px">
                     Tier{{ index + 1 }} (NT$ {{ item.planPrice }})
                   </label>
@@ -418,10 +407,7 @@ const submitForm = (newImgMap, fileMap) => {
 
             <h6 style="text-align: left; display: block">Tag</h6>
             <div class="tag-div" style="margin: 8px">
-              <n-dynamic-tags v-model:value="tags"
-                              max="10"
-                              size="large"
-              />
+              <n-dynamic-tags v-model:value="tags" max="10" size="large" />
             </div>
 
           </div>
@@ -429,18 +415,16 @@ const submitForm = (newImgMap, fileMap) => {
       </div>
 
       <div class="submit-button-div" style="display: flex; justify-content: center;">
-        <v-btn @click="submitForm(newImgMap,fileArrMap)"
-               style="width: 1200px; height: 80px; background-color:beige; font-size: 24px ">推送貼文
+        <v-btn @click="submitForm(newImgMap, fileArrMap)"
+          style="width: 1200px; height: 80px; background-color:beige; font-size: 24px ">推送貼文
         </v-btn>
       </div>
 
     </div>
   </div>
-
 </template>
 
 <style scoped>
-
 .create-form-block {
   width: 100%;
 
@@ -455,7 +439,7 @@ const submitForm = (newImgMap, fileMap) => {
   width: 50%;
   max-width: 50%;
   float: left;
-//border-right: 1px solid #ccc;
+  /* border-right: 1px solid #ccc; */
 }
 
 .title-description-center {
@@ -466,7 +450,7 @@ const submitForm = (newImgMap, fileMap) => {
 .checkbox-and-tag-div {
   width: 50%;
   max-width: 50%;
-//border-left: 1px solid #ccc;
+  /* border-left: 1px solid #ccc; */
 }
 
 .checkbox-and-tag-center {
@@ -478,14 +462,11 @@ const submitForm = (newImgMap, fileMap) => {
   width: 560px;
 }
 
-@media screen and (max-width: 1400px) {
-
-}
+@media screen and (max-width: 1400px) {}
 
 @media screen and (max-width: 1200px) {
   .v-text-field-css {
     width: 360px;
   }
 }
-
 </style>

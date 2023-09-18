@@ -1,12 +1,12 @@
 <script setup>
-import {onMounted, onUnmounted, ref, watch} from 'vue';
-import {NBackTop} from "naive-ui";
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { NBackTop } from "naive-ui";
 
 // 登入後取得token跟isLogin狀態
-import {useUserStore} from "@/store/userStore.js";
+import { useUserStore } from "@/store/userStore.js";
 import router from "@/router/router.js";
 
-const {token, isLogin} = useUserStore()
+const { token, isLogin } = useUserStore()
 import axios from "axios";
 
 
@@ -32,11 +32,11 @@ const inputString = ref("");
 // 創建搜尋方法
 const search = async () => {
   try {
-    const response = await  axios.get(`${URL}/postTitle`,inputString)
+    const response = await axios.get(`${URL}/postTitle`, inputString)
 
     if (response.status === 200) {
     }
-  }catch (error) {
+  } catch (error) {
     console.error('提交表单时出错：', error);
   }
 
@@ -58,7 +58,6 @@ const logout = () => {
 </script>
 
 <template>
-
   <div class="navbar-container">
 
     <!-- 整個Navbar的容器大小 -->
@@ -67,7 +66,7 @@ const logout = () => {
 
       <div class="back-top-button">
         <template>
-          <n-back-top :right="80" style=""/>
+          <n-back-top :right="80" style="" />
         </template>
       </div>
 
@@ -100,7 +99,8 @@ const logout = () => {
           <form class="d-flex">
 
             <div class="d-flex flex-wrap align-items-center justify-content-center search-bar">
-              <input type="search" class="form-control me-1" placeholder="Search" aria-label="Search" v-model="inputString">
+              <input type="search" class="form-control me-1" placeholder="Search" aria-label="Search"
+                v-model="inputString">
             </div>
 
             <div class="d-flex flex-wrap align-items-center justify-content-center">
@@ -135,31 +135,19 @@ const logout = () => {
             <div class="dropdown align-self-start" v-if="isLogin">
 
               <!-- 觸發下拉 -->
-              <button
-                  class="btn btn-link dropdown-toggle rounded-circle"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-bs-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-              >
-                <img
-                    src="../assets/Picture/UserIcon.gif"
-                    alt="User"
-                    width="50"
-                    height="50"
-                    class="rounded-circle"
-                    style="object-fit:cover;"
-                />
+              <button class="btn btn-link dropdown-toggle rounded-circle" type="button" id="dropdownMenuButton"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="../assets/Picture/UserIcon.gif" alt="User" width="50" height="50" class="rounded-circle"
+                  style="object-fit:cover;" />
               </button>
 
               <!-- 下拉區塊 -->
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
                 <!-- 下拉選單 -->
-                <router-link to="/userpage" class="dropdown-item">個人資料</router-link>
+                <router-link to="/user" class="dropdown-item">個人資料</router-link>
                 <router-link to="/backend" class="dropdown-item">後台管理</router-link>
-                <router-link to="/login" class="dropdown-item" v-if="!isNotLogin">登入</router-link>
+                <router-link to="/login" class="dropdown-item" v-if="!isLogin">登入</router-link>
                 <router-link to="/setting" class="dropdown-item">設定</router-link>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" @click="logout">登出</a>
@@ -176,7 +164,6 @@ const logout = () => {
 </template>
 
 <style scoped>
-
 .navbar-container {
   margin-bottom: 16px;
   position: sticky;
@@ -199,7 +186,4 @@ const logout = () => {
     max-width: 120px;
   }
 }
-
-
-
 </style>

@@ -28,7 +28,7 @@ import messageAreaJsonFile from "@/assets/messageArea.json";
 const jsonDataImportMessageArea = ref(messageAreaJsonFile);
 
 //子留言區假資料
-import childMessageAreaJsonFile from "@/assets/messageArea.json";
+import childMessageAreaJsonFile from "@/assets/childMessageArea.json";
 
 const jsonDataImportChileMessageArea = ref(childMessageAreaJsonFile);
 
@@ -148,7 +148,7 @@ jsonDataImportMessageArea.value.forEach(() => {
 
 for (let i = 0; i < jsonDataImportMessageArea.value.length; i++) {
   console.log('hi')
-  messageEdit.value[i] = jsonDataImportMessageArea.value[i].userDescription;
+  messageEdit.value[i] = jsonDataImportMessageArea.value[i].commentText;
 }
 console.log(messageEdit.value)
 
@@ -312,7 +312,7 @@ const submitEditCancelMessageArea = (index) => {
                     <div class="follower-message-div" v-if="!isOwnerAndEditing(item.commentId)">
                       <!--留言區塊-->
                       <div class="follower-description-div">
-                        {{ item.userDescription }}
+                        {{ item.commentText }}
                       </div>
 
                       <!--回文功能-->
@@ -352,33 +352,130 @@ const submitEditCancelMessageArea = (index) => {
 
                     <!-- 子留言區塊 -->
 
+                    <div class="child-message-block">
 
-                    <button class="btn btn-outline-secondary me-2" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="margin-top: 4px">
-                      查看回覆
-                    </button>
+                      <button class="btn btn-outline-secondary me-2" type="button" data-bs-toggle="collapse"
+                              :data-bs-target="'#collapseExample' + item.commentId" aria-expanded="false"
+                              aria-controls="collapseExample" style="margin-top: 8px">
+                        查看回覆
+                      </button>
 
-                    <div class="collapse" id="collapseExample">
-                      <div class="card card-body">
-                        <div class="child-message-block" style="margin-left: 24px">
+                      <!-- 摺疊回覆 -->
+                      <div class="collapse" :id="'collapseExample' + item.commentId" style="margin-top: 8px">
+                        <div class="card card-body" style="background-color: #F0F0F0">
 
-                          <div class="rounded-circle">
-                            <img :src="item.userIcon" alt="User" width="48" height="48" class="rounded-circle"
-                                 style="object-fit:cover;"/>
+                          <!-- 子留言迴圈 -->
+                          <div class="child-message-detail-for-every-cycle"
+                               v-for="(childItem, index) in jsonDataImportChileMessageArea"
+                               :key="index">
+
+                            <div v-if="childItem.parentCommentId === item.commentId">
+
+                              <div class="child-message-detail">
+
+                                <div class="rounded-circle">
+                                  <img :src="childItem.userIcon" alt="User" width="64" height="64"
+                                       class="rounded-circle"
+                                       style="object-fit:cover;"/>
+                                </div>
+                                <div class="follower-name-div"
+                                     style="font-weight:bold; font-size: 18px; margin-left: 16px">{{
+                                    childItem.userName
+                                  }}
+                                </div>
+                                <div class="follower-account-div" style="padding-left: 8px">@{{
+                                    childItem.userAccount
+                                  }}
+                                </div>
+                                <div class="follower-time-div" style="padding-left: 8px">
+                                  {{ getTimeDifference(childItem.commentTime) }}
+                                </div>
+
+                                <!-- 子留言檢舉按鈕 -->
+                                <div class="users-follow-button-div"
+                                     style="display: flex; padding-left: 16px; justify-items: center; text-align: center; align-items: center">
+                                  <div class="menu-block">
+                                    <v-menu
+                                        open-on-click
+                                    >
+                                      <template v-slot:activator="{ props }">
+                                        <button
+                                            v-bind="props"
+                                        >
+                                          <i class="fa-solid fa-arrow-up-from-bracket fa-xl"
+                                             style="color: #d88d4f;"></i>
+                                        </button>
+                                      </template>
+
+                                      <!--如果不是本人的話-->
+                                      <v-btn v-if="isOwnerAndEditing(childItem.commentId)"
+                                             @click="reportMessage(childItem.commentId)">檢舉
+                                      </v-btn>
+                                      <!--如果是作者本人的話-->
+                                      <v-btn v-if="!isOwnerAndEditing(childItem.commentId)"
+                                             @click="startEditing(childItem.commentId)">編輯
+                                      </v-btn>
+                                      <v-btn v-if="!isOwnerAndEditing(childItem.commentId)"
+                                             @click="deleteMessage(childItem.commentId)">刪除
+                                      </v-btn>
+                                    </v-menu>
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- 子留言內文區塊 -->
+                              <div class="follower-detail-div">
+
+                                <!-- 一般顯示 -->
+                                <div class="follower-message-div" v-if="!isOwnerAndEditing(childItem.commentId)">
+                                  <!--留言區塊-->
+                                  <div class="child-description-div">
+                                    {{ childItem.commentText }}
+                                  </div>
+
+                                </div>
+                                <!-- 編輯時區塊 -->
+                                <div class="message-edit-text-div" v-if="isOwnerAndEditing(childItem.commentId)"
+                                     style="display: flex">
+                                  <v-text-field
+                                      v-model="messageEdit[childItem.commentId]"
+                                      :rules="messageEditRules"
+                                      :counter="120"
+                                      :maxlength="120"
+                                      label="留言"
+                                      bg-color="white"
+                                      style="margin: 16px 0;"
+                                  ></v-text-field>
+
+                                  <div class="message-edit-button-div" style="display: flex; align-items: center">
+                                    <button class="btn btn-outline-info me-2"
+                                            @click="submitEditAndRefreshMessageArea(childItem.commentId)"
+                                            style="width: 80px; margin-left: 16px">
+                                      送出
+                                    </button>
+                                  </div>
+
+                                  <div class="message-edit-cancel-button-div"
+                                       style="display: flex; align-items: center">
+                                    <button class="btn btn-outline-secondary me-2"
+                                            @click="submitEditCancelMessageArea(childItem.commentId)"
+                                            style="width: 80px; margin-left: 16px">
+                                      取消
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-
                         </div>
                       </div>
+                      <!--子留言摺疊區塊-->
                     </div>
-
-
                   </div>
-
                 </div>
               </div>
             </div>
           </div>
-
+          <!--母留言摺疊區塊-->
         </div>
       </div>
 
@@ -518,10 +615,10 @@ const submitEditCancelMessageArea = (index) => {
 }
 
 .container-right-block {
-  //margin: 8px 0;
+//margin: 8px 0;
 }
 
-.whole-picture-name-block{
+.whole-picture-name-block {
   box-shadow: 0 0 2px rgba(0, 0, 0, 1);
   border-radius: 16px;
   width: 480px;
@@ -618,6 +715,13 @@ a.link-color-avoid {
   display: flex;
 }
 
+.child-description-div {
+  width: 100%;
+  padding: 8px;
+  border-bottom: 1px dotted;
+  display: flex;
+}
+
 .follower-time-div {
   color: #8E8E8E;
 }
@@ -626,6 +730,12 @@ a.link-color-avoid {
   flex-direction: column;
   justify-content: flex-end;
   display: flex;
+}
+
+.child-message-detail {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
 }
 
 </style>

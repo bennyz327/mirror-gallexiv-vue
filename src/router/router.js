@@ -81,6 +81,12 @@ const routes = [
         props: (route) => ({ tagName: route.query.tagName || '' })
     },
     {
+        path: '/subscribe/order',
+        name: 'PlanOrderPage',
+        component: () => import("../views/TagSearchPage.vue"),
+        props: (route) => ({ tagName: route.query.planId || '' })
+    },
+    {
         path: '/setting',
         name: 'SettingPage',
         component: () => import("../views/UserSettingPage.vue"),

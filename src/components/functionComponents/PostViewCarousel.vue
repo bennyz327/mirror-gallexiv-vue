@@ -1,9 +1,9 @@
 <script setup>
-import {ref, reactive} from 'vue'
+import {ref, reactive, computed} from 'vue'
 import {Carousel, Slide} from 'vue3-carousel'
 
 import 'vue3-carousel/dist/carousel.css'
-const currentSlide = ref(0);
+
 
 // 傳回物件
 const props = defineProps({
@@ -13,6 +13,13 @@ const props = defineProps({
 // 將物件(圖片陣列:僅有url不包含任何key)
 const items = reactive(props.imgUrlList);
 
+//
+// const itemsToShow = ref(-2);
+// const dynamicItemsToShow = computed(() =>{
+//   return Math.min(items.length, itemsToShow.value, 5)
+// })
+
+const currentSlide = ref(0);
 const slideTo = (val) => {
   currentSlide.value = val;
 };
@@ -33,7 +40,7 @@ const slideTo = (val) => {
     <div class="carousel-down">
       <Carousel
           id="thumbnails"
-          :items-to-show="5"
+          :items-to-show="1"
           :wrap-around="true"
           v-model="currentSlide"
           ref="carousel"

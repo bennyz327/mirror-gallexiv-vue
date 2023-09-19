@@ -5,12 +5,32 @@ import PostViewCarousel from "../components/functionComponents/PostViewCarousel.
 import DescriptionArea from "@/components/functionComponents/CollapseFunction.vue";
 import { useUserStore } from "@/store/userStore.js";
 import { ref, onMounted, reactive, computed } from 'vue';
+import {useRoute} from "vue-router";
 //import MessageArea from "@/components/functionComponents/MessageArea.vue";
 const { token } = useUserStore();
-const postId = 1;
 
-const comment = {
-  postId,
+const route = useRoute();
+const postId = ref(route.query.postId || ''); //  接收來自router的值以外要讓他成為ref可以更新資料
+console.log("postId:",postId.value)
+
+// const URL = import.meta.env.VITE_API_Post
+// const PostDetail = reactive({});
+
+//find loginUser
+const loginUserData = ref(null);
+const loadUserData = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8080/userInfos/profile`,{ headers: { 'Authorization': token } });
+    loginUserData.value = response.data.data;
+    console.log("loginUserData:",loginUserData.value.avatar)
+  } catch (error) {
+    console.error('Error fetching images:', error);
+  }
+};
+loadUserData();
+
+const insertComment = {
+  postId: postId.value,
   commentText: "",
   parentCommentId: null
 }
@@ -19,7 +39,7 @@ const comment = {
 const imgDataReference = ref([]);
 onMounted(async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/p/test/pic?postId=${postId}`);
+    const response = await axios.get(`http://localhost:8080/p/test/pic?postId=${postId.value}`);
     console.log("urls:", response.data);
     const imageUrls = response.data;
     for (const imageUrl of imageUrls) {
@@ -45,9 +65,11 @@ const comments = ref([]);
 const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
 const loadComments = async () => {
   try {
-    const response = await axios.get(`${URL_COMMENT}/findByPostId?postId=${postId}`);
-    console.log(response.data);
+    const response = await axios.get(`${URL_COMMENT}/findByPostId?postId=${postId.value}`);
+    // console.log("response:",response.data);
     comments.value = response.data.data; // 假設返回的數據在 response.data 的 data 屬性中
+    console.log("commentsAvatar:",comments.value);
+
   } catch (error) {
     console.error('Error fetching comments:', error);
   }
@@ -60,7 +82,7 @@ onMounted(() => {
 const subCommentsDtos = ref([]);
 const loadSubCommentsDto = async () => {
   try {
-    const response = await axios.get(`${URL_COMMENT}/findSubByPostIdDto?postId=${postId}`);
+    const response = await axios.get(`${URL_COMMENT}/findSubByPostIdDto?postId=${postId.value}`);
     console.log("SubCommentsDto:", response.data);
     subCommentsDtos.value = response.data.data; // 假設返回的數據在 response.data 的 data 屬性中
     console.log("subCommentDtos:", subCommentsDtos.value);
@@ -80,9 +102,9 @@ const fackData = {
 };
 const loadPost = async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/posts/post?postId=${postId}`);
-    console.log(response.data);
+    const response = await axios.get(`http://localhost:8080/posts/post?postId=${postId.value}`);
     postData.value = response.data.data;
+    console.log("postData:",postData.value);
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
@@ -95,9 +117,9 @@ onMounted(() => {
 async function insertCommnet() {
   const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
   try {
-    const resInsertComment = await axios.post(`${URL_COMMENT}/insert`, comment, { headers: { 'Authorization': token } })
+    const resInsertComment = await axios.post(`${URL_COMMENT}/insert`, insertComment, { headers: { 'Authorization': token } })
     console.log(resInsertComment.status)
-    comment.commentText = ""//清空input
+    insertComment.commentText = ""//清空input
     console.log('Response from server:', resInsertComment.data);
   } catch (error) {
     console.error('Error sending comment:', error);
@@ -110,9 +132,9 @@ async function insertCommnet() {
 const insertSubComment = async (commentId, subCommentText) => {
   const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
   try {
-    console.log(comment.value);
+    // console.log(subComment.value);
     const subComment = {
-      postId: comment.postId,
+      postId: postId.value,
       commentText: subCommentText,
       parentCommentId: commentId,
     }
@@ -312,35 +334,17 @@ function formatTime(times) {
             <!-- 留言者頭像區塊 -->
             <div class="message-user-avatar-block" style="align-items: center">
               <div class="rounded-circle" style="display:flex">
-                <img :src="fackData.userImageURL" alt="User" width="64" height="64" class="rounded-circle"
+                <img :src=" loginUserData.avatar" alt="User" width="64" height="64" class="rounded-circle"
                   style="object-fit:cover;" />
               </div>
             </div>
 
             <!-- 輸入框區塊 -->
             <div class="message-input-block">
-              <v-text-field v-model="comment.commentText" :rules="messageInputRules" :counter="120" :maxlength="120"
+              <v-text-field v-model="insertComment.commentText" :rules="messageInputRules" :counter="120" :maxlength="120"
                 label="留言" bg-color="white" style="margin-bottom: 16px;"></v-text-field>
               <button class="btn btn-outline-info me-2" style="width: 80px; margin-bottom: 32px; margin-left: 16px"
                 type="button" @click="insertCommnet">送出</button>
-              <!--              <v-text-field-->
-              <!--                  v-model="messageInput"-->
-              <!--                  :rules="messageInputRules"-->
-              <!--                  :counter="120"-->
-              <!--                  :maxlength="120"-->
-              <!--                  label="留言"-->
-              <!--                  bg-color="white"-->
-              <!--                  style="margin-bottom: 16px;"-->
-              <!--              ></v-text-field>-->
-              <!--              <div class="message-create-button-div">-->
-              <!--              <button class="btn btn-outline-info me-2" @click="submitInputAndRefreshMessageArea"-->
-              <!--                      style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出-->
-              <!--              </button>-->
-              <!--              </div>-->
-              <!--              <v-text-field v-model="messageInput" :rules="messageInputRules" :counter="120" :maxlength="120" label="留言"-->
-              <!--                bg-color="white" style="margin-bottom: 16px;"></v-text-field>-->
-              <!--              <button class="btn btn-outline-info me-2"-->
-              <!--                style="width: 80px; margin-bottom: 32px; margin-left: 16px">送出</button>-->
             </div>
 
           </div>
@@ -357,7 +361,7 @@ function formatTime(times) {
                   <!-- 留言者頭像區塊 -->
                   <div class="follower-avatar-icon-div" style="display: flex">
                     <div class="rounded-circle">
-                      <img src="" alt="User" width="64" height="64" class="rounded-circle" style="object-fit:cover;" />
+                      <img :src="comment.userinfoByUserId.avatar" alt="User" width="64" height="64" class="rounded-circle" style="object-fit:cover;" />
                     </div>
                     <div class="follower-name-and-account"
                       style="display: flex; height: 64px; line-height: 64px; padding-left: 16px">
@@ -407,9 +411,61 @@ function formatTime(times) {
 
                   </div>
 
-                  <div v-for="subCommentDto in subCommentsDtos" :key="subCommentDto.commentId">
-                    <div v-if="subCommentDto.parentCommentId === comment.commentId">{{ subCommentDto.userName }}
-                      @{{ comment.userinfoByUserId.userName }} {{ subCommentDto.commentText }}
+                  <div v-for="subCommentDto in subCommentsDtos" :key="subCommentDto.commentId" style="margin-left: 90px">
+                    <div v-if="subCommentDto.parentCommentId === comment.commentId">
+                      <div class="follower-avatar-icon-div" style="display: flex">
+                        <div class="rounded-circle">
+                          <img :src="subCommentDto.avatar" alt="User" width="64" height="64" class="rounded-circle" style="object-fit:cover;" />
+                        </div>
+                        <div class="follower-name-and-account"
+                             style="display: flex; height: 64px; line-height: 64px; padding-left: 16px">
+                          <div class="follower-name-div" style="font-weight:bold; font-size: 18px">
+                            {{ subCommentDto.userName }}
+                          </div>
+                          <!-- <div class="follower-account-div" style="padding-left: 8px">@{{ comment.userinfoByUserId.account }}
+                          </div> -->
+                        </div>
+                        <div class="single-message-userContextTime-div">{{
+                            formatTime(subCommentDto.commentTime) }}
+                        </div>
+                        <div>
+                          <button class="update-button" type="button" @click="editComment(subCommentDto.commentId)"
+                                  style="margin-left: 10px; border: 1px solid gainsboro; margin-top: 19px; border-radius: 5px; padding: 1px;">更新</button>
+                        </div>
+                        <div>
+                          <button class="delete-button" type="button" @click="deleteComment(subCommentDto.commentId)"
+                                  style="margin-left: 10px; border: 1px solid gainsboro; margin-top: 19px; border-radius: 5px; padding: 1px;">刪除</button>
+
+                        </div>
+                      </div>
+
+                      <!-- 留言者文字區塊 -->
+                      <div class="follower-detail-div">
+                        <div class="single-message-userContext-div">
+                          <template v-if="editingCommentId === subCommentDto.commentId">
+                            <input class="sub-comment-input" v-model="editedCommentText">
+                            <button class="sub-comment-send" type="button"
+                                    @click="updateComment(subCommentDto.commentId, editedCommentText)">保存</button>
+                            <button class="sub-comment-reset" type="reset">取消</button>
+                          </template>
+                          <template v-else>
+                            <div class="follower-description-div">{{ subCommentDto.commentText }}</div>
+                          </template>
+                          <form action="" class="reply-form">
+                            <div class="">
+<!--                              <input class="sub-comment-input" label="留言" v-model="subCommentDto.subCommentText">-->
+<!--                              <button class="sub-comment-send" type="button"-->
+<!--                                      @click="insertSubComment(subCommentDto.commentId, subCommentDto.subCommentText)">送出</button>-->
+<!--                              <button class="sub-comment-reset" type="reset">取消</button>-->
+                            </div>
+                          </form>
+                        </div>
+
+                        <!-- <div class="follower-description-div">{{ comment.commentText }}</div> -->
+
+                      </div>
+<!--                      {{ subCommentDto.userName }}-->
+<!--                      @{{ comment.userinfoByUserId.userName }} {{ subCommentDto.commentText }}-->
                     </div>
                   </div>
 
@@ -447,7 +503,7 @@ function formatTime(times) {
 
                 <!--如果是作者本人的話-->
                 <v-btn v-if="!isOwner">
-                  <router-link to="/post/edit" style="text-decoration:none;color:black;">編輯作品</router-link>
+                  <router-link :to="{ name: 'PostEditPage' , query: { postId: postData.postId }}" style="text-decoration:none;color:black;">編輯作品</router-link>
                 </v-btn>
               </v-menu>
             </div>
@@ -462,7 +518,7 @@ function formatTime(times) {
               <!-- 頭像 -->
               <div class="author-icon-div">
                 <div class="rounded-circle" style="display:flex">
-                  <img :src="fackData.postUserImageURL" alt="User" width="64" height="64" class="rounded-circle"
+                  <img :src="postData.userinfoByUserId.avatar" alt="User" width="64" height="64" class="rounded-circle"
                     style="object-fit:contain;" />
                 </div>
 
@@ -476,7 +532,7 @@ function formatTime(times) {
               </div>
 
               <div class="picture-date-div">
-                <p>上傳日期：{{ postData.postTime }}</p>
+                <p>上傳日期：{{ formatTime(postData.postTime) }}</p>
               </div>
 
               <!-- 圖片敘述 -->
@@ -513,7 +569,7 @@ function formatTime(times) {
 
 .container-left-block {
   float: left;
-  width: auto;
+  width:70%;
   margin-right: 16px;
 }
 

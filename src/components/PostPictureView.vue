@@ -39,11 +39,11 @@ const heartClass = computed(() => {
     <div class="galley-middle-block">
       <div class="picture-galley-block">
         <div class="picture-item-div" v-for="item in imgUrlList.value">
-          <a target="_blank" :href="'/posts/' + item.postId">
+        <router-link :to="{ name:'PostViewPage', query: { postId: item.postId }}">
             <img v-if="item.blobUrl" :src="item.blobUrl" alt="pic"
                  style="width: 240px; height: 240px; object-fit: cover; border-radius: 8px;"
                  class="picture-div">
-          </a>
+        </router-link>
           <!-- TODO 吃飽太閒寫hover按鈕浮現功能-->
           <div class="picture-item-text-button-div">
 

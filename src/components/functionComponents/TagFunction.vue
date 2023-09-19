@@ -8,12 +8,16 @@ const currentPage = ref(1);
 const itemsPerPage = 5;
 const URL = import.meta.env.VITE_API_TAG
 
+
+
+
+
   const loadPopularTags = async () => {
     try {
       // 導入數據
       const response =await axios.get(URL)
       tags.value = response.data.data;
-      // console.log(response.data.data);
+      // console.log("tags.value:"+response.data.data);
     } catch (error) {
       console.error('加载本地 JSON 文件失败：', error);
     }
@@ -60,7 +64,7 @@ const nextPage = () => {
       <div class="d-flex flex-row">
         <div class="d-flex justify-content-between align-items-center"
              style="margin: 16px; background-color:#ffffff ">
-          <router-link :to="{ name: 'TagsSearchPage', params: { tagId: tag.tagId }}" class="text-decoration-none" v-for="(tag, index) in paginatedTags"
+          <router-link :to="{ name: 'TagsSearchPage', query: { tagName: tag.tagName }}" class="text-decoration-none" v-for="(tag, index) in paginatedTags"
                        :key="index">
             <v-btn style="color: #0c4128;margin-left: 8px;">
               #{{ tag.tagName }}

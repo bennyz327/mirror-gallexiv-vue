@@ -38,9 +38,6 @@ const getUserData = async () => {
 getUserData();
 
 
-
-// todo update功能
-
 const handleUploaded = (data) => {
   const base64str = data.url.substring(data.url.indexOf(",") + 1);
   const decoded = atob(base64str);

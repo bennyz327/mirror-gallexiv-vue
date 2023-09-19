@@ -21,6 +21,18 @@ const insertComment = {
   commentText: "",
   parentCommentId: null
 }
+//find loginUser
+const loginUserData = ref(null);
+const loadUserData = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8080/userInfos/profile`, { headers: { 'Authorization': token } });
+    loginUserData.value = response.data.data;
+    console.log("loginUserData:", loginUserData.value.avatar)
+  } catch (error) {
+    console.error('Error fetching images:', error);
+  }
+};
+loadUserData();
 
 // 圖片資料
 const imgDataReference = ref([]);
@@ -83,10 +95,6 @@ onMounted(() => {
 
 // 其他區域資料
 const postData = ref(null);
-const fackData = {
-  "userImageURL": "https://i.imgur.com/6rpzbog.gif",
-  "postUserImageURL": "https://media.discordapp.net/attachments/782068953899335710/1138768475754598420/83E0E2EE11DE10FD3314E2FE2D1EBDAE.gif",
-};
 const loadPost = async () => {
   try {
     const response = await axios.get(`http://localhost:8080/posts/post?postId=${postId.value}`);
@@ -101,6 +109,11 @@ onMounted(() => {
 });
 
 //新增留言
+const insertComment = {
+  postId,
+  commentText: "",
+  parentCommentId: null
+}
 async function insertCommnet() {
   const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
   try {
@@ -150,6 +163,7 @@ const deleteComment = async (commentId) => {
     }
   }
   loadComments();
+  loadSubCommentsDto();
 }
 
 //------------更新留言-----------------//
@@ -411,30 +425,31 @@ loadUserData();
 
                   </div>
 
-                  <div v-for="subCommentDto in subCommentsDtos" :key="subCommentDto.commentId" style="margin-left: 90px">
+                  <div v-for="subCommentDto in subCommentsDtos" :key="subCommentDto.commentId" style="margin-left: 70px;">
                     <div v-if="subCommentDto.parentCommentId === comment.commentId">
                       <div class="follower-avatar-icon-div" style="display: flex">
                         <div class="rounded-circle">
-                          <img :src="subCommentDto.avatar" alt="User" width="64" height="64" class="rounded-circle" style="object-fit:cover;" />
+                          <img :src="subCommentDto.avatar" alt="User" width="64" height="64" class="rounded-circle"
+                            style="object-fit:cover;" />
                         </div>
                         <div class="follower-name-and-account"
-                             style="display: flex; height: 64px; line-height: 64px; padding-left: 16px">
+                          style="display: flex; height: 64px; line-height: 64px; padding-left: 16px">
                           <div class="follower-name-div" style="font-weight:bold; font-size: 18px">
                             {{ subCommentDto.userName }}
                           </div>
                           <!-- <div class="follower-account-div" style="padding-left: 8px">@{{ comment.userinfoByUserId.account }}
-                          </div> -->
+                      </div> -->
                         </div>
                         <div class="single-message-userContextTime-div">{{
-                            formatTime(subCommentDto.commentTime) }}
+                          formatTime(subCommentDto.commentTime) }}
                         </div>
                         <div>
                           <button class="update-button" type="button" @click="editComment(subCommentDto.commentId)"
-                                  style="margin-left: 10px; border: 1px solid gainsboro; margin-top: 19px; border-radius: 5px; padding: 1px;">更新</button>
+                            style="margin-left: 10px; border: 1px solid gainsboro; margin-top: 19px; border-radius: 5px; padding: 1px;">更新</button>
                         </div>
                         <div>
                           <button class="delete-button" type="button" @click="deleteComment(subCommentDto.commentId)"
-                                  style="margin-left: 10px; border: 1px solid gainsboro; margin-top: 19px; border-radius: 5px; padding: 1px;">刪除</button>
+                            style="margin-left: 10px; border: 1px solid gainsboro; margin-top: 19px; border-radius: 5px; padding: 1px;">刪除</button>
 
                         </div>
                       </div>
@@ -445,7 +460,7 @@ loadUserData();
                           <template v-if="editingCommentId === subCommentDto.commentId">
                             <input class="sub-comment-input" v-model="editedCommentText">
                             <button class="sub-comment-send" type="button"
-                                    @click="updateComment(subCommentDto.commentId, editedCommentText)">保存</button>
+                              @click="updateComment(subCommentDto.commentId, editedCommentText)">保存</button>
                             <button class="sub-comment-reset" type="reset">取消</button>
                           </template>
                           <template v-else>
@@ -453,10 +468,10 @@ loadUserData();
                           </template>
                           <form action="" class="reply-form">
                             <div class="">
-<!--                              <input class="sub-comment-input" label="留言" v-model="subCommentDto.subCommentText">-->
-<!--                              <button class="sub-comment-send" type="button"-->
-<!--                                      @click="insertSubComment(subCommentDto.commentId, subCommentDto.subCommentText)">送出</button>-->
-<!--                              <button class="sub-comment-reset" type="reset">取消</button>-->
+                              <!-- <input class="sub-comment-input" label="留言" v-model="subCommentDto.subCommentText"> -->
+                              <!-- <button class="sub-comment-send" type="button"
+                                @click="insertSubComment(subCommentDto.commentId, subCommentDto.subCommentText)">送出</button>
+                              <button class="sub-comment-reset" type="reset">取消</button> -->
                             </div>
                           </form>
                         </div>
@@ -464,8 +479,8 @@ loadUserData();
                         <!-- <div class="follower-description-div">{{ comment.commentText }}</div> -->
 
                       </div>
-<!--                      {{ subCommentDto.userName }}-->
-<!--                      @{{ comment.userinfoByUserId.userName }} {{ subCommentDto.commentText }}-->
+                      <!-- {{ subCommentDto.userName }}
+                      @{{ comment.userinfoByUserId.userName }} {{ subCommentDto.commentText }} -->
                     </div>
                   </div>
 

@@ -1,5 +1,5 @@
 <script setup>
-import {computed, reactive, ref} from "vue";
+import { computed, reactive, ref } from "vue";
 
 // 傳回物件
 const props = defineProps({
@@ -8,11 +8,9 @@ const props = defineProps({
 // 將物件取出
 const items = reactive(props.imgUrlList);
 
-const URL =  import.meta.env.VITE_API_Post
+const URL = import.meta.env.VITE_API_Post
 const liked = ref([]);
 const hovered = ref([]);
-
-
 
 const toggleLike = (index) => {
   liked.value[index] = !liked.value[index];
@@ -33,7 +31,6 @@ const heartClass = computed(() => {
 </script>
 
 <template>
-
   <div v-if="imgUrlList">
 
     <div class="galley-middle-block">
@@ -56,7 +53,7 @@ const heartClass = computed(() => {
               <div class="picture-item-user-icon-div">
                 <router-link :to="'/user/' + item.userinfoByUserId.userId">
                   <img :src="item.userinfoByUserId.avatar" alt="User" width="32" height="32" class="rounded-circle"
-                       style="object-fit: cover;border: 1px solid #ccc;"/>
+                    style="object-fit: cover;border: 1px solid #ccc;" />
                 </router-link>
               </div>
 
@@ -68,7 +65,7 @@ const heartClass = computed(() => {
 
               <div class="like-button-div">
                 <button type="button" class="btn" @click="toggleLike(index)" @mouseenter="hovered[index] = true"
-                        @mouseleave="hovered[index] = false" style="padding: 0">
+                  @mouseleave="hovered[index] = false" style="padding: 0">
                   <i :class="heartClass(index)" style="color: #da2b2b;"></i>
                 </button>
               </div>
@@ -92,7 +89,6 @@ const heartClass = computed(() => {
 </template>
 
 <style scoped>
-
 .galley-middle-block {
   display: flex;
   justify-content: center;
@@ -122,7 +118,7 @@ const heartClass = computed(() => {
 
 .picture-item-div:hover img {
   border: 2px solid #777;
-//background-color: #d88d4f; opacity: 80%;
+  /* background-color: #d88d4f; opacity: 80%; */
 }
 
 .picture-item-text-button-div {
@@ -131,13 +127,13 @@ const heartClass = computed(() => {
 }
 
 .picture-text-div {
-//background-color: #F0EEFA; max-width: 264px;
+  /* background-color: #F0EEFA; max-width: 264px; */
   height: 32px;
   text-align: left;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-//text-decoration: underline;
+  /* text-decoration: underline; */
 }
 
 .picture-item-user-div {
@@ -167,5 +163,4 @@ const heartClass = computed(() => {
 .text-center {
   color: black;
 }
-
 </style>

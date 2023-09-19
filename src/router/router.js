@@ -23,21 +23,18 @@ const routes = [
         path: '/post/',
         name: 'PostViewPage',
         component: () => import("../views/PostViewPage.vue"),
+        props: (route) => ({ query: route.query.postId })
     },
     {
         path: '/post/edit',
         name: 'PostEditPage',
         component: () => import("../views/PostEditPage.vue"),
+        props: (route) => ({ query: route.query.postId })
     },
     {
         path: '/post/create',
         name: 'PostCreatePage',
         component: () => import("../views/PostCreatePage.vue"),
-    },
-    {
-        path: '/tags/',
-        name: 'TagsSearchPage',
-        component: () => import("../views/TagSearch.vue"),
     },
     {
         path: '/search/follower/',
@@ -53,7 +50,7 @@ const routes = [
         path: '/subscribe/edit',
         name: 'EditPlanPage',
         component: () => import("../views/PlanEditPage.vue"),
-        props: (route) => route.query
+        props: (route) => ({ query: route.query.planId })
     },
     {
         path: '/setting',
@@ -74,6 +71,18 @@ const routes = [
         path: '/testconfig',
         name: 'Testconfig',
         component: () => import("../components/NeverUsed/TestConfig.vue"),
+    },
+    {
+        path: '/search/post',
+        name: 'PostSearchPage',
+        component: () => import("../views/PostSearchPage.vue"),
+        props: (route) => ({ postTitle: route.query.postTitle || '' })
+    },
+    {
+        path: '/search/tag',
+        name: 'TagsSearchPage',
+        component: () => import("../views/TagSearchPage.vue"),
+        props: (route) => ({ tagName: route.query.tagName || '' })
     },
     //訊息頁面
     {

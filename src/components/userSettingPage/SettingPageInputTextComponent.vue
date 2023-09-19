@@ -94,13 +94,29 @@ const getUserData = async () => {
     console.log(formattedDateString)
     formattedValue.value = formattedDateString
 
-
-
   }catch (error){
     console.error('提交表单时出错：', error);
   }
 }
 getUserData();
+
+
+const updateData = async () =>{
+  try{
+    const changeData = {
+      userEmail: email.value,
+      userName: personalNickName.value,
+      intro: personalDescription.value,
+      gender: gender.value,
+      birthday: formattedValue.value
+    }
+    const response = await axios.get(`${URL}/update`,changeData,{headers: {'Authorization': token}
+    });
+    console.log(response.data.data)
+  }catch (error){
+    console.error('提交表单时出错：', error);
+  }
+}
 
 
 </script>
@@ -216,7 +232,7 @@ getUserData();
       </div>
 
       <div class="submit-button-div" style="display: flex; justify-content: center">
-        <v-btn class="me-4" type="submit" style="margin-top: 24px">
+        <v-btn @click="updateData" class="me-4" type="submit" style="margin-top: 24px" >
           送出修改
         </v-btn>
       </div>

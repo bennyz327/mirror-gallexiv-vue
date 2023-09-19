@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar.vue";
 import {ref} from 'vue';
 import axios from 'axios';
 import {useUserStore} from "@/store/userStore.js";
+import {useRoute} from "vue-router";
 
 const id = ref(0)
 const getData = ref([]);
@@ -17,11 +18,13 @@ const URL = import.meta.env.VITE_API_Post;
 const tagsArray = ref([]);
 const {token} = useUserStore();
 
+const route = useRoute();
+const postId = ref(route.query.postId || ''); //  接收來自router的值以外要讓他成為ref可以更新資料
+console.log(postId)
 const getPostData = async () => {
-    const postId = 5
 
   try {
-    const response = await axios.get(`${URL}/${postId}`,{headers: {'Authorization': token}})
+    const response = await axios.get(`${URL}/${postId.value}`,{headers: {'Authorization': token}})
     getData.value = response.data;
     postTitle.value = getData.value.data.postTitle;
     postDescription.value=getData.value.data.postContent;

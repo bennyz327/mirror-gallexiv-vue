@@ -16,11 +16,6 @@ console.log("postId:",postId.value)
 // const URL = import.meta.env.VITE_API_Post
 // const PostDetail = reactive({});
 
-const insertComment = {
-  postId: postId.value,
-  commentText: "",
-  parentCommentId: null
-}
 //find loginUser
 const loginUserData = ref(null);
 if (token) {
@@ -113,7 +108,7 @@ onMounted(() => {
 
 //新增留言
 const insertComment = {
-  postId,
+  postId: postId.value,
   commentText: "",
   parentCommentId: null
 }
@@ -292,19 +287,6 @@ function formatTime(times) {
     return `${timeDifferent}年前`;
   }
 }
-
-//find loginUser
-const loginUserData = ref(null);
-const loadUserData = async () => {
-  try {
-    const response = await axios.get(`http://localhost:8080/userInfos/profile`,{ headers: { 'Authorization': token } });
-    loginUserData.value = response.data.data;
-    console.log("loginUserData:",loginUserData.value.avatar)
-  } catch (error) {
-    console.error('Error fetching images:', error);
-  }
-};
-loadUserData();
 
 
 </script>

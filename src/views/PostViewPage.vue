@@ -23,14 +23,14 @@ const imgDataReference = ref([
 ]);
 
 //留言區假資料
-// import messageAreaJsonFile from "@/assets/messageArea.json";
-//
-// const jsonDataImportMessageArea = ref(messageAreaJsonFile);
-//
-// //子留言區假資料
-// import childMessageAreaJsonFile from "@/assets/childMessageArea.json";
-//
-// const jsonDataImportChildMessageArea = ref(childMessageAreaJsonFile);
+import messageAreaJsonFile from "@/assets/messageArea.json";
+
+const jsonDataImportMessageArea = ref(messageAreaJsonFile);
+
+//子留言區假資料
+import childMessageAreaJsonFile from "@/assets/childMessageArea.json";
+
+const jsonDataImportChildMessageArea = ref(childMessageAreaJsonFile);
 
 // 匯入資料到carousel
 const imgDataImportToCarousel = reactive(
@@ -39,13 +39,10 @@ const imgDataImportToCarousel = reactive(
 
 // 其他區域假資料
 const testData = ref(null);
-const URL = import.meta.env.VITE_API_Post;
-const postData = ref();
+
 const fetchData = async () => {
   try {
-    const response =  await axios.get(`${URL}/person`)
-    postData.value = response.data.data.value
-    console.log(postData.value)
+
     const fakeUserData = {
       "postUserName": "Aosora",
       "postDescription": "夏萊的老師有無窮的包容力  還有無限的地下室<br/>還有無限的地下室<br/>還有無限的地下室<br/>還有無限的地下室",
@@ -55,6 +52,9 @@ const fetchData = async () => {
       "postUserImageURL": "https://media.discordapp.net/attachments/782068953899335710/1138768475754598420/83E0E2EE11DE10FD3314E2FE2D1EBDAE.gif",
     };
 
+    setTimeout(() => {
+      testData.value = fakeUserData;
+    }, 1000);
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
@@ -63,6 +63,7 @@ const fetchData = async () => {
 onMounted(() => {
   fetchData();
 });
+
 
 
 // 按鈕功能

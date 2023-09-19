@@ -17,6 +17,9 @@ const slideTo = (val) => {
   currentSlide.value = val;
 };
 
+// 可滑動數量
+const maxSlide = ref(Math.min(items.length, 5));
+
 </script>
 
 <template>
@@ -33,7 +36,7 @@ const slideTo = (val) => {
     <div class="carousel-down">
       <Carousel
           id="thumbnails"
-          :items-to-show="5"
+          :items-to-show="maxSlide"
           :wrap-around="true"
           v-model="currentSlide"
           ref="carousel"

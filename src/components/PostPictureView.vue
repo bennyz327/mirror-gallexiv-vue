@@ -1,5 +1,5 @@
 <script setup>
-import {computed, reactive, ref} from "vue";
+import { computed, reactive, ref } from "vue";
 
 // 傳回物件
 const props = defineProps({
@@ -8,7 +8,7 @@ const props = defineProps({
 // 將物件取出
 const items = reactive(props.imgUrlList);
 
-const URL =  import.meta.env.VITE_API_Post
+const URL = import.meta.env.VITE_API_Post
 const liked = ref([]);
 const hovered = ref([]);
 
@@ -32,7 +32,6 @@ const heartClass = computed(() => {
 </script>
 
 <template>
-
   <div v-if="imgUrlList">
 
     <div class="galley-middle-block">
@@ -40,8 +39,7 @@ const heartClass = computed(() => {
         <div class="picture-item-div" v-for="item in imgUrlList.value">
           <a target="_blank" :href="'/posts/' + item.postId">
             <img v-if="item.blobUrl" :src="item.blobUrl" alt="pic"
-                 style="width: 240px; height: 240px; object-fit: cover; border-radius: 8px;"
-                 class="picture-div">
+              style="width: 240px; height: 240px; object-fit: cover; border-radius: 8px;" class="picture-div">
           </a>
           <!-- TODO 吃飽太閒寫hover按鈕浮現功能-->
           <div class="picture-item-text-button-div">
@@ -55,19 +53,19 @@ const heartClass = computed(() => {
               <div class="picture-item-user-icon-div">
                 <router-link :to="'/user/' + item.userId">
                   <img :src="item.userinfoByUserId.avatar" alt="User" width="32" height="32" class="rounded-circle"
-                       style="object-fit: cover;border: 1px solid #ccc;"/>
+                    style="object-fit: cover;border: 1px solid #ccc;" />
                 </router-link>
               </div>
 
               <div class="picture-item-user-name-div">
                 <router-link :to="'/user/' + item.userId" style="text-decoration:none; color:inherit; float: left">
-                  <p>{{ item.userinfoByUserId.userName}}</p>
+                  <p>{{ item.userinfoByUserId.userName }}</p>
                 </router-link>
               </div>
 
               <div class="like-button-div">
                 <button type="button" class="btn" @click="toggleLike(index)" @mouseenter="hovered[index] = true"
-                        @mouseleave="hovered[index] = false" style="padding: 0">
+                  @mouseleave="hovered[index] = false" style="padding: 0">
                   <i :class="heartClass(index)" style="color: #da2b2b;"></i>
                 </button>
               </div>
@@ -80,18 +78,12 @@ const heartClass = computed(() => {
     <br>
 
     <div class="text-center">
-      <v-pagination
-          v-model="page"
-          :length="10"
-          prev-icon="mdi-menu-left"
-          next-icon="mdi-menu-right"
-      ></v-pagination>
+      <v-pagination v-model="page" :length="10" prev-icon="mdi-menu-left" next-icon="mdi-menu-right"></v-pagination>
     </div>
   </div>
 </template>
 
 <style scoped>
-
 .galley-middle-block {
   display: flex;
   justify-content: center;
@@ -121,7 +113,7 @@ const heartClass = computed(() => {
 
 .picture-item-div:hover img {
   border: 2px solid #777;
-//background-color: #d88d4f; opacity: 80%;
+  /* background-color: #d88d4f; opacity: 80%; */
 }
 
 .picture-item-text-button-div {
@@ -130,13 +122,13 @@ const heartClass = computed(() => {
 }
 
 .picture-text-div {
-//background-color: #F0EEFA; max-width: 264px;
+  /* background-color: #F0EEFA; max-width: 264px; */
   height: 32px;
   text-align: left;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-//text-decoration: underline;
+  /* text-decoration: underline; */
 }
 
 .picture-item-user-div {
@@ -166,5 +158,4 @@ const heartClass = computed(() => {
 .text-center {
   color: black;
 }
-
 </style>

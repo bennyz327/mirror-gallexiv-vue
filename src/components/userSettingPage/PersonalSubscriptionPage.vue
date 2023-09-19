@@ -1,9 +1,9 @@
 <script setup>
 
-import {reactive, ref} from "vue";
-import {useRoute} from "vue-router";
+import { reactive, ref } from "vue";
+import { useRoute } from "vue-router";
 import axios from "axios";
-import {useUserStore} from "@/store/userStore.js";
+import { useUserStore } from "@/store/userStore.js";
 
 // 傳回拿到的物件
 const props = defineProps({
@@ -11,7 +11,7 @@ const props = defineProps({
 })
 // 將物件取出
 const items = reactive(props.subscribeList);
-const {token} = useUserStore();
+const { token } = useUserStore();
 const getData = ref([]);
 const subscriptionImg = ref("");
 const subscriptionName = ref("");
@@ -22,40 +22,38 @@ const URL = import.meta.env.VITE_API_PLAN
 const getPlanData = async () => {
 
   try {
-    const response = await axios.get(`${URL}/personalPlan`,{headers: {'Authorization': token}
+    const response = await axios.get(`${URL}/personalPlan`, {
+      headers: { 'Authorization': token }
     });
     getData.value = response.data.data;
 
-  }catch (error){
+  } catch (error) {
     console.error('提交表单时出错：', error);
   }
 }
 getPlanData();
 
 //  刪除功能
-
-
-const id = ref([])
 const deleteItem = async (id) => {
 
-  console.log(id)
+  console.log("id:", id)
   try {
     //發送請求到特定API
-    await axios.put(`${URL}/${id}/delete`,{headers: {'Authorization': token}
+    await axios.delete(`${URL}/${id}/delete`, {
+      headers: { 'Authorization': token }
     });
 
 
   } catch (error) {
     console.error('刪除失敗', error);
   }
-
+  getPlanData();
 };
 
 
 </script>
 
 <template>
-
   <div class="setting-subscribe-block" v-if="getData">
 
     <div class="setting-subscribe-view-whole-div ">
@@ -75,7 +73,7 @@ const deleteItem = async (id) => {
                     <div class="card-header py-3 custom-header">
                       <div class="text-center">
                         <img :src="item.planPicture" class="rounded img-fluid"
-                             style="max-width: 180px; max-height: 120px;" alt="index">
+                          style="max-width: 180px; max-height: 120px;" alt="index">
                       </div>
                     </div>
 
@@ -93,35 +91,32 @@ const deleteItem = async (id) => {
                       <hr>
 
                       <!--編輯功能導向-->
-                      <router-link :to="{name:'EditPlanPage', query:{planId: item.planId}}"
-                                   style="text-decoration:none;color:black;">
-                        <button :id="'subscribeSettingId' + index" type="button"
-                                class="w-100 btn btn-outline-secondary">
+                      <router-link :to="{ name: 'EditPlanPage', query: { planId: item.planId } }"
+                        style="text-decoration:none;color:black;">
+                        <button :id="'subscribeSettingId' + index" type="button" class="w-100 btn btn-outline-secondary">
                           編輯
                         </button>
                       </router-link>
 
                       <!--刪除功能-->
-                      <button :id="item.planId" type="button"
-                              class="w-100 btn btn-outline-secondary" data-bs-toggle="modal"
-                              :data-bs-target="'#exampleModal'+ index"
-                              style="margin-top: 16px">
+                      <button :id="item.planId" type="button" class="w-100 btn btn-outline-secondary"
+                        data-bs-toggle="modal" :data-bs-target="'#exampleModal' + index" style="margin-top: 16px">
                         刪除
                       </button>
 
                       <!--確認輸入框-->
-                      <div class="modal fade" :id="'exampleModal' + index" tabindex="-1" :aria-labelledby="'exampleModalLabel' + index"
-                           aria-hidden="true">
+                      <div class="modal fade" :id="'exampleModal' + index" tabindex="-1"
+                        :aria-labelledby="'exampleModalLabel' + index" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                           <div class="modal-content">
                             <div class="modal-header">
                               <h5 class="modal-title" id="exampleModalLabel">確定要刪除嗎</h5>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                      aria-label="Close"></button>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                              <button type="button" class="btn btn-primary" @click="deleteItem(item.planId)">確定</button>
+                              <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                                @click="deleteItem(item.planId)">確定</button>
                             </div>
                           </div>
                         </div>
@@ -152,11 +147,9 @@ const deleteItem = async (id) => {
     </router-link>
 
   </div>
-
 </template>
 
 <style scoped>
-
 .setting-subscribe-block {
   height: 640px;
   padding: 16px;
@@ -187,5 +180,4 @@ const deleteItem = async (id) => {
   color: white;
   opacity: 0.9;
 }
-
 </style>

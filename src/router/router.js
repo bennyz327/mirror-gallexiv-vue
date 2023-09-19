@@ -83,8 +83,8 @@ const routes = [
     {
         path: '/subscribe/order',
         name: 'PlanOrderPage',
-        component: () => import("../views/TagSearchPage.vue"),
-        props: (route) => ({ tagName: route.query.planId || '' })
+        component: () => import("../views/PlanOrderPage.vue"),
+        // props: (route) => ({ planId: route.query.planId || '' })
     },
     {
         path: '/setting',

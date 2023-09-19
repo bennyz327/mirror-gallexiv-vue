@@ -65,7 +65,6 @@ onMounted(() => {
 });
 
 
-
 // 按鈕功能
 const liked = ref(false);
 const collected = ref(false);
@@ -126,6 +125,7 @@ const getTimeDifference = (commentTime) => {
 
 // 留言區塊限制
 const messageInput = ref("");
+const messageInputRecommend = ref("");
 const messageInputRules = [
   (value) => {
     if (value && value.length <= 120 && value.trim().length > 0) {
@@ -137,7 +137,6 @@ const messageInputRules = [
     }
   },
 ];
-
 
 
 // 送出按鈕
@@ -326,15 +325,35 @@ const submitEditCancelMessageArea = (commentId) => {
 
                       <!--回文功能-->
                       <div class="follower-recommend-button">
-                        <button class="btn btn-outline-secondary" @click="recommend">回覆</button>
+                        <button class="btn btn-outline-secondary" @click="recommend" data-bs-toggle="collapse"
+                                :data-bs-target="'#collapseExample' + 're' + item.commentId" aria-expanded="false"
+                                aria-controls="collapseExample">回覆
+                        </button>
                       </div>
-
+                    </div>
+                    <div class="collapse" :id="'collapseExample' + 're' + item.commentId" style="margin-top: 8px">
+                      <div class="card card-body" style="display: flex; flex-direction: row; justify-content: center">
+                        <div style="width: 85%">
+                        <v-text-field
+                            v-model="messageInputRecommend[index]"
+                            :rules="messageInputRules"
+                            :counter="120"
+                            :maxlength="120"
+                            label="留言"
+                            bg-color="white"
+                        ></v-text-field>
+                        </div>
+                        <div style="display: flex; justify-items: center; align-items: center; margin-left: 8px">
+                        <button class="btn btn-outline-info me-2" @click="submitInputRecommendAndRefreshMessageArea">送出
+                        </button>
+                        </div>
+                      </div>
                     </div>
                     <!-- 編輯時區塊 -->
                     <div class="message-edit-text-div" v-if="isOwnerAndEditing(item.commentId)" style="display: flex">
                       <v-text-field
                           v-model="messageEdit[index]"
-                          :rules="messageEditRules"
+                          :rules="messageInputRules"
                           :counter="120"
                           :maxlength="120"
                           label="留言"
@@ -447,7 +466,7 @@ const submitEditCancelMessageArea = (commentId) => {
                                      style="display: flex">
                                   <v-text-field
                                       v-model="messageEditTexts[index]"
-                                      :rules="messageEditRules"
+                                      :rules="messageInputRules"
                                       :counter="120"
                                       :maxlength="120"
                                       label="留言"

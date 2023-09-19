@@ -1,22 +1,43 @@
 <script setup>
 import 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js';
 import {useField, useForm} from 'vee-validate';
-import {onMounted, ref} from "vue";
+import {onMounted, onUpdated, ref} from "vue";
 import AvatarCropper from "vue-avatar-cropper";
+import axios from "axios";
+import {useUserStore} from "@/store/userStore.js";
 
 const facebooklink = useField('facebooklink')
 const youtubelink = useField('youtubelink')
 const twitterlink = useField('twitterlink')
 const otherlink = useField('otherlink')
+const {token} = useUserStore();
+const isGetData = ref('no');
 
-// function loadLibrary(libraryPath) {
-//   let newScript = document.createElement('script')
-//   newScript.setAttribute('src', libraryPath)
-//   document.head.appendChild(newScript)
-// }
-// onMounted(() => {
-//   loadLibrary("/src/assets/js/uploadSinglePicture");
-// });
+const props = defineProps({
+  userPersonalLinkList: Object
+})
+
+onUpdated(() => {
+  if (isGetData.value === 'no' && props.userPersonalLinkList.length > 0) {
+    console.log(props.userPersonalLinkList)
+    props.userPersonalLinkList.forEach((item) => {
+      console.log(item);
+      if (item.linkSite === "facebook") {
+        facebooklink.value.value = item.linkSource;
+        console.log(facebooklink.value.value)
+      } else if (item.linkSite === "youtube") {
+        youtubelink.value.value = item.linkSource
+      } else if (item.linkSite === "twitter") {
+        twitterlink.value.value = item.linkSource
+      } else if (item.linkSite === "other") {
+        otherlink.value.value = item.linkSource
+      }
+    })
+    isGetData.value = 'yes';
+  }
+  // console.log(facebooklink.value.value)
+})
+
 
 const maxFileSize = 4;
 const showCropper = ref(true);
@@ -57,6 +78,34 @@ const removePhoto = () => {
   user.value.avatar = "";
   message.value = "";
 };
+
+const updateLink = () => {
+  const confirmRs = confirm('確定要更新資料嗎?');
+  if (confirmRs) {
+    console.log(facebooklink.value.value)
+    console.log(youtubelink.value.value)
+    console.log(twitterlink.value.value)
+    console.log(otherlink.value.value)
+    console.log('準備更新資料')
+    const LinkMap = {
+      facebook: facebooklink.value.value,
+      youtube: youtubelink.value.value,
+      twitter: twitterlink.value.value,
+      other: otherlink.value.value
+    }
+
+    const url = import.meta.env.VITE_API_USER + '/updateLinks'
+    axios.put(url, LinkMap, {headers: {'Authorization': token}})
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+  }
+
+}
+
 </script>
 
 <template>
@@ -123,7 +172,7 @@ const removePhoto = () => {
       </div>
 
       <div class="submit-button-div" style="display: flex; justify-content: center; margin-top: 16px">
-        <v-btn class="me-4" type="submit">
+        <v-btn class="me-4" type="submit" @click="updateLink">
           送出修改
         </v-btn>
       </div>

@@ -8,7 +8,27 @@ import {ref} from "vue";
 
 // 訂閱設定假資料
 import settingSubscribeJsonFile from "@/assets/settingSubscribe.json";
+import axios from "axios";
+import {useUserStore} from "@/store/userStore.js";
 const jsonDataImportSubscriptionPage = ref(settingSubscribeJsonFile);
+const userLinkList = ref([]);
+const {token} = useUserStore();
+const URL = import.meta.env.VITE_API_USER
+
+const getUserProfile = async () => {
+  try {
+    const response = await axios.get(`${URL}/profile`,{headers: {'Authorization': token}
+    });
+    console.log(response.data.data);
+
+    //給主頁設定資料
+    userLinkList.value = response.data.data.linkMappingsByUserId;
+
+  }catch (error){
+    console.error('提交表单时出错：', error);
+  }
+}
+getUserProfile();
 
 </script>
 
@@ -61,7 +81,7 @@ const jsonDataImportSubscriptionPage = ref(settingSubscribeJsonFile);
           <!--搜尋及主頁設定區塊-->
           <div class="tab-pane fade" id="nav-home-and-search-setting" role="tabpanel"
                aria-labelledby="nav-home-and-search-setting-tab">
-            <PersonalHomeAndSearchSettingPage></PersonalHomeAndSearchSettingPage>
+            <PersonalHomeAndSearchSettingPage :userPersonalLinkList="userLinkList"></PersonalHomeAndSearchSettingPage>
           </div>
 
           <!--訂閱相關區塊-->

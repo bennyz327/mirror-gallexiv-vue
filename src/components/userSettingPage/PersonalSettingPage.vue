@@ -29,6 +29,7 @@ const getUserData = async () => {
     getData.value = response.data.data;
     user.value.avatar = getData.value.avatar;
 
+    console.log(getData.value)
     console.log(user.value.avatar)
 
   }catch (error){

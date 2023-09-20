@@ -449,7 +449,6 @@ function formatTime(times) {
 
 
                         </div>
-
                       </div>
 
                       <!-- 留言者文字區塊 -->

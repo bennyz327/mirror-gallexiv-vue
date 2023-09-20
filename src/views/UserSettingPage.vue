@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar.vue";
 import PersonalSettingPage from "../components/userSettingPage/PersonalSettingPage.vue";
 import PersonalHomeAndSearchSettingPage from "../components/userSettingPage/PersonalLinkandSearchSetting.vue";
 import PersonalSubscriptionPage from "../components/userSettingPage/PersonalSubscriptionPage.vue";
-import {ref} from "vue";
+import { ref } from "vue";
 
 // 訂閱設定假資料
 import settingSubscribeJsonFile from "@/assets/settingSubscribe.json";
@@ -33,7 +33,6 @@ getUserProfile();
 </script>
 
 <template>
-
   <Navbar></Navbar>
 
   <div class="container">

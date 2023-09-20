@@ -10,22 +10,24 @@ const { token, isLogin } = useUserStore()
 import axios from "axios";
 
 
-// 使用 ref 創建響應式vue
-const selectedOption = ref('作品名稱');
-const apiUrl = ref('');
+// 切換搜尋功能
+const navigateOnEnter = () => {
+  if (inputString.value.trim()) {
+    let routeName = 'PostSearchPage';
+    let paramName = 'postTitle';
 
-// 監聽selectedOption
-watch(selectedOption, (newVal) => {
-  if (newVal === '作品名稱') {
-    apiUrl.value = '/localhost:8080/posts/byTitle';
-  } else if (newVal === '1') {
-    apiUrl.value = '/localhost:8080/posts/byAuthor';
-  } else if (newVal === '2') {
-    apiUrl.value = '/localhost:8080/posts/byHashtag';
-  } else {
-    apiUrl.value = '';
+    if (selectedOption.value === '創作者名稱') {
+      routeName = 'UserSearchPage';
+      paramName = 'userName';
+    } else if (selectedOption.value === '標籤搜尋') {
+      routeName = 'TagSearchPage';
+      paramName = 'tagName';
+    }
+
+    const routeParams = { [paramName]: inputString.value };
+    router.push({ name: routeName, query: routeParams });
   }
-});
+};
 
 const URL = import.meta.env.VITE_API_Post;
 const inputString = ref("");
@@ -96,24 +98,24 @@ const logout = () => {
 
         <div class="d-flex align-content-center flex-wrap">
 
-          <form class="d-flex">
+          <!--          <form class="d-flex">-->
 
-            <div class="d-flex flex-wrap align-items-center justify-content-center search-bar">
-              <input type="search" class="form-control me-1" placeholder="Search" aria-label="Search"
-                v-model="inputString">
-            </div>
+          <div class="d-flex flex-wrap align-items-center justify-content-center search-bar">
+            <input type="search"
+                   class="form-control me-1"
+                   placeholder="Search"
+                   aria-label="Search"
+                   v-model="inputString"
+                   @keydown.enter="navigateOnEnter">
+          </div>
 
-            <div class="d-flex flex-wrap align-items-center justify-content-center">
-              <select v-model="selectedOption" class="form-select form-select" aria-label=".form-select-lg example">
-                <option value="作品名稱">作品名稱</option>
-                <option value="1">創作者名稱</option>
-                <option value="2">標籤搜尋</option>
-              </select>
-            </div>
-
-            <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">
-              <button @click="searchPosts" type="button" class="btn btn-outline-secondary">搜尋</button>
-            </div>
+          <div class="d-flex flex-wrap align-items-center justify-content-center">
+            <select v-model="selectedOption" class="form-select form-select" aria-label=".form-select-lg example">
+              <option value="作品名稱">作品名稱</option>
+              <option value="創作者名稱">創作者名稱</option>
+              <option value="標籤搜尋">標籤搜尋</option>
+            </select>
+          </div>
 
             <div class="d-flex flex-wrap align-items-center justify-content-center">
               <router-link to="/post/create">
@@ -121,7 +123,6 @@ const logout = () => {
               </router-link>
             </div>
 
-          </form>
 
           <!-- 登入按鈕 -->
           <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">

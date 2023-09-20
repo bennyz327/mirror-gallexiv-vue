@@ -49,10 +49,22 @@ const routes = [
         name: 'PostCreatePage',
         component: () => import("../views/PostCreatePage.vue"),
     },
+    // {
+    //     path: '/tags/',
+    //     name: 'TagsSearchPage',
+    //     component: () => import("../views/TagSearch.vue"),
+    // },
     {
-        path: '/search/follower/',
+        path: '/search/user',
         name: 'UserSearchPage',
-        component: () => import("../views/CreatorSearchPage.vue"),
+        component: () => import("../views/UserSearchPage.vue"),
+        props: (route) => ({ userName: route.query.userName || '' })
+    },
+    {
+        path: '/search/tag',
+        name: 'TagSearchPage',
+        component: () => import("../views/TagSearchPage.vue"),
+        props: (route) => ({ tagName: route.query.tagName || '' })
     },
     {
         path: '/subscribe/create',

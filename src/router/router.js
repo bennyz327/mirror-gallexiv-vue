@@ -66,9 +66,27 @@ const routes = [
         props: (route) => ({ query: route.query.planId })
     },
     {
+        path: '/subscribe/order/:planId',
+        name: 'EditPlanPage',
+        component: () => import("../views/PlanEditPage.vue"),
+        props: (route) => route.query
+    },
+    {
         path: '/setting',
         name: 'SettingPage',
         component: () => import("../views/UserSettingPage.vue"),
+    },
+    {
+        path: '/user/collect',
+        name: 'UserCollectAndFollowPage',
+        component: () => import("../views/UserCollectPage.vue"),
+        props: (route) => route.query
+    },
+    {
+        path: '/user/order/list',
+        name: 'UserIsOrderPage',
+        component: () => import("../views/UserIsOrderPage.vue"),
+        props: (route) => route.query
     },
     {
         path: '/backend',
@@ -78,7 +96,7 @@ const routes = [
     {
         path: '/testpage',
         name: 'Testpage',
-        component: () => import("../views/TestPage.vue"),
+        component: () => import("../views/OrderPage.vue"),
     },
     {
         path: '/testconfig',

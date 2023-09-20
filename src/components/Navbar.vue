@@ -145,10 +145,12 @@ const logout = () => {
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
                 <!-- 下拉選單 -->
-                <router-link to="/user" class="dropdown-item">個人資料</router-link>
+                <router-link to="/user" class="dropdown-item" v-if="isLogin">個人資料</router-link>
+                <router-link to="/user/collect" class="dropdown-item" v-if="isLogin">收藏</router-link>
+                <router-link to="/user/collect" class="dropdown-item" v-if="isLogin">訂閱中項目</router-link>
+<!--                <router-link to="/login" class="dropdown-item" v-if="!isLogin">登入</router-link>-->
                 <router-link to="/backend" class="dropdown-item">後台管理</router-link>
-                <router-link to="/login" class="dropdown-item" v-if="!isLogin">登入</router-link>
-                <router-link to="/setting" class="dropdown-item">設定</router-link>
+                <router-link to="/setting" class="dropdown-item" v-if="isLogin">設定</router-link>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" @click="logout">登出</a>
               </div>

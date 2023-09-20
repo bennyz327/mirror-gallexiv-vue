@@ -35,26 +35,26 @@ const navigateOnEnter = () => {
     routerSearch.push({ name: routeName, query: routeParams });
   }
 };
-
-const URL = import.meta.env.VITE_API_Post;
-const inputString = ref("");
-// 創建搜尋方法
-const search = async () => {
-  try {
-    const response = await axios.get(`${URL}/postTitle`, inputString)
-
-    if (response.status === 200) {
-    }
-  } catch (error) {
-    console.error('提交表单时出错：', error);
-  }
+//
+// const URL = import.meta.env.VITE_API_Post;
+// const inputString = ref("");
+// // 創建搜尋方法
+// const search = async () => {
+//   try {
+//     const response = await axios.get(`${URL}/postTitle`, inputString)
+//
+//     if (response.status === 200) {
+//     }
+//   } catch (error) {
+//     console.error('提交表单时出错：', error);
+//   }
 
   // 使用 apiUrl 發送api請求
   // 例如使用 axios 發送到 apiUrl
   // axios.get(apiUrl.value).then(response => {
   // });
-  console.log('API request URL: ', apiUrl.value);
-};
+//   console.log('API request URL: ', apiUrl.value);
+// };
 
 const logout = () => {
   console.log('logout');
@@ -155,7 +155,7 @@ const logout = () => {
                 <!-- 下拉選單 -->
                 <router-link to="/user" class="dropdown-item" v-if="isLogin">個人資料</router-link>
                 <router-link to="/user/collect" class="dropdown-item" v-if="isLogin">收藏</router-link>
-                <router-link to="/user/collect" class="dropdown-item" v-if="isLogin">訂閱中項目</router-link>
+                <router-link to="/user/order" class="dropdown-item" v-if="isLogin">訂閱中項目</router-link>
 <!--                <router-link to="/login" class="dropdown-item" v-if="!isLogin">登入</router-link>-->
                 <router-link to="/backend" class="dropdown-item">後台管理</router-link>
                 <router-link to="/setting" class="dropdown-item" v-if="isLogin">設定</router-link>

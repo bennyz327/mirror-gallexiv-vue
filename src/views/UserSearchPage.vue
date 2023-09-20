@@ -6,27 +6,28 @@ import {ref} from "vue";
 import NoneFoundPage from "@/components/functionComponents/NoneFoundPage.vue";
 import {useRoute} from "vue-router";
 
+// 假資料
 const jsonDataImportCreatorSearch = ref(creatorSearchJsonFile);
 
-// 取到的userName
+// 取到的userName相關搜尋資料
 const route = useRoute();
-const 取到的userName = route.params.取到的userName;
+const userName = ref(route.query.userName || ''); //  接收來自router的值以外要讓他成為ref可以更新資料
+
+// 發送追隨/取消追隨指令到後端
+const sendFollowDataToBackend = (userId) => {
+};
 
 
-// 相關追隨按鈕功能(以及發送到後端)
+// 相關追隨按鈕功能(顯示是否追隨 > 最後發送sendDataToBackend的指令到後端更改狀態
 const followed = ref(false);
-
 const toggleUsersFollow = (userId) => {
   const userToToggle = jsonDataImportCreatorSearch.value.find(item => item.userId === userId);
   if (userToToggle) {
     userToToggle.followed = !userToToggle.followed;
-    sendDataToBackend(userToToggle);
+    sendFollowDataToBackend(userId);
   }
 };
 
-const sendDataToBackend = (user) => {
-  // 实现向后端发送数据的逻辑，可以使用 axios 或其他方式发送数据
-};
 
 
 </script>
@@ -72,9 +73,9 @@ const sendDataToBackend = (user) => {
 
               <!--追隨按鈕-->
               <div class="users-follow-button-div">
-                <button :class="item.followed ? 'btn btn-primary' : 'btn btn-outline-secondary'" type="button"
+                <button :class="item.followed ? 'btn btn-outline-secondary' : 'btn btn-primary'" type="button"
                         @click="toggleUsersFollow(item.userId)">
-                  <span v-text="item.followed ? '已追隨' : '追隨'"></span>
+                  <span v-text="item.followed ? '追隨' : '已追隨'"></span>
                 </button>
               </div>
             </div>

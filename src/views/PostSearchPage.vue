@@ -14,13 +14,7 @@ let decodeName = eval("'" + name + "'")
 import PostPictureView from "@/components/PostPictureView.vue";
 import NoneFoundPage from "@/components/functionComponents/NoneFoundPage.vue";
 
-// import jsonFile from "../assets/tag.json"
-// import imgJsonFile from "../assets/imgList.json"
-
-// const json = ref(jsonFile)
-// const json = ref([])
-
-// 取到的postTitle
+// 取到的postTitle相關搜尋資料
 const route = useRoute();
 const postTitle = ref(route.query.postTitle || ''); //  接收來自router的值以外要讓他成為ref可以更新資料
 
@@ -54,7 +48,7 @@ watch(() => route.query.postTitle, (newPostTitle) => {
 });
 
 
-//拿出使用者狀態
+//  取出圖片
 onMounted(() => {
   console.log(useUserStore())
 })
@@ -80,19 +74,6 @@ const load = async (src) => {
   return response.data; // the blob
 };
 
-
-// 为每个项目调用loadblobUrl
-//   console.log("hook")
-//   console.log(imgUrlList)
-//   console.log(imgUrlList.value)
-//   if ( imgUrlList.value && Array.isArray(imgUrlList.value)) {
-//     imgUrlList.value.forEach((item) => {
-//       console.log(imgUrlList.value)
-//       console.log("進迴圈"+item)
-//       loadblobUrl(item);
-//     });
-//   }
-
 </script>
 
 <template>
@@ -103,33 +84,16 @@ const load = async (src) => {
 
   <div class="container">
 
-    <template v-if="!PostDetail">
-      <div class="none-found-block">
-        <div class="none-found-center">
-          <NoneFoundPage></NoneFoundPage>
-        </div>
-      </div>
-    </template>
+<!--    <template v-if="PostDetail">-->
+<!--      <div class="none-found-block">-->
+<!--        <div class="none-found-center">-->
+<!--          <NoneFoundPage></NoneFoundPage>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </template>-->
 
 
-    <template v-if="PostDetail">
-
-
-      <!-- 熱門Tag的title-->
-
-      <!--    <div class="text-center">-->
-
-      <!--      <h3>熱門標籤</h3>-->
-
-      <!--    </div>-->
-
-      <!-- Tag 區塊 -->
-
-      <!--    <div class="tag-div">-->
-      <!--      <TagFunction :tagjson="json"></TagFunction>-->
-      <!--    </div>-->
-
-      <!-- 呈現圖片內容 -->
+    <template>
 
       <PostPictureView :imgUrlList="PostDetail"></PostPictureView>
 

@@ -61,6 +61,12 @@ const routes = [
         props: (route) => ({ userName: route.query.userName || '' })
     },
     {
+        path: '/search/post',
+        name: 'PostSearchPage',
+        component: () => import("../views/PostSearchPage.vue"),
+        props: (route) => ({ postTitle: route.query.postTitle || '' })
+    },
+    {
         path: '/search/tag',
         name: 'TagSearchPage',
         component: () => import("../views/TagSearchPage.vue"),
@@ -95,7 +101,7 @@ const routes = [
         props: (route) => route.query
     },
     {
-        path: '/user/order/list',
+        path: '/user/order',
         name: 'UserIsOrderPage',
         component: () => import("../views/UserIsOrderPage.vue"),
         props: (route) => route.query

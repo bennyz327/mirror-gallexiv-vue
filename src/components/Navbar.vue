@@ -1,15 +1,16 @@
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { NBackTop } from "naive-ui";
+import {onMounted, onUnmounted, ref, watch} from 'vue';
+import {NBackTop} from "naive-ui";
 
 // 登入後取得token跟isLogin狀態
-import { useUserStore } from "@/store/userStore.js";
+import {useUserStore} from "@/store/userStore.js";
 import router from "@/router/router.js";
 
-const { token, isLogin } = useUserStore()
+const {token, isLogin} = useUserStore()
 import axios from "axios";
 
 import {useRouter} from 'vue-router';
+
 const routerSearch = useRouter();
 
 // 搜尋功能
@@ -31,8 +32,8 @@ const navigateOnEnter = () => {
       paramName = 'tagName';
     }
 
-    const routeParams = { [paramName]: inputString.value };
-    routerSearch.push({ name: routeName, query: routeParams });
+    const routeParams = {[paramName]: inputString.value};
+    routerSearch.push({name: routeName, query: routeParams});
   }
 };
 //
@@ -49,10 +50,10 @@ const navigateOnEnter = () => {
 //     console.error('提交表单时出错：', error);
 //   }
 
-  // 使用 apiUrl 發送api請求
-  // 例如使用 axios 發送到 apiUrl
-  // axios.get(apiUrl.value).then(response => {
-  // });
+// 使用 apiUrl 發送api請求
+// 例如使用 axios 發送到 apiUrl
+// axios.get(apiUrl.value).then(response => {
+// });
 //   console.log('API request URL: ', apiUrl.value);
 // };
 
@@ -60,8 +61,9 @@ const logout = () => {
   console.log('logout');
   localStorage.removeItem('token');
   localStorage.removeItem('username');
-  console.log('準備登出')
+  console.log('準備登出');
   location.reload();
+  router.push('/');
 };
 
 </script>
@@ -75,7 +77,7 @@ const logout = () => {
 
       <div class="back-top-button">
         <template>
-          <n-back-top :right="80" style="" />
+          <n-back-top :right="80" style=""/>
         </template>
       </div>
 
@@ -124,11 +126,11 @@ const logout = () => {
             </select>
           </div>
 
-            <div class="d-flex flex-wrap align-items-center justify-content-center">
-              <router-link to="/post/create">
-                <button type="button" class="btn btn-outline-info me-2">發文</button>
-              </router-link>
-            </div>
+          <div class="d-flex flex-wrap align-items-center justify-content-center">
+            <router-link to="/post/create">
+              <button type="button" class="btn btn-outline-info me-2">發文</button>
+            </router-link>
+          </div>
 
 
           <!-- 登入按鈕 -->
@@ -144,9 +146,9 @@ const logout = () => {
 
               <!-- 觸發下拉 -->
               <button class="btn btn-link dropdown-toggle rounded-circle" type="button" id="dropdownMenuButton"
-                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img src="../assets/Picture/UserIcon.gif" alt="User" width="50" height="50" class="rounded-circle"
-                  style="object-fit:cover;" />
+                     style="object-fit:cover;"/>
               </button>
 
               <!-- 下拉區塊 -->
@@ -156,7 +158,7 @@ const logout = () => {
                 <router-link to="/user" class="dropdown-item" v-if="isLogin">個人資料</router-link>
                 <router-link to="/user/collect" class="dropdown-item" v-if="isLogin">收藏</router-link>
                 <router-link to="/user/order" class="dropdown-item" v-if="isLogin">訂閱中項目</router-link>
-<!--                <router-link to="/login" class="dropdown-item" v-if="!isLogin">登入</router-link>-->
+                <!--                <router-link to="/login" class="dropdown-item" v-if="!isLogin">登入</router-link>-->
                 <router-link to="/backend" class="dropdown-item">後台管理</router-link>
                 <router-link to="/setting" class="dropdown-item" v-if="isLogin">設定</router-link>
                 <div class="dropdown-divider"></div>

@@ -107,6 +107,7 @@ const signUpSubmit = handleSubmit(async values => {
       getCaptcha();
       if(response.data.code === 400){
         if (response.data.msg === '驗證失敗') {
+          alert('驗證碼錯誤，請檢查後再試');
           signUpErrorMsg.value = '驗證碼錯誤，請檢查後再試';
           isReisterBtnAble.value = true;
           setTimeout(() => {
@@ -115,6 +116,7 @@ const signUpSubmit = handleSubmit(async values => {
           }, 3000);
         }
         if (response.data.msg === '電子郵件或帳號已被註冊') {
+          alert('帳號已存在，請更換後再試');
           signUpErrorMsg.value = '帳號已存在，請更換後再試';
           isReisterBtnAble.value = true;
           setTimeout(() => {

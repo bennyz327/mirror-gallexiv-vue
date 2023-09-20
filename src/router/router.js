@@ -83,12 +83,12 @@ const routes = [
         component: () => import("../views/PlanEditPage.vue"),
         props: (route) => ({ query: route.query.planId })
     },
-    {
-        path: '/subscribe/order/:planId',
-        name: 'EditPlanPage',
-        component: () => import("../views/PlanEditPage.vue"),
-        props: (route) => route.query
-    },
+    // {
+    //     path: '/subscribe/order/:planId',
+    //     name: 'EditPlanPage',
+    //     component: () => import("../views/PlanEditPage.vue"),
+    //     props: (route) => route.query
+    // },
     {
         path: '/setting',
         name: 'SettingPage',
@@ -193,6 +193,15 @@ router.beforeEach((to, from, next) => {
     store.name = localStorage.getItem('username');
     if (store.token !== null) {
         store.isLogin = true
+    }
+
+    if(store.isLogin === false){
+        if (to.path.startsWith('/setting')){
+            router.push('/')
+        }
+        if(to.path.match('/user')){
+
+        }
     }
 
     next()

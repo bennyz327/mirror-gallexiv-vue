@@ -12,6 +12,8 @@ const URL =  import.meta.env.VITE_API_Post
 const liked = ref([]);
 const hovered = ref([]);
 
+
+
 const toggleLike = (index) => {
   liked.value[index] = !liked.value[index];
 };
@@ -27,7 +29,6 @@ const heartClass = computed(() => {
     }
   };
 });
-// loadAllPost();
 
 </script>
 
@@ -38,11 +39,11 @@ const heartClass = computed(() => {
     <div class="galley-middle-block">
       <div class="picture-galley-block">
         <div class="picture-item-div" v-for="item in imgUrlList.value">
-          <a target="_blank" :href="'/posts/' + item.postId">
+        <router-link :to="{ name:'PostViewPagePath', params: { postId: item.postId }}">
             <img v-if="item.blobUrl" :src="item.blobUrl" alt="pic"
                  style="width: 240px; height: 240px; object-fit: cover; border-radius: 8px;"
                  class="picture-div">
-          </a>
+        </router-link>
           <!-- TODO 吃飽太閒寫hover按鈕浮現功能-->
           <div class="picture-item-text-button-div">
 
@@ -53,14 +54,14 @@ const heartClass = computed(() => {
 
             <div class="picture-item-user-div">
               <div class="picture-item-user-icon-div">
-                <router-link :to="'/user/' + item.userId">
+                <router-link :to="'/user/' + item.userinfoByUserId.userId">
                   <img :src="item.userinfoByUserId.avatar" alt="User" width="32" height="32" class="rounded-circle"
                        style="object-fit: cover;border: 1px solid #ccc;"/>
                 </router-link>
               </div>
 
               <div class="picture-item-user-name-div">
-                <router-link :to="'/user/' + item.userId" style="text-decoration:none; color:inherit; float: left">
+                <router-link :to="'/user/' + item.userinfoByUserId.userId" style="text-decoration:none; color:inherit; float: left">
                   <p>{{ item.userinfoByUserId.userName}}</p>
                 </router-link>
               </div>

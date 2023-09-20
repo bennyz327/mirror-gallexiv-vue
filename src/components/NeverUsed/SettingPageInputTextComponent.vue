@@ -16,7 +16,6 @@ const countries = ref(['阿富汗', '阿爾巴尼亞', '阿爾及利亞', '安�
 
 // 暱稱編輯部分
 const personalNickName = ref('');
-
 const personalNickNameRules = [
   (value) => {
     if (value && value.length <= 20 && value.trim().length > 0) {
@@ -26,6 +25,25 @@ const personalNickNameRules = [
     } else {
       return "字數不能超過 20 個字";
     }
+  },
+];
+
+// email編輯功能
+
+// email的空值
+const personalEmail = ref('');
+
+const emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
+const personalEmailRules = [
+  (value) => {
+    if (!value) {
+      return '請輸入電子郵件';
+    } else if (!emailRule.test(value)) {
+      return '請輸入有效的電子郵件';
+    } else if (value.length > 150) {
+      return '電子郵件的長度不得超過150個字元';
+    }
+    return true;
   },
 ];
 
@@ -73,7 +91,8 @@ const URL = import.meta.env.VITE_API_USER
 
 const getUserData = async () => {
   try {
-    const response = await axios.get(`${URL}/profile`,{headers: {'Authorization': token}
+    const response = await axios.get(`${URL}/profile`, {
+      headers: {'Authorization': token}
     });
     getData.value = response.data.data;
     email.value.value = getData.value.userEmail;
@@ -81,27 +100,59 @@ const getUserData = async () => {
     personalDescription.value = getData.value.intro;
     // selectedCountry.value =
     gender.value = getData.value.gender;
-    // formattedValue.value = getData.value.birthday
-    const inputDateString = formattedValue.value;
+
+    // 输入的日期时间字符串
+    var dateTimeString = getData.value.birthday;
     // TODO 空的生日日期不會留空
 
-    const date = new Date(inputDateString);
+// 创建一个日期对象
+    var dateTime = new Date(dateTimeString);
 
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    const dateFormatter = new Intl.DateTimeFormat('en-US', options);
+// 提取日期部分
+    var year = dateTime.getFullYear();
+    var month = dateTime.getMonth() + 1; // 月份从0开始，需要加1
+    var day = dateTime.getDate();
 
-    const formattedDateString = dateFormatter.format(date);
-    console.log(formattedDateString)
-    formattedValue.value = formattedDateString
+// 将月份和日期格式化为字符串，确保单数的月份和日期前面有零
+    var formattedMonth = month < 10 ? "0" + month : month.toString();
+    var formattedDay = day < 10 ? "0" + day : day.toString();
 
+// 构建最终的日期字符串
+    var formattedDateString = year + "-" + formattedMonth + "-" + formattedDay;
 
+    console.log(formattedDateString);
+    formattedValue.value = formattedDateString;
 
-  }catch (error){
+  } catch (error) {
     console.error('提交表单时出错：', error);
   }
 }
 getUserData();
 
+
+const updateData = async () => {
+  try {
+    const changeData = getData.value;
+    console.log("aa:" + changeData)
+    changeData.userEmail = email.value.value;
+    console.log("aa:" + changeData.userEmail)
+    changeData.userName = personalNickName.value;
+    console.log("aa:" + changeData.userName)
+    changeData.intro = personalDescription.value;
+    console.log("aa:" + changeData.intro)
+    changeData.gender = gender.value;
+    console.log("aa:" + changeData.gender)
+    changeData.birthday = formattedValue
+    console.log(changeData.birthday)
+
+    const response = await axios.put(`${URL}/update`, changeData, {
+      headers: {'Authorization': token}
+    });
+    console.log(response.data.data)
+  } catch (error) {
+    console.error('提交表单时出错：', error);
+  }
+}
 
 </script>
 
@@ -121,7 +172,36 @@ getUserData();
             disabled="true"
         >
         </v-text-field>
-        <v-btn style="margin-left:16px">更換電子郵件</v-btn>
+
+        <!--email更改按鈕-->
+        <v-btn data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="margin-left:16px">更換電子郵件</v-btn>
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">email輸入欄位</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <!--介紹修改表格部分-->
+                <v-textarea
+                    v-model="email.value.value"
+                    :rules="personalEmailRules"
+                    :counter="300"
+                    :maxlength="300"
+                    label="請輸入新的電子郵件"
+                    no-resize
+                    placeholder
+                    style="width:100%"/>
+              </div>
+              <div class="modal-footer">
+                <v-btn type="button" data-bs-dismiss="modal">取消</v-btn>
+                <v-btn type="button" @click="submitNewEmailForPersonalSetting">確認修改</v-btn>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!--暱稱部分-->
@@ -141,11 +221,11 @@ getUserData();
 
         <!--自我介紹部分-->
         <div class="description-form">
-          <v-btn type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="margin-left:16px">
+          <v-btn type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop2" style="margin-left:16px">
             自我介紹
           </v-btn>
 
-          <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -198,7 +278,8 @@ getUserData();
           <label class="form-check-label" for="female">女性</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="unknowGender" value="N" v-model="gender">
+          <input class="form-check-input" type="radio" name="inlineRadioOptions" id="unknowGender" value="N"
+                 v-model="gender">
           <label class="form-check-label" for="unknowGender">不予透露</label>
         </div>
       </div>
@@ -208,7 +289,7 @@ getUserData();
         <div class="date-selector-div" style="width: 240px; align-items: center">
           <n-date-picker
               v-model:formatted-value="formattedValue"
-              value-format="MM/dd/yyyy"
+              value-format="yyyy-MM-dd"
               type="date"
               clearable
           />
@@ -216,7 +297,7 @@ getUserData();
       </div>
 
       <div class="submit-button-div" style="display: flex; justify-content: center">
-        <v-btn class="me-4" type="submit" style="margin-top: 24px">
+        <v-btn @click="updateData" class="me-4" type="submit" style="margin-top: 24px">
           送出修改
         </v-btn>
       </div>

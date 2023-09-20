@@ -1,20 +1,14 @@
 <script setup>
 import {computed, onMounted, reactive, ref} from "vue";
-import axios from "axios";
 import {useUserStore} from "@/store/userStore.js";
+import axios from "axios";
 import {useRoute} from "vue-router";
 
 // 傳回物件
-const props = defineProps({
-  subscriptionList: Array,
-})
-
-// 將物件取出
-const items = reactive(props.subscriptionList);
 
 const POSTURL = import.meta.env.VITE_API_Post
 const {token} = useUserStore();
-const postDataWithPlan = ref();
+const postDataNoPlan = ref();
 const route = useRoute();
 const userId = ref(route.params.userId || '');
 
@@ -22,31 +16,35 @@ const loadAllPost = async () => {
   try {
     if (userId.value) {
       //別人的
-      const postWithPlanResponse = await axios.get(`${POSTURL}`, {
-        params: {
-          s: 4,
+      const postOtherNoPlanResponse = await axios.get(`${POSTURL}`,{
+        params:{
+          s: 3,
           userId: userId.value
         }
       })
-      postDataWithPlan.value = postWithPlanResponse.data.data;
-      console.log(postDataWithPlan.value)
-      postDataWithPlan.value.forEach((item) => {
+      postDataNoPlan.value = postOtherNoPlanResponse.data.data;
+      console.log(postDataNoPlan.value)
+      postDataNoPlan.value.forEach((item) => {
         // console.log(imgUrlList.value)
         console.log("進迴圈" + item)
         loadblobUrl(item);
       });
 
-    } else {
-      const postWithPlanResponse = await axios.get(`${POSTURL}?s=0`, {headers: {'Authorization': token}})
-      postDataWithPlan.value = postWithPlanResponse.data.data;
-      console.log(postDataWithPlan.value)
+    }else {
+      //自己的
+      const postNoPlanResponse = await axios.get(`${POSTURL}?s=1`, {
+        headers: {'Authorization': token}
+      })
+      postDataNoPlan.value = postNoPlanResponse.data.data;
+      console.log(postDataNoPlan.value)
 
-      postDataWithPlan.value.forEach((item) => {
+      postDataNoPlan.value.forEach((item) => {
         // console.log(imgUrlList.value)
         console.log("進迴圈" + item)
         loadblobUrl(item);
       });
     }
+
   } catch (error) {
     console.error('加载本地 JSON 文件失败：', error);
   }
@@ -78,13 +76,13 @@ const loadblobUrl = async (item) => {
 
 // 定义加载函数
 const load = async (src) => {
-  const config = {url: src, method: 'get', responseType: 'blob'};
+  const config = {url: src, method: 'get', responseType: 'blob', headers: {Authorization: token}};
   const response = await axios.request(config);
   return response.data; // the blob
 };
-
 const liked = ref([]);
 const hovered = ref([]);
+
 
 const toggleLike = (index) => {
   liked.value[index] = !liked.value[index];
@@ -102,45 +100,49 @@ const heartClass = computed(() => {
   };
 });
 
-
 </script>
 
 <template>
 
-  <div v-if="postDataWithPlan">
+  <div v-if="postDataNoPlan">
 
     <div class="galley-middle-block">
       <div class="picture-galley-block">
-        <div class="picture-item-div" v-for="(item, index) in postDataWithPlan" :key="index">
-          <a target="_blank" :href="'/post/' + item.postId">
-            <img :src="item.blobUrl" alt="pic"
+        <div class="picture-item-div" v-for="item in postDataNoPlan">
+          <a target="_blank" :href="'/posts/' + item.postId">
+            <img v-if="item.blobUrl" :src="item.blobUrl" alt="pic"
                  style="width: 240px; height: 240px; object-fit: cover; border-radius: 8px;"
-                 class="picure-div">
+                 class="picture-div">
           </a>
           <!-- TODO 吃飽太閒寫hover按鈕浮現功能-->
           <div class="picture-item-text-button-div">
 
             <div class="picture-text-div">
-              <p>{{ item.postName }}</p>
+              <p>{{ item.postTitle }}</p>
             </div>
 
-            <div class="picture-item-user-div">
 
+            <div class="picture-item-user-div">
               <div class="picture-item-user-icon-div">
-                <img :src="item.userinfoByUserId.avatar" alt="User" width="32" height="32" class="rounded-circle"
-                     style="object-fit: cover;border: 1px solid #ccc"/>
+                <router-link :to="'/user/' + item.userinfoByUserId.userId">
+                  <img :src="item.userinfoByUserId.avatar" alt="User" width="32" height="32" class="rounded-circle"
+                       style="object-fit: cover;border: 1px solid #ccc;"/>
+                </router-link>
               </div>
+
               <div class="picture-item-user-name-div">
-                <p>{{ item.userinfoByUserId.userName }}</p>
+                <router-link :to="'/user/' + item.userinfoByUserId.userId"
+                             style="text-decoration:none; color:inherit; float: left">
+                  <p>{{ item.userinfoByUserId.userName }}</p>
+                </router-link>
               </div>
+
               <div class="like-button-div">
                 <button type="button" class="btn" @click="toggleLike(index)" @mouseenter="hovered[index] = true"
-                        @mouseleave="hovered[index] = false">
+                        @mouseleave="hovered[index] = false" style="padding: 0">
                   <i :class="heartClass(index)" style="color: #da2b2b;"></i>
                 </button>
               </div>
-
-
             </div>
           </div>
         </div>
@@ -200,8 +202,7 @@ const heartClass = computed(() => {
 }
 
 .picture-text-div {
-//background-color: #F0EEFA; max-width: 264px; height: 32px;
-  text-align: left;
+//background-color: #F0EEFA; max-width: 264px; height: 32px; text-align: left;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -225,11 +226,11 @@ const heartClass = computed(() => {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding-top: 8px;
 }
 
 .like-button-div {
   width: 15%;
+  padding-left: 8px;
 }
 
 .text-center {

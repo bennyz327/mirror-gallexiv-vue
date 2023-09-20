@@ -1,54 +1,53 @@
 <script setup>
-import {ref, computed, onMounted, reactive} from 'vue';
+import {ref, computed, onMounted, reactive, watch} from 'vue';
+import {useRoute} from "vue-router";
+
+const {isLogin, token, name} = useUserStore()
+import {useUserStore} from "@/store/userStore.js";
 import axios from 'axios';
+
 import Navbar from "../components/Navbar.vue";
 import TagFunction from "../components/functionComponents/TagFunction.vue";
-import UserHomePage from "@/components/PostPictureView.vue";
-import {useUserStore} from "@/store/userStore.js";
-const {isLogin,token,name} = useUserStore()
-
-let decodeName = eval("'"+name+"'")
+let decodeName = eval("'" + name + "'")
 import PostPictureView from "@/components/PostPictureView.vue";
+import NoneFoundPage from "@/components/functionComponents/NoneFoundPage.vue";
 
-// import jsonFile from "../assets/tag.json"
-// import imgJsonFile from "../assets/imgList.json"
+// 取到的tagId
+const route = useRoute();
+const tagName = ref(route.query.tagName || ''); //  接收來自router的值以外要讓他成為ref可以更新資料
 
-// const json = ref(jsonFile)
-const json = ref([])
-
-// HomePage 假資料
-// const imgDataImportHomePage = ref(imgJsonFile);
-const URL =  import.meta.env.VITE_API_Post
+const URL = import.meta.env.VITE_API_Post
 const PostDetail = reactive({});
 
 const loadAllPost = async () => {
-  try{
-    const response = await axios.get(`${URL}?s=2`,{
-      headers: {
-        'Authorization': token
-      }
-    })
-    console.log(response.data.data)
+  try {
+    const response = await axios.get(`${URL}/search?tagName=${tagName.value}`); // 使用 postTitle.value
+    console.log(tagName.value)
+    console.log(response.data.data);
     PostDetail.value = response.data.data;
 
     PostDetail.value.forEach((item) => {
       // console.log(imgUrlList.value)
-      console.log("進迴圈"+item)
+      console.log("進迴圈" + item);
       loadblobUrl(item);
     });
 
-  }catch (error){
+  } catch (error) {
     console.error('加载本地 JSON 文件失败：', error);
   }
 };
 
+// 執行第一次
 loadAllPost();
 
-// 圖片功能
+// 重新載入postTitle的值送入axios
+watch(() => route.query.postTitle, (newPostTitle) => {
+  postTitle.value = newPostTitle; // 更新 postTitle 的值
+  loadAllPost();
+});
+
 
 //拿出使用者狀態
-
-
 onMounted(() => {
   console.log(useUserStore())
 })
@@ -67,9 +66,9 @@ const loadblobUrl = async (item) => {
   }
 };
 
-// 定义加载函数
+//  加載圖片
 const load = async (src) => {
-  const config = { url: src, method: 'get', responseType: 'blob',headers:{ 'Authorization': token } };
+  const config = {url: src, method: 'get', responseType: 'blob'};
   const response = await axios.request(config);
   return response.data; // the blob
 };
@@ -84,39 +83,36 @@ const load = async (src) => {
 
   <div class="container">
 
-    <div v-if="isLogin">
-      已登入
-    </div>
-    <div>
-      {{ decodeName }}
-    </div>
-    <div>
-      {{ token }}
-    </div>
+    <template v-if="!PostDetail">
+      <div class="none-found-block">
+        <div class="none-found-center">
+          <NoneFoundPage></NoneFoundPage>
+        </div>
+      </div>
+    </template>
 
-    <!-- 熱門Tag的title-->
+    <template v-if="PostDetail">
 
-    <div class="text-center">
 
-      <h3>熱門標籤</h3>
+      <!-- 呈現圖片內容 -->
 
-    </div>
+      <PostPictureView :imgUrlList="PostDetail"></PostPictureView>
 
-    <!-- Tag 區塊 -->
-
-    <div class="tag-div">
-      <TagFunction :tagjson="json"></TagFunction>
-    </div>
-
-    <!-- 呈現圖片內容 -->
-
-    <PostPictureView :imgUrlList="PostDetail"></PostPictureView>
+    </template>
 
   </div>
 
 </template>
 
 <style scoped>
+
+.none-found-block {
+  width: 100%;
+}
+
+.none-found-center {
+  text-align: center;
+}
 
 
 .text-center {

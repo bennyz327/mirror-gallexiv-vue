@@ -1,6 +1,8 @@
 <script setup>
 
-import {reactive} from "vue";
+import {onMounted, reactive, ref} from "vue";
+import {useUserStore} from "@/store/userStore.js";
+import axios from "axios";
 
 // 傳回拿到的物件
 const props = defineProps({
@@ -8,6 +10,22 @@ const props = defineProps({
 })
 // 將物件取出
 const items = reactive(props.subscriptionList);
+
+const PLANURL = import.meta.env.VITE_API_PLAN
+const {token} = useUserStore();
+const planData = ref();
+const fetchData = async () => {
+  try {
+    const response = await axios.get(`${PLANURL}/personalPlan`,{headers: {'Authorization': token}})
+    planData.value = response.data.data;
+
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
+};
+onMounted( () => {
+  fetchData();
+})
 
 </script>
 
@@ -21,14 +39,14 @@ const items = reactive(props.subscriptionList);
 
           <!-- Subscribe Tier (for loop) -->
 
-          <div v-for="(item, index) in items" :key="index">
+          <div v-for="(item, index) in planData" :key="index">
           <div class="col">
             <div class="card mb-4 rounded-3 shadow-sm">
 
               <!-- 圖片 -->
               <div class="card-header py-3 custom-header">
                 <div class="text-center">
-                  <img :src="item.subscriptionImg" class="rounded img-fluid"
+                  <img :src="item.planPicture" class="rounded img-fluid"
                        style="max-width: 180px; max-height: 120px;" alt="index">
                 </div>
               </div>
@@ -37,10 +55,10 @@ const items = reactive(props.subscriptionList);
               <div class="card-body">
 
                 <!-- 方案名稱 -->
-                <h4 class="my-4 fw-normal">{{ item.subscriptionName }}</h4>
+                <h4 class="my-4 fw-normal">{{ item.planName }}</h4>
 
                 <!-- 方案價格 -->
-                <h3 class="card-title pricing-card-title">NT${{item.subscriptionPrice}}<small
+                <h3 class="card-title pricing-card-title">NT${{item.planPrice}}<small
                     class="text-muted fw-light">/mo</small>
                 </h3>
 
@@ -60,7 +78,7 @@ const items = reactive(props.subscriptionList);
                       <div :id="'collapse'+index" class="accordion-collapse collapse"
                            :aria-labelledby="'heading'+index" :data-bs-parent="'#accordion'+index">
                         <div class="accordion-body">
-                          {{ item.subscriptionDetail }}
+                          {{ item.planDescription }}
                         </div>
                       </div>
                     </div>

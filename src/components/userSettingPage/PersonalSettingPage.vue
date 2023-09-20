@@ -1,10 +1,12 @@
 <script setup>
-import SettingPageInputTextComponent from "@/components/userSettingPage/SettingPageInputTextComponent.vue";
 
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import AvatarCropper from "vue-avatar-cropper";
 import axios from "axios";
 import {useUserStore} from "@/store/userStore.js";
+import {NDatePicker} from "naive-ui";
+import {useField} from "vee-validate";
+import router from "@/router/router.js";
 
 const maxFileSize = 2;
 const showCropper = ref(true);
@@ -18,29 +20,6 @@ const user = ref({
 const {token} = useUserStore();
 const getData = ref([]);
 const URL = import.meta.env.VITE_API_USER
-
-const getUserData = async () => {
-
-  try {
-
-    //todo 變成perfume
-    const response = await axios.get(`${URL}/profile`,{headers: {'Authorization': token}
-    });
-    getData.value = response.data.data;
-    user.value.avatar = getData.value.avatar;
-
-    console.log(getData.value)
-    console.log(user.value.avatar)
-
-  }catch (error){
-    console.error('提交表单时出错：', error);
-  }
-}
-getUserData();
-
-
-
-// todo update功能
 
 const handleUploaded = (data) => {
   const base64str = data.url.substring(data.url.indexOf(",") + 1);
@@ -71,6 +50,147 @@ const removePhoto = () => {
   user.value.avatar = "";
   message.value = "";
 };
+
+const email = useField('email')
+const select = useField('select')
+
+// 暱稱編輯部分
+const personalNickName = ref('');
+
+const personalNickNameRules = [
+  (value) => {
+    if (value && value.length <= 20 && value.trim().length > 0) {
+      return true;
+    } else if (!value || value.trim().length === 0) {
+      return "至少必須輸入1個字元作為標題";
+    } else {
+      return "字數不能超過 20 個字";
+    }
+  },
+];
+
+// 自我介紹編輯功能
+const personalDescription = ref('');
+const personalDescriptionRules = [
+  (value) => {
+    if (value && value.length <= 300) {
+      return true;
+    } else if (value && value.length > 300) {
+      return "字數不能超過 300 個字";
+    } else {
+      return true;
+    }
+  },
+];
+
+// email編輯功能
+// email的空值
+const personalEmail = ref('');
+
+const emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
+const personalEmailRules = [
+  (value) => {
+    if (!value) {
+      return '請輸入電子郵件';
+    } else if (!emailRule.test(value)) {
+      return '請輸入有效的電子郵件';
+    } else if (value.length > 150) {
+      return '電子郵件的長度不得超過150個字元';
+    }
+    return true;
+  },
+];
+
+// 生日表格監聽
+const formattedValue = ref(null);
+const timestamp = ref(null);
+const gender = ref("")
+
+// 監聽 formattedValue 變化
+watch(formattedValue, (newValue) => {
+  // 將格式化的值改為時間
+  const date = new Date(newValue);
+  if (!isNaN(date)) {
+    timestamp.value = date.getTime();
+  } else {
+    timestamp.value = null;
+  }
+});
+const avatar = ref();
+const getUserData = async () => {
+  try {
+    const response = await axios.get(`${URL}/profile`, {
+      headers: {'Authorization': token}
+    });
+    getData.value = response.data.data;
+    email.value.value = getData.value.userEmail;
+    personalEmail.value = getData.value.userEmail
+    personalNickName.value = getData.value.userName;
+    let hi = getData.value.intro;
+    hi = hi.replaceAll('<br/>','\n');
+    personalDescription.value = hi;
+    user.value.avatar = getData.value.avatar;
+    console.log(avatar.value)
+    gender.value = getData.value.gender;
+    // 输入的日期时间字符串
+    var dateTimeString = getData.value.birthday;
+
+// 创建一个日期对象
+    var dateTime = new Date(dateTimeString);
+
+// 提取日期部分
+    var year = dateTime.getFullYear();
+    var month = dateTime.getMonth() + 1; // 月份从0开始，需要加1
+    var day = dateTime.getDate();
+
+// 将月份和日期格式化为字符串，确保单数的月份和日期前面有零
+    var formattedMonth = month < 10 ? "0" + month : month.toString();
+    var formattedDay = day < 10 ? "0" + day : day.toString();
+
+// 构建最终的日期字符串
+    var formattedDateString = year + "-" + formattedMonth + "-" + formattedDay;
+
+    console.log(formattedDateString);
+    formattedValue.value = formattedDateString;
+
+  } catch (error) {
+    console.error('提交表单时出错：', error);
+  }
+}
+getUserData();
+const updateData = async () => {
+  const c = confirm('你確定要修改嗎?')
+  try {
+    if(c){
+      const formattedDescription = personalDescription.value.replace(/\n/g, '<br/>');
+      const changeData = getData.value;
+      console.log("aa:" + changeData)
+      changeData.avatar = user.value.avatar
+      console.log("aa:" + changeData.avatar)
+      changeData.userEmail = email.value.value;
+      console.log("aa:" + changeData.userEmail)
+      changeData.userName = personalNickName.value;
+      console.log("aa:" + changeData.userName)
+      changeData.intro = formattedDescription;
+      console.log("aa:" + changeData.intro)
+      changeData.gender = gender.value;
+      console.log("aa:" + changeData.gender)
+      changeData.birthday = formattedValue
+      console.log(changeData.birthday)
+
+      const response = await axios.put(`${URL}/update`, changeData, {
+        headers: {'Authorization': token}
+      });
+      console.log(response.data.data)
+      router.push({name: 'SettingPage'})
+    }
+
+
+  } catch (error) {
+    console.error('提交表单时出错：', error);
+  }
+}
+
 </script>
 
 <template>
@@ -131,7 +251,134 @@ const removePhoto = () => {
     <div class="personal-setting-div-right">
 
       <div class="edit-setting-div">
-        <SettingPageInputTextComponent></SettingPageInputTextComponent>
+        <div class="edit-personal-data-div">
+
+          <form @submit.prevent="submit" style="width: 80%">
+
+            <h6>電子郵件</h6>
+            <div class="email-text-div">
+              <v-text-field
+                  v-model="email.value.value"
+                  label=""
+                  :error-messages="email.errorMessage.value"
+                  class="form-email-text"
+                  disabled="true">
+              </v-text-field>
+              <!--email更改按鈕-->
+              <v-btn data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="margin-left:16px">更換電子郵件
+              </v-btn>
+              <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                   tabindex="-1"
+                   aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="staticBackdropLabel">email輸入欄位</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal1" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <!--介紹修改表格部分-->
+                      <v-textarea
+                          v-model="personalEmail"
+                          :rules="personalEmailRules"
+                          :counter="300"
+                          :maxlength="300"
+                          label="請輸入新的電子郵件"
+                          no-resize
+                          placeholder
+                          style="width:100%"/>
+                    </div>
+                    <div class="modal-footer">
+                      <v-btn type="button" data-bs-dismiss="modal">取消</v-btn>
+                      <v-btn type="button" @click="submitNewEmailForPersonalSetting" data-bs-dismiss="modal">確認修改</v-btn>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="nickname-and-gender-for-divide" style="display: flex">
+              <div class="nickname-and-description-flex" style="display: flex; width: 50%">
+                <!--暱稱部分-->
+                <div class="nickname-description-div">
+                  <div class="nickname-form">
+                    <div>
+                      <h6>暱稱</h6>
+                    </div>
+                    <v-text-field
+                        v-model="personalNickName"
+                        :rules="personalNickNameRules"
+                        :counter="20"
+                        :maxlength="20"
+                        label="暱稱"
+                        bg-color="white"
+                        class="form-nickname-text"
+                        style="width: 320px;"
+                    ></v-text-field>
+                  </div>
+
+                  <!--自我介紹部分-->
+                  <div class="description-form">
+                    <div>
+                      <h6>自我介紹</h6>
+                    </div>
+                    <v-textarea
+                        v-model="personalDescription"
+                        :rules="personalDescriptionRules"
+                        :counter="300"
+                        :maxlength="300"
+                        label="自我介紹"
+                        no-resize
+                        bg-color="white"
+                        placeholder
+                        style="width: 320px;"/>
+                  </div>
+                </div>
+              </div>
+
+              <div class="gender-birth-div" style="width: 50%">
+                <div class="gender-radio-div">
+                  <h6>性別</h6>
+                  <div class="gender-radio-center" style="display: flex; justify-content: center">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="male" value="M"
+                             v-model="gender">
+                      <label class="form-check-label" for="male">男性</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="female" value="F"
+                             v-model="gender">
+                      <label class="form-check-label" for="female">女性</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="unknowGender" value="N"
+                             v-model="gender">
+                      <label class="form-check-label" for="unknowGender">不予透露</label>
+                    </div>
+                  </div>
+                </div>
+
+                <h6 style="margin-top: 48px">生日</h6>
+                <div class="date-select-div" style="display: flex">
+                  <div class="date-selector-div" style="width: 360px; align-items: center">
+                    <n-date-picker
+                        v-model:formatted-value="formattedValue"
+                        value-format="yyyy-MM-dd"
+                        type="date"
+                        clearable
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="submit-button-div" style="display: flex; justify-content: center">
+              <v-btn @click="updateData" class="me-4" type="submit" style="margin-top: 24px">
+                送出修改
+              </v-btn>
+            </div>
+
+          </form>
+        </div>
       </div>
 
     </div>
@@ -243,6 +490,37 @@ const removePhoto = () => {
     .avatar-cropper-footer
     .avatar-cropper-btn:hover) {
   background-color: #f47c20;
+}
+
+
+.edit-personal-data-div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 24px auto;
+  //border: 2px solid red;
+}
+
+.email-text-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.nickname-description-div {
+
+}
+
+.nickname-form {
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+  //border: 2px solid green;
+}
+
+.form-nickname-text {
+  width: 480px;
 }
 
 </style>

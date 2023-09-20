@@ -11,6 +11,7 @@ import '../assets/css/upload/common.css'
 import { onMounted, ref, watch } from "vue";
 import axios from "axios";
 import { useUserStore } from "@/store/userStore.js";
+import router from "@/router/router.js";
 
 const { token } = useUserStore();
 const postTitle = ref("");
@@ -257,6 +258,7 @@ const submitForm = (newImgMap, fileMap) => {
     }
   })
     .then((res) => {
+      router.push({name: '200'});
       console.log(res);
       console.log(res.data);
     })

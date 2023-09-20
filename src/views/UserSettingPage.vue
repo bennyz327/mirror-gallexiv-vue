@@ -106,7 +106,7 @@ getUserProfile();
 
 <style scoped>
 .page-title-div {
-//text-decoration:underline #d88d4f;
+  /* text-decoration: underline #d88d4f; */
 }
 
 .whole-setting-block {
@@ -114,7 +114,7 @@ getUserProfile();
   max-height: 680px;
 }
 
-.tab-content{
+.tab-content {
   height: 680px;
   border-width: 0 1px 1px 1px;
   border-style: solid;

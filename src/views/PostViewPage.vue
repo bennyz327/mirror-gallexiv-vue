@@ -23,16 +23,19 @@ const insertComment = {
 }
 //find loginUser
 const loginUserData = ref(null);
-const loadUserData = async () => {
-  try {
-    const response = await axios.get(`http://localhost:8080/userInfos/profile`, { headers: { 'Authorization': token } });
-    loginUserData.value = response.data.data;
-    console.log("loginUserData:", loginUserData.value.avatar)
-  } catch (error) {
-    console.error('Error fetching images:', error);
-  }
-};
-loadUserData();
+if (token) {
+  const loadUserData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/userInfos/profile`, { headers: { 'Authorization': token } });
+      loginUserData.value = response.data.data;
+      console.log("loginUserData:", loginUserData);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+    }
+  };
+  loadUserData();
+}
+
 
 // 圖片資料
 const imgDataReference = ref([]);
@@ -132,7 +135,7 @@ async function insertCommnet() {
 const insertSubComment = async (commentId, subCommentText) => {
   const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
   try {
-    // console.log(subComment.value);
+    console.log(insertSubComment.value);
     const subComment = {
       postId: postId.value,
       commentText: subCommentText,
@@ -348,8 +351,15 @@ loadUserData();
             <!-- 留言者頭像區塊 -->
             <div class="message-user-avatar-block" style="align-items: center">
               <div class="rounded-circle" style="display:flex">
-                <img :src=" loginUserData.avatar" alt="User" width="64" height="64" class="rounded-circle"
-                  style="object-fit:cover;" />
+                <template v-if="loginUserData">
+                  <div>
+                    <img :src="loginUserData.avatar" alt="User" width="64" height="64" class="rounded-circle"
+                      style="object-fit:cover;" />
+                  </div>
+                </template>
+                <template v-else>
+                  <div style="background-color: #CCCCCC; width: 64px; height: 64px; border-radius: 50%;"></div>
+                </template>
               </div>
             </div>
 
@@ -388,13 +398,16 @@ loadUserData();
                     <div class="single-message-userContextTime-div">{{
                       formatTime(comment.commentTime) }}
                     </div>
-                    <div>
+                    <div class="comment-edit-buttons"
+                      v-if="loginUserData && loginUserData.userId === comment.userinfoByUserId.userId">
+
                       <button class="update-button" type="button" @click="editComment(comment.commentId)"
-                        style="margin-left: 10px; border: 1px solid gainsboro; margin-top: 19px; border-radius: 5px; padding: 1px;">更新</button>
-                    </div>
-                    <div>
+                        style="margin-left: 10px; border: 1px solid gainsboro;  border-radius: 5px; padding: 1px;">更新</button>
+
+
                       <button class="delete-button" type="button" @click="deleteComment(comment.commentId)"
-                        style="margin-left: 10px; border: 1px solid gainsboro; margin-top: 19px; border-radius: 5px; padding: 1px;">刪除</button>
+                        style="margin-left: 10px; border: 1px solid gainsboro;  border-radius: 5px; padding: 1px;">刪除</button>
+
 
                     </div>
                   </div>
@@ -443,15 +456,18 @@ loadUserData();
                         <div class="single-message-userContextTime-div">{{
                           formatTime(subCommentDto.commentTime) }}
                         </div>
-                        <div>
+                        <div class="comment-edit-buttons"
+                          v-if="loginUserData && loginUserData.userId === subCommentDto.userId">
                           <button class="update-button" type="button" @click="editComment(subCommentDto.commentId)"
-                            style="margin-left: 10px; border: 1px solid gainsboro; margin-top: 19px; border-radius: 5px; padding: 1px;">更新</button>
-                        </div>
-                        <div>
+                            style="margin-left: 10px; border: 1px solid gainsboro;  border-radius: 5px; padding: 1px;">更新</button>
+
+
                           <button class="delete-button" type="button" @click="deleteComment(subCommentDto.commentId)"
-                            style="margin-left: 10px; border: 1px solid gainsboro; margin-top: 19px; border-radius: 5px; padding: 1px;">刪除</button>
+                            style="margin-left: 10px; border: 1px solid gainsboro;  border-radius: 5px; padding: 1px;">刪除</button>
+
 
                         </div>
+
                       </div>
 
                       <!-- 留言者文字區塊 -->
@@ -517,7 +533,7 @@ loadUserData();
                 <v-btn>檢舉</v-btn>
 
                 <!--如果是作者本人的話-->
-                <v-btn v-if="!isOwner">
+                <v-btn v-if="loginUserData && loginUserData.userId === postData.userinfoByUserId.userId">
                   <router-link :to="{ name: 'PostEditPage' , query: { postId: postData.postId }}" style="text-decoration:none;color:black;">編輯作品</router-link>
                 </v-btn>
               </v-menu>
@@ -728,6 +744,11 @@ a.link-color-avoid {
   color: rgb(130, 130, 130);
   /* padding: 5px; */
   /* margin-top: 10px; */
+}
+
+.comment-edit-buttons {
+  display: flex;
+  align-items: center;
 }
 
 .update-button {

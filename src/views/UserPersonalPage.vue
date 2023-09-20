@@ -21,6 +21,7 @@ import {onMounted, reactive, ref} from "vue";
 import axios from "axios";
 import {useUserStore} from "@/store/userStore.js";
 import PostPictureViewForPersonal from "@/components/userPage/PostPictureViewForPersonal.vue";
+import {useRoute} from "vue-router";
 
 // 追隨按鈕功能(以及發送到後端)
 const followed = ref(false);
@@ -43,29 +44,29 @@ const {token} = useUserStore();
 const userData = ref();
 // SubscribePicturePage 假資料
 const postDataWithPlan = ref();
-const postDataNoPlan = ref();
+const postDataNoPlan = ref()
+const route = useRoute();
+const userId = ref(route.params.userId || '');
 const fetchData = async () => {
   try {
-    const response = await axios.get(`${URl}/profile`,{headers: {'Authorization': token}})
-    userData.value = response.data.data;
+    //判斷取得別人個人頁面或是自己個人頁面
+    if (userId.value) {
+      const response = await axios.get(`${URl}/${userId.value}`)
+      userData.value = response.data.data;
 
-    const postWithPlanResponse = await axios.get(`${POSTURL}?p=0`,{headers: {'Authorization': token}})
-    postDataWithPlan.value = postWithPlanResponse.data.data;
-    console.log(postDataWithPlan.value)
+    } else {
+      const response = await axios.get(`${URl}/profile`, {headers: {'Authorization': token}})
+      userData.value = response.data.data;
 
-    const postNoPlanResponse = await axios.get(`${POSTURL}?p=1`,{headers: {'Authorization': token}})
-    postDataNoPlan.value = postNoPlanResponse.data.data;
-    console.log(postDataNoPlan.value)
+    }
 
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
 };
-onMounted( () => {
+onMounted(() => {
   fetchData();
 })
-
-
 
 // HomePage 假資料
 const imgDataImportHomePage = ref(imgJsonFile);
@@ -228,7 +229,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 
                 <div class="menu-subscribe-img-page-picture-div">
                   <UserSubscribePicturePage></UserSubscribePicturePage>
-<!--                  :subscriptionList="postDataWithPlan"-->
+                  <!--                  :subscriptionList="postDataWithPlan"-->
                 </div>
 
               </div>
@@ -283,42 +284,42 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
   width: 100%;
 }
 
-.user-introduce-block{
+.user-introduce-block {
   display: flex;
 }
 
-.user-icon-div{
+.user-icon-div {
   width: 22%;
 }
 
-.user-icon-src-div{
+.user-icon-src-div {
   position: relative;
   right: -88px;
-  top:-88px;
+  top: -88px;
 }
 
-.name-sub-count-link-div{
+.name-sub-count-link-div {
   width: 60%;
 }
 
-.user-name-account-div{
+.user-name-account-div {
   display: flex;
   padding: 8px;
   /*border: 2px solid yellow;*/
 }
 
-.user-name-text{
+.user-name-text {
 }
 
-.user-account-text{
+.user-account-text {
   margin-left: 12px;
   padding-top: 12px;
 }
 
-.user-follower-hyperlink-div{
+.user-follower-hyperlink-div {
   display: flex;
   max-height: 160px;
-  padding-left:8px;
+  padding-left: 8px;
   /*width: 1280px;*/
   /*border: 2px solid black;*/
 }
@@ -327,7 +328,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
   display: flex;
   position: relative;
   right: -24px;
-  //top: -8px;
+//top: -8px;
 }
 
 .facebook-icon-div,
@@ -338,7 +339,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
   margin-right: 8px;
 }
 
-.follow-button-div{
+.follow-button-div {
   width: 18%;
   position: relative;
   justify-content: center;
@@ -346,23 +347,23 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
   top: 32px;
 }
 
-.follow-button-div button{
+.follow-button-div button {
   width: 60%;
 }
 
-.user-introduce-second-line-block{
+.user-introduce-second-line-block {
   display: flex;
 }
 
-.user-reserve-div-left{
+.user-reserve-div-left {
   width: 15%;
 }
 
-.user-reserve-div-right{
+.user-reserve-div-right {
   width: 15%;
 }
 
-.user-description-container-div{
+.user-description-container-div {
   width: 70%;
 }
 

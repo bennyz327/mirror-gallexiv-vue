@@ -15,9 +15,22 @@ const routes = [
         component: () => import("../views/LoginAndRegisterPage.vue"),
     },
     {
+        path: '/user/:userId',
+        name: 'UserPagePath',
+        component: () => import("../views/UserPersonalPage.vue"),
+        props: (route) => ({ params: route.params.userid })
+    },
+    {
         path: '/user',
         name: 'UserPage',
         component: () => import("../views/UserPersonalPage.vue"),
+        props: (route) => ({ params: route.params.userid })
+    },
+    {
+        path: '/post/:postId',
+        name: 'PostViewPagePath',
+        component: () => import("../views/PostViewPage.vue"),
+        props: (route) => ({ params: route.params.postId })
     },
     {
         path: '/post/',

@@ -2,26 +2,50 @@
 import {computed, onMounted, reactive, ref} from "vue";
 import {useUserStore} from "@/store/userStore.js";
 import axios from "axios";
+import {useRoute} from "vue-router";
 
 // 傳回物件
 
 const POSTURL = import.meta.env.VITE_API_Post
 const {token} = useUserStore();
 const postDataNoPlan = ref();
+const route = useRoute();
+const userId = ref(route.params.userId || '');
 
 const loadAllPost = async () => {
-  try{
-    const postNoPlanResponse = await axios.get(`${POSTURL}?p=1`,{headers: {'Authorization': token}})
-    postDataNoPlan.value = postNoPlanResponse.data.data;
-    console.log(postDataNoPlan.value)
+  try {
+    if (userId.value) {
+      //別人的
+      const postOtherNoPlanResponse = await axios.get(`${POSTURL}`,{
+        params:{
+          s: 3,
+          userId: userId.value
+        }
+      })
+      postDataNoPlan.value = postOtherNoPlanResponse.data.data;
+      console.log(postDataNoPlan.value)
+      postDataNoPlan.value.forEach((item) => {
+        // console.log(imgUrlList.value)
+        console.log("進迴圈" + item)
+        loadblobUrl(item);
+      });
 
-    postDataNoPlan.value.forEach((item) => {
-      // console.log(imgUrlList.value)
-      console.log("進迴圈"+item)
-      loadblobUrl(item);
-    });
+    }else {
+      //自己的
+      const postNoPlanResponse = await axios.get(`${POSTURL}?s=1`, {
+        headers: {'Authorization': token}
+      })
+      postDataNoPlan.value = postNoPlanResponse.data.data;
+      console.log(postDataNoPlan.value)
 
-  }catch (error){
+      postDataNoPlan.value.forEach((item) => {
+        // console.log(imgUrlList.value)
+        console.log("進迴圈" + item)
+        loadblobUrl(item);
+      });
+    }
+
+  } catch (error) {
     console.error('加载本地 JSON 文件失败：', error);
   }
 };
@@ -52,13 +76,12 @@ const loadblobUrl = async (item) => {
 
 // 定义加载函数
 const load = async (src) => {
-  const config = { url: src, method: 'get', responseType: 'blob' };
+  const config = {url: src, method: 'get', responseType: 'blob', headers: {Authorization: token}};
   const response = await axios.request(config);
   return response.data; // the blob
 };
 const liked = ref([]);
 const hovered = ref([]);
-
 
 
 const toggleLike = (index) => {
@@ -108,8 +131,9 @@ const heartClass = computed(() => {
               </div>
 
               <div class="picture-item-user-name-div">
-                <router-link :to="'/user/' + item.userinfoByUserId.userId" style="text-decoration:none; color:inherit; float: left">
-                  <p>{{ item.userinfoByUserId.userName}}</p>
+                <router-link :to="'/user/' + item.userinfoByUserId.userId"
+                             style="text-decoration:none; color:inherit; float: left">
+                  <p>{{ item.userinfoByUserId.userName }}</p>
                 </router-link>
               </div>
 
@@ -178,9 +202,7 @@ const heartClass = computed(() => {
 }
 
 .picture-text-div {
-//background-color: #F0EEFA; max-width: 264px;
-  height: 32px;
-  text-align: left;
+//background-color: #F0EEFA; max-width: 264px; height: 32px; text-align: left;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

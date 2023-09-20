@@ -23,7 +23,7 @@ const PostDetail = reactive({});
 
 const loadAllPost = async () => {
   try{
-    const response = await axios.get(`${URL}?p=2`,{
+    const response = await axios.get(`${URL}?s=2`,{
       headers: {
         'Authorization': token
       }
@@ -69,7 +69,7 @@ const loadblobUrl = async (item) => {
 
 // 定义加载函数
 const load = async (src) => {
-  const config = { url: src, method: 'get', responseType: 'blob' };
+  const config = { url: src, method: 'get', responseType: 'blob',headers:{ 'Authorization': token } };
   const response = await axios.request(config);
   return response.data; // the blob
 };

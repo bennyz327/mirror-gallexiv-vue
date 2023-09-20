@@ -9,6 +9,13 @@ import router from "@/router/router.js";
 const { token, isLogin } = useUserStore()
 import axios from "axios";
 
+import {useRouter} from 'vue-router';
+const routerSearch = useRouter();
+
+// 搜尋功能
+const inputString = ref('');
+// 預設為作品名稱搜尋
+const selectedOption = ref('作品名稱')
 
 // 切換搜尋功能
 const navigateOnEnter = () => {
@@ -25,7 +32,7 @@ const navigateOnEnter = () => {
     }
 
     const routeParams = { [paramName]: inputString.value };
-    router.push({ name: routeName, query: routeParams });
+    routerSearch.push({ name: routeName, query: routeParams });
   }
 };
 

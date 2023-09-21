@@ -33,24 +33,33 @@ getPlanData();
     <h3>訂閱中的項目</h3>
 
 
-      <div class="user-subscribe-item-div">
+    <div class="user-subscribe-item-div">
 
-        <div class="subscribe-item-div" v-for="(item, index) in getData" :key="index">
-          <div class="plan-picture-div"> <img :src="item.planPicture" class="rounded img-fluid"
-                                              style="max-width: 180px; max-height: 120px;" alt="index"></div>
-          <div class="plan-detail-div">
+      <div class="subscribe-item-div" v-for="(item, index) in getData" :key="index">
+        <div class="plan-picture-div"><img :src="item.planPicture" class="rounded img-fluid"
+                                           style="max-width: 180px; max-height: 120px;" alt="index"></div>
+        <div class="plan-detail-div row">
 
-            <div class="plan-userName-text"></div>
-            <div class="plan-planDescription-text"></div>
-            <div class="plan-planPrice-text"></div>
-
+          <div class="plan-userName-text">
+            作者名稱：{{ item.userName }}
           </div>
-          <div class="function-button-div"></div>
-
+          <div class="plan-planName-text">
+            方案：{{ item.planName }}
+          </div>
+          <div class="plan-planDescription-text">
+            敘述內容：{{ item.planDescription }}
+          </div>
+          <div class="plan-planPrice-text">
+            價格：{{ item.planPrice }}
+          </div>
 
         </div>
+        <div class="function-button-div"></div>
+
 
       </div>
+
+    </div>
 
 
   </div>
@@ -65,7 +74,7 @@ getPlanData();
 
 .subscribe-item-div {
   display: flex;
-  width: 90%;
+  width: 1000px;
   height: 160px;
   border: 1px solid #ccc;
   border-radius: 16px;
@@ -73,20 +82,33 @@ getPlanData();
 
 .plan-picture-div {
   width: 240px;
-  border: 1px solid red;
   display: flex;
   justify-content: center;
   align-items: center;
+  //border: 1px solid red;
 }
 
 .plan-detail-div {
-  width: 100%;
-  border: 1px solid blue;
+  width: 560px;
+  max-width: 560px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  align-items: center;
+  //border: 1px solid blue;
 }
+
+.plan-userName-text,
+.plan-planName-text,
+.plan-planDescription-text,
+.plan-planPrice-text{
+
+}
+
 
 .function-button-div {
   width: 160px;
-  border: 1px solid green;
+  //border: 1px solid green;
 }
 
 

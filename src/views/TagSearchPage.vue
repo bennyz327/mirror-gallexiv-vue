@@ -1,21 +1,25 @@
 <script setup>
 import {ref, computed, onMounted, reactive, watch} from 'vue';
 import {useRoute} from "vue-router";
-
-const {isLogin, token, name} = useUserStore()
 import {useUserStore} from "@/store/userStore.js";
+const {isLogin, token, name} = useUserStore()
 import axios from 'axios';
 
 import Navbar from "../components/Navbar.vue";
-import TagFunction from "../components/functionComponents/TagFunction.vue";
-let decodeName = eval("'" + name + "'")
 import PostPictureView from "@/components/PostPictureView.vue";
 import NoneFoundPage from "@/components/functionComponents/NoneFoundPage.vue";
 
+let decodeName = eval("'" + name + "'")
 // 取到的tagId
 const route = useRoute();
 const tagName = ref(route.query.tagName || ''); //  接收來自router的值以外要讓他成為ref可以更新資料
+// import jsonFile from "../assets/tag.json"
+// import imgJsonFile from "../assets/imgList.json"
+// const json = ref(jsonFile)
+// const json = ref([])
 
+// HomePage 假資料
+// const imgDataImportHomePage = ref(imgJsonFile);
 const URL = import.meta.env.VITE_API_Post
 const PostDetail = reactive({});
 

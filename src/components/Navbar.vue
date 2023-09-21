@@ -1,58 +1,69 @@
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { NBackTop } from "naive-ui";
+import {onMounted, onUnmounted, ref, watch} from 'vue';
+import {NBackTop} from "naive-ui";
 
 // 登入後取得token跟isLogin狀態
-import { useUserStore } from "@/store/userStore.js";
+import {useUserStore} from "@/store/userStore.js";
 import router from "@/router/router.js";
 
-const { token, isLogin } = useUserStore()
+const {token, isLogin} = useUserStore()
 import axios from "axios";
 
+import {useRouter} from 'vue-router';
 
-// 使用 ref 創建響應式vue
-const selectedOption = ref('作品名稱');
-const apiUrl = ref('');
+const routerSearch = useRouter();
 
-// 監聽selectedOption
-watch(selectedOption, (newVal) => {
-  if (newVal === '作品名稱') {
-    apiUrl.value = '/localhost:8080/posts/byTitle';
-  } else if (newVal === '1') {
-    apiUrl.value = '/localhost:8080/posts/byAuthor';
-  } else if (newVal === '2') {
-    apiUrl.value = '/localhost:8080/posts/byHashtag';
-  } else {
-    apiUrl.value = '';
-  }
-});
+// 搜尋功能
+const inputString = ref('');
+// 預設為作品名稱搜尋
+const selectedOption = ref('作品名稱')
 
-const URL = import.meta.env.VITE_API_Post;
-const inputString = ref("");
-// 創建搜尋方法
-const search = async () => {
-  try {
-    const response = await axios.get(`${URL}/postTitle`, inputString)
+// 切換搜尋功能
+const navigateOnEnter = () => {
+  if (inputString.value.trim()) {
+    let routeName = 'PostSearchPage';
+    let paramName = 'postTitle';
 
-    if (response.status === 200) {
+    if (selectedOption.value === '創作者名稱') {
+      routeName = 'UserSearchPage';
+      paramName = 'userName';
+    } else if (selectedOption.value === '標籤搜尋') {
+      routeName = 'TagSearchPage';
+      paramName = 'tagName';
     }
-  } catch (error) {
-    console.error('提交表单时出错：', error);
-  }
 
-  // 使用 apiUrl 發送api請求
-  // 例如使用 axios 發送到 apiUrl
-  // axios.get(apiUrl.value).then(response => {
-  // });
-  console.log('API request URL: ', apiUrl.value);
+    const routeParams = {[paramName]: inputString.value};
+    routerSearch.push({name: routeName, query: routeParams});
+  }
 };
+//
+// const URL = import.meta.env.VITE_API_Post;
+// const inputString = ref("");
+// // 創建搜尋方法
+// const search = async () => {
+//   try {
+//     const response = await axios.get(`${URL}/postTitle`, inputString)
+//
+//     if (response.status === 200) {
+//     }
+//   } catch (error) {
+//     console.error('提交表单时出错：', error);
+//   }
+
+// 使用 apiUrl 發送api請求
+// 例如使用 axios 發送到 apiUrl
+// axios.get(apiUrl.value).then(response => {
+// });
+//   console.log('API request URL: ', apiUrl.value);
+// };
 
 const logout = () => {
   console.log('logout');
   localStorage.removeItem('token');
   localStorage.removeItem('username');
-  console.log('準備登出')
+  console.log('準備登出');
   location.reload();
+  router.push('/');
 };
 
 </script>
@@ -66,7 +77,7 @@ const logout = () => {
 
       <div class="back-top-button">
         <template>
-          <n-back-top :right="80" style="" />
+          <n-back-top :right="80" style=""/>
         </template>
       </div>
 
@@ -96,32 +107,31 @@ const logout = () => {
 
         <div class="d-flex align-content-center flex-wrap">
 
-          <form class="d-flex">
+          <!--          <form class="d-flex">-->
 
-            <div class="d-flex flex-wrap align-items-center justify-content-center search-bar">
-              <input type="search" class="form-control me-1" placeholder="Search" aria-label="Search"
-                v-model="inputString">
-            </div>
+          <div class="d-flex flex-wrap align-items-center justify-content-center search-bar">
+            <input type="search"
+                   class="form-control me-1"
+                   placeholder="Search"
+                   aria-label="Search"
+                   v-model="inputString"
+                   @keydown.enter="navigateOnEnter">
+          </div>
 
-            <div class="d-flex flex-wrap align-items-center justify-content-center">
-              <select v-model="selectedOption" class="form-select form-select" aria-label=".form-select-lg example">
-                <option value="作品名稱">作品名稱</option>
-                <option value="1">創作者名稱</option>
-                <option value="2">標籤搜尋</option>
-              </select>
-            </div>
+          <div class="d-flex flex-wrap align-items-center justify-content-center">
+            <select v-model="selectedOption" class="form-select form-select" aria-label=".form-select-lg example">
+              <option value="作品名稱">作品名稱</option>
+              <option value="創作者名稱">創作者名稱</option>
+              <option value="標籤搜尋">標籤搜尋</option>
+            </select>
+          </div>
 
-            <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">
-              <button @click="searchPosts" type="button" class="btn btn-outline-secondary">搜尋</button>
-            </div>
+          <div class="d-flex flex-wrap align-items-center justify-content-center">
+            <router-link to="/post/create">
+              <button type="button" class="btn btn-outline-info me-2">發文</button>
+            </router-link>
+          </div>
 
-            <div class="d-flex flex-wrap align-items-center justify-content-center">
-              <router-link to="/post/create">
-                <button type="button" class="btn btn-outline-info me-2">發文</button>
-              </router-link>
-            </div>
-
-          </form>
 
           <!-- 登入按鈕 -->
           <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">
@@ -136,19 +146,21 @@ const logout = () => {
 
               <!-- 觸發下拉 -->
               <button class="btn btn-link dropdown-toggle rounded-circle" type="button" id="dropdownMenuButton"
-                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img src="../assets/Picture/UserIcon.gif" alt="User" width="50" height="50" class="rounded-circle"
-                  style="object-fit:cover;" />
+                     style="object-fit:cover;"/>
               </button>
 
               <!-- 下拉區塊 -->
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
                 <!-- 下拉選單 -->
-                <router-link to="/user" class="dropdown-item">個人資料</router-link>
+                <router-link to="/user" class="dropdown-item" v-if="isLogin">個人資料</router-link>
+                <router-link to="/user/collect" class="dropdown-item" v-if="isLogin">收藏</router-link>
+                <router-link to="/user/order" class="dropdown-item" v-if="isLogin">訂閱中項目</router-link>
+                <!--                <router-link to="/login" class="dropdown-item" v-if="!isLogin">登入</router-link>-->
                 <router-link to="/backend" class="dropdown-item">後台管理</router-link>
-                <router-link to="/login" class="dropdown-item" v-if="!isLogin">登入</router-link>
-                <router-link to="/setting" class="dropdown-item">設定</router-link>
+                <router-link to="/setting" class="dropdown-item" v-if="isLogin">設定</router-link>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" @click="logout">登出</a>
               </div>

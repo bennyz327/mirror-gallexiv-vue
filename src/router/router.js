@@ -49,10 +49,28 @@ const routes = [
         name: 'PostCreatePage',
         component: () => import("../views/PostCreatePage.vue"),
     },
+    // {
+    //     path: '/tags/',
+    //     name: 'TagsSearchPage',
+    //     component: () => import("../views/TagSearch.vue"),
+    // },
     {
-        path: '/search/follower/',
+        path: '/search/user',
         name: 'UserSearchPage',
-        component: () => import("../views/CreatorSearchPage.vue"),
+        component: () => import("../views/UserSearchPage.vue"),
+        props: (route) => ({ userName: route.query.userName || '' })
+    },
+    {
+        path: '/search/post',
+        name: 'PostSearchPage',
+        component: () => import("../views/PostSearchPage.vue"),
+        props: (route) => ({ postTitle: route.query.postTitle || '' })
+    },
+    {
+        path: '/search/tag',
+        name: 'TagSearchPage',
+        component: () => import("../views/TagSearchPage.vue"),
+        props: (route) => ({ tagName: route.query.tagName || '' })
     },
     {
         path: '/subscribe/create',
@@ -65,10 +83,28 @@ const routes = [
         component: () => import("../views/PlanEditPage.vue"),
         props: (route) => ({ query: route.query.planId })
     },
+    // {
+    //     path: '/subscribe/order/:planId',
+    //     name: 'EditPlanPage',
+    //     component: () => import("../views/PlanEditPage.vue"),
+    //     props: (route) => route.query
+    // },
     {
         path: '/setting',
         name: 'SettingPage',
         component: () => import("../views/UserSettingPage.vue"),
+    },
+    {
+        path: '/user/collect',
+        name: 'UserCollectAndFollowPage',
+        component: () => import("../views/UserCollectPage.vue"),
+        props: (route) => route.query
+    },
+    {
+        path: '/user/order',
+        name: 'UserIsOrderPage',
+        component: () => import("../views/UserIsOrderPage.vue"),
+        props: (route) => route.query
     },
     {
         path: '/backend',
@@ -78,7 +114,7 @@ const routes = [
     {
         path: '/testpage',
         name: 'Testpage',
-        component: () => import("../views/TestPage.vue"),
+        component: () => import("../views/OrderPage.vue"),
     },
     {
         path: '/testconfig',
@@ -157,6 +193,15 @@ router.beforeEach((to, from, next) => {
     store.name = localStorage.getItem('username');
     if (store.token !== null) {
         store.isLogin = true
+    }
+
+    if(store.isLogin === false){
+        if (to.path.startsWith('/setting')){
+            router.push('/')
+        }
+        if(to.path.match('/user')){
+
+        }
     }
 
     next()

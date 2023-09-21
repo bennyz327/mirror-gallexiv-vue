@@ -97,7 +97,7 @@
     width: 420px;
     height: 80px;
     line-height: 80px;
-/ / text-overflow: ellipsis;
+/* text-overflow: ellipsis; */
     padding: 8px;
 }
 

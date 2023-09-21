@@ -102,8 +102,8 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
           <div class="user-icon-div">
 
             <div class="user-icon-src-div">
-              <div class="rounded-circle" style="display:flex">
-                <img :src="userData.avatar" alt="User" width="176" height="176" class="rounded-circle"
+              <div class="rounded-circle-div" style="display:flex">
+                <img :src="userData.avatar" alt="User" class="rounded-circle"
                      style="object-fit: cover;"/>
               </div>
             </div>
@@ -300,6 +300,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 
 .name-sub-count-link-div {
   width: 60%;
+  margin-left: 8px;
 }
 
 .user-name-account-div {
@@ -314,6 +315,16 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 .user-account-text {
   margin-left: 12px;
   padding-top: 12px;
+}
+
+.rounded-circle-div{
+  width: 176px;
+  height: 176px;
+}
+
+.rounded-circle{
+  width: 160px;
+  height: 160px;
 }
 
 .user-follower-hyperlink-div {
@@ -395,4 +406,24 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 .nav-tabs .nav-link.active {
   color: #d88d4f;
 }
+
+@media screen and (max-width: 1260px) {
+  .rounded-circle-div{
+    display: flex;
+padding-top: 24px;
+  }
+  .rounded-circle{
+    width: 128px;
+    height: 128px;
+  }
+  .user-icon-div {
+    width: 30%;
+  }
+  .name-sub-count-link-div {
+    width: 60%;
+    margin-left: 8px;
+  }
+}
+
+
 </style>

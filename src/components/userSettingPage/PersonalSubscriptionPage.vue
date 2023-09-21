@@ -161,11 +161,11 @@ const deleteItem = async (id) => {
 
 .setting-subscribe-plus-new-div {
   display: flex;
-  height: 20%;
+  height: 120px;
   justify-content: center;
   align-content: center;
   text-align: center;
-  margin-top: 72px;
+  margin-top: 120px;
   border: 2px solid #ccc;
   border-radius: 16px;
 }

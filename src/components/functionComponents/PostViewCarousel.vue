@@ -20,6 +20,7 @@ const items = reactive(props.imgUrlList);
 // })
 
 const currentSlide = ref(0);
+
 const slideTo = (val) => {
   currentSlide.value = val;
 };

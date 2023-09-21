@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar.vue";
 import {ref} from 'vue';
 import axios from 'axios';
 import {useUserStore} from "@/store/userStore.js";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import router from "@/router/router.js";
 
 const id = ref(0)
@@ -47,6 +47,7 @@ const getPostData = async () => {
 }
 getPostData();
 
+// const router = useRouter();
 
 const submitForm = async () => {
 
@@ -60,12 +61,14 @@ const submitForm = async () => {
   console.log(postData)
 
   try {
+
     const response = await axios.put(`${URL}/update`, postData,{headers: {'Authorization': token}});
 
+    console.log(response)
     if (response.status === 200) {
 
-      // const router = useRouter();
-      router.push({name: '200'});
+
+      router.push('/200')
       console.log("回應")
       console.log(response.data)
     }

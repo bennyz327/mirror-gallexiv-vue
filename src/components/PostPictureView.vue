@@ -89,6 +89,7 @@ const heartClass = computed(() => {
 </template>
 
 <style scoped>
+
 .galley-middle-block {
   display: flex;
   justify-content: center;

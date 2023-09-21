@@ -1,10 +1,10 @@
 <script setup>
 import Navbar from "@/components/Navbar.vue";
-import {onMounted, ref} from 'vue';
+import { onMounted, ref } from 'vue';
 import axiosInstance from './api/api.js'
-import {useUserStore} from "@/store/userStore.js";
+import { useUserStore } from "@/store/userStore.js";
 
-const {token, isLogin} = useUserStore()
+const { token, isLogin } = useUserStore()
 
 import backEndJsonFile from "@/assets/backendPage.json";
 import axios from "axios";
@@ -14,6 +14,7 @@ import router from "@/router/router.js";
 const jsonDataImportBackendVue = ref(backEndJsonFile);
 let items = ref();
 
+const URL_POST = import.meta.env.VITE_API_Post;
 
 // const items = ref('');
 
@@ -23,9 +24,18 @@ const editPost = (postId) => {
   console.log("編輯ID", postId);
 };
 
-const deletePost = (postId) => {
-  // 發送刪除請求
-  console.log("刪除ID", postId);
+// 發送刪除請求
+const deletePost = async (postId) => {
+  if (window.confirm("真的要刪除嗎?")) {
+    console.log("刪除ID", postId);
+    try {
+      const resDeldetPost = await axios.delete(`${URL_POST}/${postId}/delete`, { headers: { 'Authorization': token } })
+      console.log('Response from server:', resDeldetPost.data);
+    } catch (erroe) {
+
+    }
+  }
+  loadPersonPost()
 };
 
 //先確認是否登入
@@ -51,13 +61,13 @@ function loadPersonPost() {
       'Authorization': token
     }
   })
-      .then((response) => {
-        console.log(response.data.data);
-        items.value = ref(response.data.data);
-      })
-      .catch((error) => {
-        console.error('There was a problem with the GET request:', error);
-      });
+    .then((response) => {
+      console.log(response.data.data);
+      items.value = ref(response.data.data);
+    })
+    .catch((error) => {
+      console.error('There was a problem with the GET request:', error);
+    });
 }
 
 loadPersonPost();
@@ -69,23 +79,22 @@ function testRole() {
   const url = 'http://localhost:8080/role'
   axiosInstance.get(url, {
     headers: {
-      'Authorization': token+'22rr'
+      'Authorization': token + '22rr'
     }
   })
-      .then((response) => {
-        console.log(response.data.msg);
-      })
-      .catch((error) => {
-        router.push('/401')
-        console.error(error.response.data.msg);
-      });
+    .then((response) => {
+      console.log(response.data.msg);
+    })
+    .catch((error) => {
+      router.push('/401')
+      console.error(error.response.data.msg);
+    });
 }
 
 
 </script>
 
 <template>
-
   <Navbar></Navbar>
 
   <div class="container" v-if="items">
@@ -99,61 +108,55 @@ function testRole() {
 
     <table class="table">
       <thead>
-      <tr style="text-align: center">
-        <th scope="col">標題</th>
-        <th scope="col">縮圖</th>
-        <th scope="col">敘述</th>
-        <th scope="col">喜歡數量</th>
-        <th scope="col">上傳時間</th>
-        <th scope="col">是否公開</th>
-        <th scope="col">NFSW</th>
-        <th scope="col">Tag</th>
-        <th scope="col">編輯</th>
-        <th scope="col">刪除</th>
-      </tr>
+        <tr style="text-align: center">
+          <th scope="col">標題</th>
+          <th scope="col">縮圖</th>
+          <th scope="col">敘述</th>
+          <th scope="col">喜歡數量</th>
+          <th scope="col">上傳時間</th>
+          <th scope="col">是否公開</th>
+          <th scope="col">NFSW</th>
+          <th scope="col">Tag</th>
+          <th scope="col">編輯</th>
+          <th scope="col">刪除</th>
+        </tr>
       </thead>
       <tbody>
-      <tr v-for="item in items.value" :key="item.id" class="text-center">
-        <td class="text-max-width">{{ item.postTitle }}</td>
-        <td><img :src="item.pictureSrc" alt="pictureSrc" class="picture-max-width"/></td>
-        <td>
-          <v-tooltip
-            :text="item.postDescription"
-            activator="parent"
-            location="bottom">
-          <template v-slot:activator="{ propsDescription }">
-            <v-btn v-bind="propsDescription">詳細</v-btn>
-          </template>
-        </v-tooltip></td>
-        <td class="text-max-width">{{ item.postDescription }}</td>
-        <td class="text-max-width">{{ item.likeCount }}</td>
-        <td class="date-max-width ">{{ item.postTime }}</td>
-        <td>{{ item.postPublic }}</td>
-        <td>{{ item.postAgeLimit }}</td>
-        <td>
-          <v-tooltip
-              :text="item.tagsByPostId.map(tag => tag.tagName).join(', ')"
-              activator="parent"
-              location="bottom">
-            <template v-slot:activator="{ propsTags }">
-              <v-btn v-bind="propsTags">詳細</v-btn>
-            </template>
-          </v-tooltip>
-        </td>
-        <td>
-          <v-btn @click="editPost(item.postId)">編輯</v-btn>
-        </td>
-        <td>
-          <v-btn @click="deletePost(item.postId)">刪除</v-btn>
-        </td>
-      </tr>
+        <tr v-for="item in items.value" :key="item.id" class="text-center">
+          <td class="text-max-width">{{ item.postTitle }}</td>
+          <td><img :src="item.pictureSrc" alt="pictureSrc" class="picture-max-width" /></td>
+          <td>
+            <v-tooltip :text="item.postDescription" activator="parent" location="bottom">
+              <template v-slot:activator="{ propsDescription }">
+                <v-btn v-bind="propsDescription">詳細</v-btn>
+              </template>
+            </v-tooltip>
+          </td>
+          <td class="text-max-width">{{ item.postDescription }}</td>
+          <td class="text-max-width">{{ item.likeCount }}</td>
+          <td class="date-max-width ">{{ item.postTime }}</td>
+          <td>{{ item.postPublic }}</td>
+          <td>{{ item.postAgeLimit }}</td>
+          <td>
+            <v-tooltip :text="item.tagsByPostId.map(tag => tag.tagName).join(', ')" activator="parent" location="bottom">
+              <template v-slot:activator="{ propsTags }">
+                <v-btn v-bind="propsTags">詳細</v-btn>
+              </template>
+            </v-tooltip>
+          </td>
+          <td>
+            <v-btn @click="editPost(item.postId)">編輯</v-btn>
+          </td>
+          <td>
+            <v-btn @click="deletePost(item.postId)">刪除</v-btn>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
 </template>
 
 <style scoped>
-
 .text-max-width {
   max-width: 48px;
   overflow: hidden;
@@ -173,5 +176,4 @@ function testRole() {
 .table tbody tr td {
   vertical-align: middle;
 }
-
 </style>

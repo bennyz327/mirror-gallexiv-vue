@@ -237,61 +237,20 @@ const heartClass = computed(() => {
   }
 });
 
-
-
-// const messageEdit = ref(new Array(jsonDataImportMessageArea.value.length).fill(false));
-//
-// // 送出按鈕
-// const isEditingArray = ref([]);
-//
-// // 初始化isEditingArray狀態
-// jsonDataImportMessageArea.value.forEach(() => {
-//   isEditingArray.value.push(false);
-// });
-//
-// const isOwnerAndEditing = (index) => {
-//   return isEditingArray.value[index];
-// };
-//
-// const startEditing = (index) => {
-//   isEditingArray.value[index] = true;
-// };
-
-
-// const testData = reactive({
-//   liked: liked.value,
-//   collected: collected.value,
-//   postData: {
-//     // 这里放要传递给后端的数据
-//   },
-// });
 //格式化 commentTime
-function formatTime(times) {
-  const now = new Date();
-  console.log("now:", now);
-  const commentTime = new Date(times);
-  console.log("commentTime:", commentTime);
-  const diffInSeconds = now - commentTime;
+function formatTime(time) {
+  var dateTime = new Date(time);
+  var year = dateTime.getFullYear();
+  var month = dateTime.getMonth() + 1;
+  var day = dateTime.getDate();
 
-  if (diffInSeconds < (60 * 1000)) {
-    const timeDifferent = Math.floor(diffInSeconds / 1000)
-    return `${timeDifferent}秒前`;
-  } else if (diffInSeconds < (60 * 60 * 1000)) {
-    const timeDifferent = Math.floor(diffInSeconds / (60 * 1000))
-    return `${timeDifferent}分鐘前`;
-  } else if (diffInSeconds < (24 * 60 * 60 * 1000)) {
-    const timeDifferent = Math.floor(diffInSeconds / (60 * 60 * 1000))
-    return `${timeDifferent}小時前`;
-  } else if (diffInSeconds < (30 * 24 * 60 * 60 * 1000)) {
-    const timeDifferent = Math.floor(diffInSeconds / (24 * 60 * 60 * 1000))
-    return `${timeDifferent}天前`;
-  } else if (diffInSeconds < (365 * 24 * 60 * 60 * 1000)) {
-    const timeDifferent = Math.floor(diffInSeconds / (30 * 24 * 60 * 60 * 1000))
-    return `${timeDifferent}個月前`;
-  } else {
-    const timeDifferent = Math.floor(diffInSeconds / (365 * 24 * 60 * 60 * 1000))
-    return `${timeDifferent}年前`;
-  }
+  var formattedMonth = month < 10 ? "0" + month : month.toString();
+  var formattedDay = day < 10 ? "0" + day : day.toString();
+
+  var formattedDateString = year + "-" + formattedMonth + "-" + formattedDay;
+  console.log(formattedDateString);
+
+  return (formattedDateString);
 }
 
 

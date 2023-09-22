@@ -22,7 +22,7 @@ const URL = import.meta.env.VITE_API_PLAN
 const getPlanData = async () => {
 
   try {
-    const response = await axios.get(`${URL}/personalPlan`, {
+    const response = await axios.get(`${URL}/personalPlan?state=1`, {
       headers: { 'Authorization': token }
     });
     getData.value = response.data.data;
@@ -49,6 +49,23 @@ const deleteItem = async (id) => {
   }
   getPlanData();
 };
+
+const submitForm = async (event) => {
+  event.preventDefault();
+  try {
+    const findPlans = await axios.get(`${URL}/personalPlan?state=1`, { headers: { 'Authorization': token } });
+    const planList = findPlans.data;
+    const planListSize = planList.data.length;
+    if (planListSize >= 3) {
+      alert("方案數量已達上限");
+      router.push({ name: 'SettingPage' });
+    } else {
+      router.push({ name: 'PlanCreatePage' });
+    }
+  } catch (error) {
+    console.error('提交表单时出错：', error);
+  }
+}
 
 
 </script>
@@ -134,7 +151,7 @@ const deleteItem = async (id) => {
     </div>
 
 
-    <router-link to="/subscribe/create" class="setting-subscribe-plus-new-router-link">
+    <router-link to="/subscribe/create" class="setting-subscribe-plus-new-router-link" @click.native="submitForm">
       <div class="setting-subscribe-plus-new-div">
         <div style="display:flex; align-items: center">
           <img src="../../assets/Picture/plusIcon.png" width="48" height="48" alt="plus-icon">

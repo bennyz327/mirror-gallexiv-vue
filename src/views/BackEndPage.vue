@@ -14,28 +14,31 @@ import router from "@/router/router.js";
 const jsonDataImportBackendVue = ref(backEndJsonFile);
 let items = ref();
 
-const URL_POST = import.meta.env.VITE_API_Post;
+const IMGURL = import.meta.env.VITE_API_PICTURE;
 
 // const items = ref('');
 
 
-const editPost = (postId) => {
+const editPost = async (postId) => {
   // 發送編輯請求
-  console.log("編輯ID", postId);
+  router.push({ name: 'PostEditPage', query: { postId } });
+
 };
 
-// 發送刪除請求
 const deletePost = async (postId) => {
+  // 發送刪除請求
   if (window.confirm("真的要刪除嗎?")) {
-    console.log("刪除ID", postId);
+    console.log("編輯ID:", postId)
+    const URL_POST = import.meta.env.VITE_API_Post;
     try {
-      const resDeldetPost = await axios.delete(`${URL_POST}/${postId}/delete`, { headers: { 'Authorization': token } })
-      console.log('Response from server:', resDeldetPost.data);
-    } catch (erroe) {
-
+      const resDeletePost = await axios.delete(`${URL_POST}/${postId}/delete`, { headers: { 'Authorization': token } });
+      console.log(resDeletePost.status)
+      console.log('Response from server:', resDeletePost.data);
+    } catch (error) {
+      console.error('Error sending comment:', error);
     }
   }
-  loadPersonPost()
+  loadPersonPost();
 };
 
 //先確認是否登入
@@ -46,33 +49,50 @@ const ifNotLogin = () => {
 };
 ifNotLogin();
 
+//load posts
+const posts = ref([]);
+async function loadPersonPost() {
+  const URL_POST = import.meta.env.VITE_API_Post;
+  try {
+    const response = await axios.post(`${URL_POST}/userPosts`, null, { headers: { 'Authorization': token } });
+    posts.value = response.data.data;
 
-// onMounted(() => {
-function loadPersonPost() {
-  // const config = {
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTY5NDQyNjAzNiwiZXhwIjoxNjk0NDI3ODM2fQ.ci4vgyLtaw338kvs9-'
-  //   }
-  // }
-  const url = '/posts/person'
-  axiosInstance.post(url, null, {
-    headers: {
-      'Authorization': token
-    }
-  })
-    .then((response) => {
-      console.log(response.data.data);
-      items.value = ref(response.data.data);
-    })
-    .catch((error) => {
-      console.error('There was a problem with the GET request:', error);
+    //Blob URL
+    posts.value.forEach((post) => {
+      post.postBlobUrls = [];
+      post.picturesByPostId.forEach(async (picture) => {
+        const picId = picture.pictureId;
+        const response = await axios.get(`${IMGURL}/test/${picId}`, { responseType: 'blob', headers: { 'Authorization': token } });
+        const blob = response.data;
+        const blobUrl = window.URL.createObjectURL(blob);
+        post.postBlobUrls.push(blobUrl);
+      });
     });
+
+
+  } catch (error) {
+    console.error('Error fetching posts data:', error);
+  }
+}
+loadPersonPost()
+
+function formatTime(time) {
+
+  var dateTime = new Date(time);
+
+  var year = dateTime.getFullYear();
+  var month = dateTime.getMonth() + 1;
+  var day = dateTime.getDate();
+
+  var formattedMonth = month < 10 ? "0" + month : month.toString();
+  var formattedDay = day < 10 ? "0" + day : day.toString();
+
+  var formattedDateString = year + "-" + formattedMonth + "-" + formattedDay;
+  console.log(formattedDateString);
+
+  return (formattedDateString);
 }
 
-loadPersonPost();
-
-// })
 
 function testRole() {
 
@@ -97,7 +117,7 @@ function testRole() {
 <template>
   <Navbar></Navbar>
 
-  <div class="container" v-if="items">
+  <div class="container" v-if="posts">
 
     <div class="title-text">
       <h3>貼文管理</h3>
@@ -122,33 +142,32 @@ function testRole() {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in items.value" :key="item.id" class="text-center">
-          <td class="text-max-width">{{ item.postTitle }}</td>
-          <td><img :src="item.pictureSrc" alt="pictureSrc" class="picture-max-width" /></td>
+        <tr v-for="post in posts" class="text-center">
+          <td class="text-max-width">{{ post.postTitle }}</td>
+          <td><img :src="post.postBlobUrls[0]" alt="pictureSrc" class="picture-max-width" /></td>
           <td>
-            <v-tooltip :text="item.postDescription" activator="parent" location="bottom">
+            <v-tooltip :text="post.postContent" activator="parent" location="bottom">
               <template v-slot:activator="{ propsDescription }">
                 <v-btn v-bind="propsDescription">詳細</v-btn>
               </template>
             </v-tooltip>
           </td>
-          <td class="text-max-width">{{ item.postDescription }}</td>
-          <td class="text-max-width">{{ item.likeCount }}</td>
-          <td class="date-max-width ">{{ item.postTime }}</td>
-          <td>{{ item.postPublic }}</td>
-          <td>{{ item.postAgeLimit }}</td>
+          <td class="text-max-width">{{ post.likeCount }}</td>
+          <td class="date-max-width ">{{ formatTime(post.postTime) }}</td>
+          <td>{{ post.postPublic }}</td>
+          <td>{{ post.postAgeLimit }}</td>
           <td>
-            <v-tooltip :text="item.tagsByPostId.map(tag => tag.tagName).join(', ')" activator="parent" location="bottom">
+            <v-tooltip :text="post.tagsByPostId.map(tag => tag.tagName).join(', ')" activator="parent" location="bottom">
               <template v-slot:activator="{ propsTags }">
                 <v-btn v-bind="propsTags">詳細</v-btn>
               </template>
             </v-tooltip>
           </td>
           <td>
-            <v-btn @click="editPost(item.postId)">編輯</v-btn>
+            <v-btn @click="editPost(post.postId)">編輯</v-btn>
           </td>
           <td>
-            <v-btn @click="deletePost(item.postId)">刪除</v-btn>
+            <v-btn @click="deletePost(post.postId)">刪除</v-btn>
           </td>
         </tr>
       </tbody>
@@ -177,3 +196,4 @@ function testRole() {
   vertical-align: middle;
 }
 </style>
+

@@ -1,15 +1,15 @@
 <script setup>
-import {onMounted, onUnmounted, ref, watch} from 'vue';
-import {NBackTop} from "naive-ui";
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { NBackTop } from "naive-ui";
 
 // 登入後取得token跟isLogin狀態
-import {useUserStore} from "@/store/userStore.js";
+import { useUserStore } from "@/store/userStore.js";
 import router from "@/router/router.js";
 
-const {token, isLogin} = useUserStore()
+const { token, isLogin } = useUserStore()
 import axios from "axios";
 
-import {useRouter} from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const routerSearch = useRouter();
 
@@ -32,10 +32,27 @@ const navigateOnEnter = () => {
       paramName = 'tagName';
     }
 
-    const routeParams = {[paramName]: inputString.value};
-    routerSearch.push({name: routeName, query: routeParams});
+    const routeParams = { [paramName]: inputString.value };
+    routerSearch.push({ name: routeName, query: routeParams });
   }
 };
+
+//find loginUser
+const loginUserData = ref(null);
+if (token) {
+  const loadUserData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/userInfos/profile`, { headers: { 'Authorization': token } });
+      loginUserData.value = response.data.data;
+      console.log("loginUserData:", loginUserData);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+    }
+  };
+  loadUserData();
+}
+
+
 //
 // const URL = import.meta.env.VITE_API_Post;
 // const inputString = ref("");
@@ -77,7 +94,7 @@ const logout = () => {
 
       <div class="back-top-button">
         <template>
-          <n-back-top :right="80" style=""/>
+          <n-back-top :right="80" style="" />
         </template>
       </div>
 
@@ -110,12 +127,8 @@ const logout = () => {
           <!--          <form class="d-flex">-->
 
           <div class="d-flex flex-wrap align-items-center justify-content-center search-bar">
-            <input type="search"
-                   class="form-control me-1"
-                   placeholder="Search"
-                   aria-label="Search"
-                   v-model="inputString"
-                   @keydown.enter="navigateOnEnter">
+            <input type="search" class="form-control me-1" placeholder="Search" aria-label="Search" v-model="inputString"
+              @keydown.enter="navigateOnEnter">
           </div>
 
           <div class="d-flex flex-wrap align-items-center justify-content-center">
@@ -146,9 +159,9 @@ const logout = () => {
 
               <!-- 觸發下拉 -->
               <button class="btn btn-link dropdown-toggle rounded-circle" type="button" id="dropdownMenuButton"
-                      data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img src="../assets/Picture/UserIcon.gif" alt="User" width="50" height="50" class="rounded-circle"
-                     style="object-fit:cover;"/>
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img v-if="loginUserData && loginUserData.avatar" :src="loginUserData.avatar" alt="User" width="50"
+                  height="50" class="rounded-circle" style="object-fit:cover;" />
               </button>
 
               <!-- 下拉區塊 -->

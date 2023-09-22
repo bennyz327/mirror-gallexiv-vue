@@ -111,20 +111,16 @@ const submitForm = async () => {
   console.log(planData)
 
   try {
-    const findPlans = await axios.get(`${URL}/personalPlan`, { headers: { 'Authorization': token } });
-    //console.log("findPosts: ", findPosts);
+    const findPlans = await axios.get(`${URL}/personalPlan?state=1`, { headers: { 'Authorization': token } });
+    
     const planList = findPlans.data;
-    //console.log("planList: ", planList);
+   
     const planListSize = planList.data.length;
-    //console.log("planListSize: ", planListSize);
+    
     if (planListSize < 3) {
       const response = await axios.post(`${URL}/insert`, planData, { headers: { 'Authorization': token } });
       if (response.status === 200) {
-        // 重定向到成功页面或其他页面
-        // 注意：你需要使用Vue Router的实例来导航，这里假设已经安装并配置了Vue Router
-        // import { useRouter } from 'vue-router';
-        // const router = useRouter();
-        // router.push('/success');
+        
         router.push({ name: 'SettingPage' });
       }
       console.log('JSON內容： ', response.data);

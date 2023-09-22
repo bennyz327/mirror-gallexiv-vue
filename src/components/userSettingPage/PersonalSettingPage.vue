@@ -127,7 +127,7 @@ const getUserData = async () => {
     personalEmail.value = getData.value.userEmail
     personalNickName.value = getData.value.userName;
     let hi = getData.value.intro;
-    hi = hi.replaceAll('<br/>','\n');
+    hi = hi.replaceAll('<br/>', '\n');
     personalDescription.value = hi;
     user.value.avatar = getData.value.avatar;
     console.log(avatar.value)
@@ -161,7 +161,7 @@ getUserData();
 const updateData = async () => {
   const c = confirm('你確定要修改嗎?')
   try {
-    if(c){
+    if (c) {
       const formattedDescription = personalDescription.value.replace(/\n/g, '<br/>');
       const changeData = getData.value;
       console.log("aa:" + changeData)
@@ -190,6 +190,10 @@ const updateData = async () => {
     console.error('提交表单时出错：', error);
   }
 }
+
+// email驗證功能
+
+const emailVerification = ref('');
 
 </script>
 
@@ -290,7 +294,8 @@ const updateData = async () => {
                     </div>
                     <div class="modal-footer">
                       <v-btn type="button" data-bs-dismiss="modal">取消</v-btn>
-                      <v-btn type="button" @click="submitNewEmailForPersonalSetting" data-bs-dismiss="modal">確認修改</v-btn>
+                      <v-btn type="button" @click="submitNewEmailForPersonalSetting" data-bs-dismiss="modal">確認修改
+                      </v-btn>
                     </div>
                   </div>
                 </div>
@@ -337,6 +342,25 @@ const updateData = async () => {
               </div>
 
               <div class="verification-gender-birth-div" style="width: 50%">
+
+                <div class="verification-email-div">
+                  <v-btn type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false"
+                         aria-controls="collapseExample">
+                    驗證電子郵件
+                  </v-btn>
+                </div>
+                <div class="collapse" id="collapseExample">
+                  <div class="card card-body">
+                    <v-text-field
+                        v-model="emailVerification"
+                        label="輸入驗證碼"
+                        bg-color="white"></v-text-field>
+                    <div>
+                    <v-btn>送出</v-btn>
+                    <v-btn>重新取得驗證碼</v-btn>
+                    </div>
+                  </div>
+                </div>
 
                 <div class="gender-radio-div">
                   <h6>性別</h6>
@@ -509,8 +533,11 @@ const updateData = async () => {
 
 }
 
-.nickname-description-div {
-
+.verification-email-div {
+  display: flex;
+  height: 120px;
+  align-items: center;
+  justify-content: center;
 }
 
 .nickname-form {

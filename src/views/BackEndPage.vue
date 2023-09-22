@@ -69,7 +69,7 @@ function testRole() {
   const url = 'http://localhost:8080/role'
   axiosInstance.get(url, {
     headers: {
-      'Authorization': token+'22rr'
+      'Authorization': token + '22rr'
     }
   })
       .then((response) => {
@@ -81,6 +81,72 @@ function testRole() {
       });
 }
 
+
+// async function testPay() {
+//   try {
+//     const formContainer = document.getElementsByClassName('.pay'); // 请替换 'form-container' 为你的 div 的 ID
+//     const url = 'http://localhost:8080/ecpayCheckout';
+//
+//     const response = await axiosInstance.post(url, {
+//       "tradeDate": "2023/03/12 15:30:23",
+//       "totalAmount": 30001,
+//       "tradeDesc": "testDesc",
+//       "itemName": "iPad",
+//       "returnURL": "localhost",
+//       "clientBackURL": "localhost"
+//     }, {
+//       headers: {
+//         'Authorization': token
+//       }
+//     });
+//
+//     console.log(response.data);
+//     formContainer.innerHTML = response.data;
+//
+//     const form = document.getElementById('allPayAPIForm'); // 请替换 'allPayAPIForm' 为你的表单的 ID
+//     form.submit();
+//   } catch (error) {
+//     console.error(error.response.data.msg);
+//   }
+// }
+
+const formContainer = ref(null);
+const fetchFormData = async () => {
+  try {
+    const response = await axiosInstance.post('http://localhost:8080/ecpayCheckout', {
+      "tradeDate": "2023/03/12 15:30:23",
+      "totalAmount": 30001,
+      "tradeDesc": "testDesc",
+      "itemName": "iPad",
+      "returnURL": "localhost",
+      "clientBackURL": "localhost"
+    }, {
+      headers: {
+        'Authorization': token
+      }
+    });
+    console.log(response.data);
+    // 将后端返回的 HTML 内容添加到表单容器中
+    formContainer.value = response.data;
+    const formDiv = document.getElementsByClassName('.pay');
+    formDiv.innerHTML = formContainer.value;
+  } catch (error) {
+    console.error(error.response.data.msg);
+  }
+};
+const submitForm = () => {
+  // 找到表单元素并提交
+  const form = formContainer.value.querySelector('#allPayAPIForm');
+  if (form) {
+    form.submit();
+  } else {
+    console.error("找不到表单元素。");
+  }
+};
+onMounted(() => {
+  // 在组件挂载后获取表单数据
+  fetchFormData();
+});
 
 </script>
 
@@ -94,6 +160,15 @@ function testRole() {
       <h3>貼文管理</h3>
     </div>
     <v-btn @click="testRole">測試不合法 token 跳轉401</v-btn>
+
+
+    <div>
+      <v-btn @click="fetchFormData">測試綠界</v-btn>
+      <!-- 表单容器 -->
+      <div id="formContainer"></div>
+      <!-- 触发提交按钮 -->
+      <button @click="submitForm">提交表单</button>
+    </div>
 
     <div>{{ token }}</div>
 
@@ -118,13 +193,14 @@ function testRole() {
         <td><img :src="item.pictureSrc" alt="pictureSrc" class="picture-max-width"/></td>
         <td>
           <v-tooltip
-            :text="item.postDescription"
-            activator="parent"
-            location="bottom">
-          <template v-slot:activator="{ propsDescription }">
-            <v-btn v-bind="propsDescription">詳細</v-btn>
-          </template>
-        </v-tooltip></td>
+              :text="item.postDescription"
+              activator="parent"
+              location="bottom">
+            <template v-slot:activator="{ propsDescription }">
+              <v-btn v-bind="propsDescription">詳細</v-btn>
+            </template>
+          </v-tooltip>
+        </td>
         <td class="text-max-width">{{ item.postDescription }}</td>
         <td class="text-max-width">{{ item.likeCount }}</td>
         <td class="date-max-width ">{{ item.postTime }}</td>

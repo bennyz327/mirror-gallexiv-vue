@@ -1,9 +1,10 @@
 <script setup>
 
-import { reactive, ref } from "vue";
-import { useRoute } from "vue-router";
+import {reactive, ref} from "vue";
+import {useRoute} from "vue-router";
 import axios from "axios";
-import { useUserStore } from "@/store/userStore.js";
+import {useUserStore} from "@/store/userStore.js";
+import router from "@/router/router.js";
 
 // 傳回拿到的物件
 const props = defineProps({
@@ -11,7 +12,7 @@ const props = defineProps({
 })
 // 將物件取出
 const items = reactive(props.subscribeList);
-const { token } = useUserStore();
+const {token} = useUserStore();
 const getData = ref([]);
 const subscriptionImg = ref("");
 const subscriptionName = ref("");
@@ -50,22 +51,17 @@ const deleteItem = async (id) => {
   getPlanData();
 };
 
-const submitForm = async (event) => {
-  event.preventDefault();
-  try {
-    const findPlans = await axios.get(`${URL}/personalPlan?state=1`, { headers: { 'Authorization': token } });
-    const planList = findPlans.data;
-    const planListSize = planList.data.length;
-    if (planListSize >= 3) {
-      alert("方案數量已達上限");
-      router.push({ name: 'SettingPage' });
-    } else {
-      router.push({ name: 'PlanCreatePage' });
-    }
-  } catch (error) {
-    console.error('提交表单时出错：', error);
+const hasAtLeastThreeItems = props.subscribeList.length >= 3;
+console.log("哈囉:" + props.subscribeList.length)
+
+const isDisabled = (hasAtLeastThreeItems) => {
+  if(!hasAtLeastThreeItems){
+    router.push('/subscribe/create');
+  } else {
+    alert("已經有三個訂閱方案了，請先刪除再嘗試新增方案");
   }
-}
+};
+
 
 
 </script>
@@ -138,31 +134,26 @@ const submitForm = async (event) => {
                           </div>
                         </div>
                       </div>
-
                     </div>
                   </div>
                 </div>
               </div>
-
             </div>
           </main>
         </div>
       </div>
     </div>
-
-
-    <router-link to="/subscribe/create" class="setting-subscribe-plus-new-router-link" @click.native="submitForm">
-      <div class="setting-subscribe-plus-new-div">
-        <div style="display:flex; align-items: center">
-          <img src="../../assets/Picture/plusIcon.png" width="48" height="48" alt="plus-icon">
-          <h2 style="margin: 0">新增方案</h2>
-          <div style="margin-left: 16px">
-            <p style="margin: 0">(最多可以擁有3個方案)</p>
-          </div>
-        </div>
+  </div>
+  <div class="setting-subscribe-plus-new-div">
+  <button class="btn btn-outline-secondary setting-subscribe-plus-new-button" @click="isDisabled">
+    <div style="display:flex; align-items: center">
+      <img src="../../assets/Picture/plusIcon.png" width="48" height="48" alt="plus-icon">
+      <h2 style="margin: 0">新增方案</h2>
+      <div style="margin-left: 16px">
+        <p style="margin: 0">(最多可以擁有3個方案)</p>
       </div>
-    </router-link>
-
+    </div>
+  </button>
   </div>
 </template>
 
@@ -178,23 +169,18 @@ const submitForm = async (event) => {
 
 .setting-subscribe-plus-new-div {
   display: flex;
-  height: 20%;
   justify-content: center;
   align-content: center;
   text-align: center;
-  margin-top: 72px;
-  border: 2px solid #ccc;
+  margin-top: -72px;
+}
+
+.setting-subscribe-plus-new-button{
+  display: flex;
+  justify-content: center;
+  align-content: center;
   border-radius: 16px;
+  width: 90%;
 }
 
-.setting-subscribe-plus-new-router-link {
-  text-decoration: none;
-  color: black
-}
-
-.setting-subscribe-plus-new-router-link :hover {
-  background-color: #ccc;
-  color: white;
-  opacity: 0.9;
-}
 </style>

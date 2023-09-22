@@ -1,7 +1,7 @@
 <script setup>
 import Navbar from "@/components/Navbar.vue";
 
-import { ref } from 'vue';
+import {ref} from 'vue';
 import axios from 'axios';
 import { useUserStore } from "@/store/userStore.js";
 import { useRoute } from "vue-router";
@@ -17,7 +17,7 @@ const postAgeLimit = ref(0);
 const postPublic = ref(0);
 const URL = import.meta.env.VITE_API_Post;
 const tagsArray = ref([]);
-const { token } = useUserStore();
+const {token} = useUserStore();
 
 const route = useRoute();
 const postId = ref(route.query.postId || ''); //  接收來自router的值以外要讓他成為ref可以更新資料
@@ -95,12 +95,23 @@ const submitForm = async () => {
             <v-sheet class="mx-auto">
               <v-form @submit.prevent>
                 <h5 style="text-align: left">標題</h5>
-                <v-text-field v-model="postTitle" :rules="postTitleRules" :counter="30" :maxlength="30" label="標題"
-                  style="width:600px" />
+                <v-text-field
+                    v-model="postTitle"
+                    :rules="postTitleRules"
+                    :counter="30"
+                    :maxlength="30"
+                    label="標題"
+                    style="width:600px"/>
 
                 <h5 style="text-align: left">內文</h5>
-                <v-textarea v-model="postDescription" :rules="postDescriptionRules" :counter="250" :maxlength="250"
-                  label="敘述你的圖片或相關內容" no-resize style="width:600px" />
+                <v-textarea
+                    v-model="postDescription"
+                    :rules="postDescriptionRules"
+                    :counter="250"
+                    :maxlength="250"
+                    label="敘述你的圖片或相關內容"
+                    no-resize
+                    style="width:600px"/>
               </v-form>
             </v-sheet>
           </div>
@@ -116,15 +127,13 @@ const submitForm = async () => {
               </div>
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" value="0"
-                    v-model="postAgeLimit" checked>
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" value="0" v-model="postAgeLimit" checked>
                   <label class="form-check-label" for="NSFWFalse">
                     無限制
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWTrue" value="1"
-                    v-model="postAgeLimit">
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWTrue" value="1" v-model="postAgeLimit">
                   <label class="form-check-label" for="NSFWTrue">
                     未成年不宜觀看
                   </label>
@@ -140,15 +149,13 @@ const submitForm = async () => {
               </div>
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" value="0"
-                    v-model="postPublic" checked>
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" value="0" v-model="postPublic" checked>
                   <label class="form-check-label" for="publicTrue">
                     公開
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse" value="1"
-                    v-model="postPublic">
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse" value="1" v-model="postPublic">
                   <label class="form-check-label" for="publicFalse">
                     不公開
                   </label>
@@ -160,7 +167,11 @@ const submitForm = async () => {
 
             <h5 style="text-align: left; display: block">Tag</h5>
             <div class="tag-div" style="margin: 8px">
-              <n-dynamic-tags v-model:value="tagsArray" max="10" size="large" />
+              <n-dynamic-tags v-model:value="tagsArray"
+                              max="10"
+                              size="large"
+
+              />
             </div>
 
           </div>

@@ -1,53 +1,88 @@
-<template>
-  <div class="container mt-3">
-    <Carousel :items-to-show="itemToShow" :wrap-around="wrapAround" :autoplay="autoplay"
-              :pauseAutoplayOnHover="pauseAutoplayOnHover">
-      <Slide v-for="(item, index) in items2.imageUrlListSM" :key="index">
-        <div class="card">
-          <img class="carousel__item slideImgs card-img-top" :src="item">
-          <div class="card-body">
-            <p class="card-text">{{ texts.textList[index] }}</p>
-          </div>
-        </div>
-      </Slide>
+<script setup>
+import {ref, reactive, computed, onUpdated} from 'vue'
+import {Carousel, Slide} from 'vue3-carousel'
 
-      <template #addons>
-        <Navigation />
-        <Pagination />
-      </template>
-    </Carousel>
+import 'vue3-carousel/dist/carousel.css'
+
+
+// 傳回物件
+const props = defineProps({
+  imgUrlList: Array,
+})
+
+// 將物件(圖片陣列:僅有url不包含任何key)
+const items = ref(props.imgUrlList);
+console.log(items.value.length)
+// 可滑動數量
+const maxSlide = ref(Math.min(items.value.length, 5, 1));
+const maxSlideT = ref(props.imgUrlList.length);
+
+
+//
+// const itemsToShow = ref(-2);
+// const dynamicItemsToShow = computed(() =>{
+//   return Math.min(items.length, itemsToShow.value, 5)
+// })
+
+const currentSlide = ref(0);
+
+const slideTo = (val) => {
+  currentSlide.value = val;
+};
+
+</script>
+
+<template>
+  <div class="carousel-block">
+    <div class="carousel-top">
+      <Carousel id="gallery" :items-to-show="1" :wrap-around="false" v-model="currentSlide">
+        <Slide v-for="(item, index) in items" :key="index">
+          <div class="carousel__item">
+            <img :src="item.url" @click="currentSlide = index">
+          </div>
+        </Slide>
+      </Carousel>
+    </div>
+    <div class="carousel-down">
+      <Carousel
+          id="thumbnails"
+          :items-to-show="4"
+          :wrap-around="true"
+          v-model="currentSlide"
+          ref="carousel"
+      >
+        <Slide v-for="(item, index) in items" :key="index">
+          <div class="carousel__item">
+            <img :src="item.url" @click="currentSlide = index" style="  padding: 0 32px;">
+          </div>
+        </Slide>
+      </Carousel>
+    </div>
   </div>
 </template>
 
+<style scoped>
 
-<script setup lang="ts">
-import { reactive } from 'vue'
-import { Navigation, Slide, Pagination, Carousel } from 'vue3-carousel'
-import 'vue3-carousel/dist/carousel.css'
-
-const itemToShow = 2 //輪播顯示數量
-const wrapAround = false //循環模式
-const autoplay = 5000 //自動循環時間(單位:毫秒)
-const pauseAutoplayOnHover = true //游標懸浮暫停自動循環
-const items2 = reactive(
-    {
-      imageUrlListSM: ["https://cdn.discordapp.com/attachments/528864372202668032/1142080567979020399/image.png",
-        "https://cdn.discordapp.com/attachments/528864372202668032/1136925984428392508/image.png",
-        "https://cdn.discordapp.com/attachments/528864372202668032/1135057060439011369/2023-07-30_11.50.40.png",
-      ]
-    },
-)
-const texts = reactive({
-  textList: [1, 2, 3]
-})
-
-</script>
-<style>
-
-.slideImgs {
-  max-width: 300px;
-  max-height: 200px;
+.carousel-block {
+  max-width: 760px;
 }
+
+.carousel-top img {
+  max-width: 760px;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+.carousel-down {
+  max-height: 120px;
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 1);
+}
+
+.carousel-down img {
+  width: 180px;
+  height: 120px;
+  object-fit: cover;
+}
+
+
 </style>
-
-

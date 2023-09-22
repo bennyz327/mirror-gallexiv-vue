@@ -45,8 +45,8 @@ const loadAllPost = async () => {
 loadAllPost();
 
 // 重新載入postTitle的值送入axios
-watch(() => route.query.postTitle, (newPostTitle) => {
-  postTitle.value = newPostTitle; // 更新 postTitle 的值
+watch(() => route.query.tagName, (newTagName) => {
+  tagName.value = newTagName; // 更新 postTitle 的值
   loadAllPost();
 });
 

@@ -67,7 +67,7 @@ onMounted(() => {
           <!-- 留言者頭像區塊 -->
           <div class="follower-avatar-icon-div">
             <div class="rounded-circle" style="display:flex">
-              <img :src="item.userIcon" alt="User"/>
+              <img :src="item.userIcon" alt="User" style="border-radius: 50%; width:72px; height: 72px; "/>
             </div>
           </div>
 

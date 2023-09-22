@@ -13,10 +13,12 @@ const URL = import.meta.env.VITE_API_Post
 const liked = ref([]);
 const hovered = ref([]);
 
+//  點讚功能
 const toggleLike = (postId) => {
   liked.value[postId] = !liked.value[postId];
 };
 
+//  切換點讚狀態功能
 const heartClass = computed(() => {
   return (postId) => {
     if (liked.value[postId] && hovered.value[postId]) {

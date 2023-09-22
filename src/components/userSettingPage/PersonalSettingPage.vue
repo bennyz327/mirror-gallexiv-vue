@@ -182,9 +182,9 @@ const updateData = async () => {
         headers: {'Authorization': token}
       });
       console.log(response.data.data)
-      router.push({name: 'SettingPage'})
-    }
 
+    }
+    router.push({name: 'SettingPage'})
 
   } catch (error) {
     console.error('提交表单时出错：', error);
@@ -336,7 +336,8 @@ const updateData = async () => {
                 </div>
               </div>
 
-              <div class="gender-birth-div" style="width: 50%">
+              <div class="verification-gender-birth-div" style="width: 50%">
+
                 <div class="gender-radio-div">
                   <h6>性別</h6>
                   <div class="gender-radio-center" style="display: flex; justify-content: center">

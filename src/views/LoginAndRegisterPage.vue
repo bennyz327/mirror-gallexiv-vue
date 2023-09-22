@@ -280,7 +280,7 @@ const signInSubmit = async () => {
               ></v-text-field>
             </div>
 
-            <div class="verification-picture-div">
+            <div class="register-verification-picture-div">
               <img class="captchaImg" :src="captchaImg" @click="getCaptcha"
                    style="position: relative; right: 32px; top:8px" alt="載入失敗">
               <!--              <span>{{UUID}}</span>-->
@@ -322,7 +322,7 @@ const signInSubmit = async () => {
             ></v-text-field>
           </div>
 
-          <div class="verification-div" style="display:flex;max-width: 288px;margin-right: 56px">
+          <div class="verification-div">
             <div class="verification-input-div">
 
               <v-text-field
@@ -335,9 +335,9 @@ const signInSubmit = async () => {
               ></v-text-field>
 
             </div>
-            <div class="verification-picture-div">
+            <div class="login-verification-picture-div">
               <img class="captchaImg" :src="captchaImg" @click="getCaptcha"
-                   style="position: relative; right: 32px; top:8px" alt="載入失敗">
+                   alt="載入失敗">
               <!--              <span>{{UUID}}</span>-->
             </div>
           </div>
@@ -629,9 +629,22 @@ input {
   margin-bottom: 8px;
 }
 
+.verification-div{
+  display: flex;
+}
+
 .verification-input-div {
   width: 120px;
   margin-right: 24px;
+}
+
+.register-verification-picture-div{
+  position: relative;
+
+}
+
+.login-verification-picture-div{
+
 }
 
 </style>

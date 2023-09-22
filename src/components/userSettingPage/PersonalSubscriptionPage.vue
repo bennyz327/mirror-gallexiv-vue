@@ -1,9 +1,10 @@
 <script setup>
 
-import { reactive, ref } from "vue";
-import { useRoute } from "vue-router";
+import {reactive, ref} from "vue";
+import {useRoute} from "vue-router";
 import axios from "axios";
-import { useUserStore } from "@/store/userStore.js";
+import {useUserStore} from "@/store/userStore.js";
+import router from "@/router/router.js";
 
 // 傳回拿到的物件
 const props = defineProps({
@@ -11,7 +12,7 @@ const props = defineProps({
 })
 // 將物件取出
 const items = reactive(props.subscribeList);
-const { token } = useUserStore();
+const {token} = useUserStore();
 const getData = ref([]);
 const subscriptionImg = ref("");
 const subscriptionName = ref("");
@@ -23,7 +24,7 @@ const getPlanData = async () => {
 
   try {
     const response = await axios.get(`${URL}/personalPlan`, {
-      headers: { 'Authorization': token }
+      headers: {'Authorization': token}
     });
     getData.value = response.data.data;
 
@@ -40,7 +41,7 @@ const deleteItem = async (id) => {
   try {
     //發送請求到特定API
     await axios.delete(`${URL}/${id}/delete`, {
-      headers: { 'Authorization': token }
+      headers: {'Authorization': token}
     });
 
 
@@ -49,6 +50,18 @@ const deleteItem = async (id) => {
   }
   getPlanData();
 };
+
+const hasAtLeastThreeItems = props.subscribeList.length >= 3;
+console.log("哈囉:" + props.subscribeList.length)
+
+const isDisabled = (hasAtLeastThreeItems) => {
+  if(!hasAtLeastThreeItems){
+    router.push('/subscribe/create');
+  } else {
+    alert("已經有三個訂閱方案了，請先刪除再嘗試新增方案");
+  }
+};
+
 
 
 </script>
@@ -73,7 +86,7 @@ const deleteItem = async (id) => {
                     <div class="card-header py-3 custom-header">
                       <div class="text-center">
                         <img :src="item.planPicture" class="rounded img-fluid"
-                          style="max-width: 180px; max-height: 120px;" alt="index">
+                             style="max-width: 180px; max-height: 120px;" alt="index">
                       </div>
                     </div>
 
@@ -92,60 +105,58 @@ const deleteItem = async (id) => {
 
                       <!--編輯功能導向-->
                       <router-link :to="{ name: 'EditPlanPage', query: { planId: item.planId } }"
-                        style="text-decoration:none;color:black;">
-                        <button :id="'subscribeSettingId' + index" type="button" class="w-100 btn btn-outline-secondary">
+                                   style="text-decoration:none;color:black;">
+                        <button :id="'subscribeSettingId' + index" type="button"
+                                class="w-100 btn btn-outline-secondary">
                           編輯
                         </button>
                       </router-link>
 
                       <!--刪除功能-->
                       <button :id="item.planId" type="button" class="w-100 btn btn-outline-secondary"
-                        data-bs-toggle="modal" :data-bs-target="'#exampleModal' + index" style="margin-top: 16px">
+                              data-bs-toggle="modal" :data-bs-target="'#exampleModal' + index" style="margin-top: 16px">
                         刪除
                       </button>
 
                       <!--確認輸入框-->
                       <div class="modal fade" :id="'exampleModal' + index" tabindex="-1"
-                        :aria-labelledby="'exampleModalLabel' + index" aria-hidden="true">
+                           :aria-labelledby="'exampleModalLabel' + index" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                           <div class="modal-content">
                             <div class="modal-header">
                               <h5 class="modal-title" id="exampleModalLabel">確定要刪除嗎</h5>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                      aria-label="Close"></button>
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
                               <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                                @click="deleteItem(item.planId)">確定</button>
+                                      @click="deleteItem(item.planId)">確定
+                              </button>
                             </div>
                           </div>
                         </div>
                       </div>
-
                     </div>
                   </div>
                 </div>
               </div>
-
             </div>
           </main>
         </div>
       </div>
     </div>
-
-
-    <router-link to="/subscribe/create" class="setting-subscribe-plus-new-router-link">
-      <div class="setting-subscribe-plus-new-div">
-        <div style="display:flex; align-items: center">
-          <img src="../../assets/Picture/plusIcon.png" width="48" height="48" alt="plus-icon">
-          <h2 style="margin: 0">新增方案</h2>
-          <div style="margin-left: 16px">
-            <p style="margin: 0">(最多可以擁有3個方案)</p>
-          </div>
-        </div>
+  </div>
+  <div class="setting-subscribe-plus-new-div">
+  <button class="btn btn-outline-secondary setting-subscribe-plus-new-button" @click="isDisabled">
+    <div style="display:flex; align-items: center">
+      <img src="../../assets/Picture/plusIcon.png" width="48" height="48" alt="plus-icon">
+      <h2 style="margin: 0">新增方案</h2>
+      <div style="margin-left: 16px">
+        <p style="margin: 0">(最多可以擁有3個方案)</p>
       </div>
-    </router-link>
-
+    </div>
+  </button>
   </div>
 </template>
 
@@ -161,23 +172,18 @@ const deleteItem = async (id) => {
 
 .setting-subscribe-plus-new-div {
   display: flex;
-  height: 120px;
   justify-content: center;
   align-content: center;
   text-align: center;
-  margin-top: 120px;
-  border: 2px solid #ccc;
+  margin-top: -72px;
+}
+
+.setting-subscribe-plus-new-button{
+  display: flex;
+  justify-content: center;
+  align-content: center;
   border-radius: 16px;
+  width: 90%;
 }
 
-.setting-subscribe-plus-new-router-link {
-  text-decoration: none;
-  color: black
-}
-
-.setting-subscribe-plus-new-router-link :hover {
-  background-color: #ccc;
-  color: white;
-  opacity: 0.9;
-}
 </style>

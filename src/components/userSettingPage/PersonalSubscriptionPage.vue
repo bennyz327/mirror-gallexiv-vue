@@ -1,9 +1,9 @@
 <script setup>
 
-import {reactive, ref} from "vue";
-import {useRoute} from "vue-router";
+import { reactive, ref } from "vue";
+import { useRoute } from "vue-router";
 import axios from "axios";
-import {useUserStore} from "@/store/userStore.js";
+import { useUserStore } from "@/store/userStore.js";
 import router from "@/router/router.js";
 
 // 傳回拿到的物件
@@ -12,7 +12,7 @@ const props = defineProps({
 })
 // 將物件取出
 const items = reactive(props.subscribeList);
-const {token} = useUserStore();
+const { token } = useUserStore();
 const getData = ref([]);
 const subscriptionImg = ref("");
 const subscriptionName = ref("");
@@ -27,6 +27,8 @@ const getPlanData = async () => {
       headers: { 'Authorization': token }
     });
     getData.value = response.data.data;
+    console.log("getData", getData.value);
+    console.log("getData", getData.value.length);
 
   } catch (error) {
     console.error('提交表单时出错：', error);
@@ -51,11 +53,14 @@ const deleteItem = async (id) => {
   getPlanData();
 };
 
-const hasAtLeastThreeItems = props.subscribeList.length >= 3;
-console.log("哈囉:" + props.subscribeList.length)
 
-const isDisabled = (hasAtLeastThreeItems) => {
-  if(!hasAtLeastThreeItems){
+
+const isDisabled = () => {
+  const hasAtLeastThreeItems = getData.value.length;
+  console.log("|||:", props);
+  console.log("哈囉:" + props.subscribeList.length)
+  console.log("hasAtLeastThreeItems :", hasAtLeastThreeItems);
+  if (hasAtLeastThreeItems < 3) {
     router.push('/subscribe/create');
   } else {
     alert("已經有三個訂閱方案了，請先刪除再嘗試新增方案");
@@ -145,15 +150,15 @@ const isDisabled = (hasAtLeastThreeItems) => {
     </div>
   </div>
   <div class="setting-subscribe-plus-new-div">
-  <button class="btn btn-outline-secondary setting-subscribe-plus-new-button" @click="isDisabled">
-    <div style="display:flex; align-items: center">
-      <img src="../../assets/Picture/plusIcon.png" width="48" height="48" alt="plus-icon">
-      <h2 style="margin: 0">新增方案</h2>
-      <div style="margin-left: 16px">
-        <p style="margin: 0">(最多可以擁有3個方案)</p>
+    <button class="btn btn-outline-secondary setting-subscribe-plus-new-button" @click="isDisabled">
+      <div style="display:flex; align-items: center">
+        <img src="../../assets/Picture/plusIcon.png" width="48" height="48" alt="plus-icon">
+        <h2 style="margin: 0">新增方案</h2>
+        <div style="margin-left: 16px">
+          <p style="margin: 0">(最多可以擁有3個方案)</p>
+        </div>
       </div>
-    </div>
-  </button>
+    </button>
   </div>
 </template>
 
@@ -175,12 +180,11 @@ const isDisabled = (hasAtLeastThreeItems) => {
   margin-top: -72px;
 }
 
-.setting-subscribe-plus-new-button{
+.setting-subscribe-plus-new-button {
   display: flex;
   justify-content: center;
   align-content: center;
   border-radius: 16px;
   width: 90%;
 }
-
 </style>

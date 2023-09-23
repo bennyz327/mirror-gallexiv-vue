@@ -5,7 +5,6 @@ import axios from "axios";
 import {useRoute} from "vue-router";
 
 // 傳回物件
-
 const POSTURL = import.meta.env.VITE_API_Post
 const {token} = useUserStore();
 const postDataNoPlan = ref();
@@ -50,16 +49,14 @@ const loadAllPost = async () => {
   }
 };
 
-loadAllPost();
-
-// 圖片功能
-
-//拿出使用者狀態
-
+//  拿出使用者狀態
+//  加載所有資料
 onMounted(() => {
   console.log(useUserStore())
+  loadAllPost();
 })
 
+// 圖片功能
 const loadblobUrl = async (item) => {
   if (!item || !item.picturesByPostId || item.picturesByPostId.length === 0) {
     return;
@@ -74,28 +71,30 @@ const loadblobUrl = async (item) => {
   }
 };
 
-// 定义加载函数
+// 加載圖片
 const load = async (src) => {
   const config = {url: src, method: 'get', responseType: 'blob', headers: {Authorization: token}};
   const response = await axios.request(config);
   return response.data; // the blob
 };
+
+//  點讚功能
 const liked = ref([]);
 const hovered = ref([]);
 
-
-const toggleLike = (index) => {
-  liked.value[index] = !liked.value[index];
+const toggleLike = (postId) => {
+  liked.value[postId] = !liked.value[postId];
 };
 
+//  切換點讚狀態功能
 const heartClass = computed(() => {
-  return (index) => {
-    if (liked.value[index] && hovered.value[index]) {
+  return (postId) => {
+    if (liked.value[postId] && hovered.value[postId]) {
       return 'fa-solid fa-heart fa-bounce fa-lg';
-    } else if (!liked.value[index] && hovered.value[index]) {
+    } else if (!liked.value[postId] && hovered.value[postId]) {
       return 'fa-regular fa-heart fa-bounce fa-lg';
     } else {
-      return liked.value[index] ? 'fa-solid fa-heart fa-lg' : 'fa-regular fa-heart fa-lg';
+      return liked.value[postId] ? 'fa-solid fa-heart fa-lg' : 'fa-regular fa-heart fa-lg';
     }
   };
 });
@@ -109,11 +108,11 @@ const heartClass = computed(() => {
     <div class="galley-middle-block">
       <div class="picture-galley-block">
         <div class="picture-item-div" v-for="item in postDataNoPlan">
-          <a target="_blank" :href="'/posts/' + item.postId">
+          <router-link :to="{ name:'PostViewPagePath', params: { postId: item.postId }}">
             <img v-if="item.blobUrl" :src="item.blobUrl" alt="pic"
                  style="width: 240px; height: 240px; object-fit: cover; border-radius: 8px;"
                  class="picture-div">
-          </a>
+          </router-link>
           <!-- TODO 吃飽太閒寫hover按鈕浮現功能-->
           <div class="picture-item-text-button-div">
 
@@ -122,26 +121,36 @@ const heartClass = computed(() => {
             </div>
 
 
-            <div class="picture-item-user-div">
-              <div class="picture-item-user-icon-div">
+            <!--文字第二行-->
+            <div class="user-detail-div">
+
+              <!--該篇作者投向-->
+              <div class="user-icon-div">
                 <router-link :to="'/user/' + item.userinfoByUserId.userId">
                   <img :src="item.userinfoByUserId.avatar" alt="User" width="32" height="32" class="rounded-circle"
                        style="object-fit: cover;border: 1px solid #ccc;"/>
                 </router-link>
               </div>
 
-              <div class="picture-item-user-name-div">
+              <!--該篇作者姓名-->
+              <div class="user-name-div">
                 <router-link :to="'/user/' + item.userinfoByUserId.userId"
                              style="text-decoration:none; color:inherit; float: left">
-                  <p>{{ item.userinfoByUserId.userName }}</p>
+                  {{ item.userinfoByUserId.userName }}
                 </router-link>
               </div>
 
+              <!--like按鈕-->
               <div class="like-button-div">
-                <button type="button" class="btn" @click="toggleLike(index)" @mouseenter="hovered[index] = true"
-                        @mouseleave="hovered[index] = false" style="padding: 0">
-                  <i :class="heartClass(index)" style="color: #da2b2b;"></i>
+                <button type="button" class="btn" @click="toggleLike(item.postId)"
+                        @mouseenter="hovered[item.postId] = true"
+                        @mouseleave="hovered[item.postId] = false" style="margin: 0; padding:0">
+                  <i :class="heartClass(item.postId)" style="color: #da2b2b;"></i>
                 </button>
+              </div>
+              <!--like數量-->
+              <div class="like-val-div">
+                1000{{}}
               </div>
             </div>
           </div>
@@ -204,25 +213,27 @@ const heartClass = computed(() => {
 }
 
 .picture-text-div {
-//background-color: #F0EEFA; max-width: 264px; height: 32px; text-align: left;
+  /* background-color: #F0EEFA; max-width: 264px; */
+  margin: 0;
+  height: 32px;
+  text-align: left;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-//text-decoration: underline;
+  /* text-decoration: underline; */
 }
 
-.picture-item-user-div {
+.user-detail-div {
   display: flex;
   width: 224px;
 }
 
-.picture-item-user-icon-div {
+.user-icon-div {
   width: 20%;
 }
 
-.picture-item-user-name-div {
-  width: 65%;
-  max-width: 100%;
+.user-name-div {
+  width: 50%;
   height: 32px;
   text-align: left;
   overflow: hidden;
@@ -232,7 +243,14 @@ const heartClass = computed(() => {
 
 .like-button-div {
   width: 15%;
-  padding-left: 8px;
+  position: relative;
+  top: -4px;
+}
+
+.like-val-div {
+  width: 15%;
+  text-align: center;
+  margin: 0;
 }
 
 .text-center {

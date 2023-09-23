@@ -681,6 +681,7 @@ a.link-color-avoid {
   width: 95%;
   padding: 8px;
   border-bottom: 1px dotted;
+
 }
 
 .single-message-userContextTime-div {

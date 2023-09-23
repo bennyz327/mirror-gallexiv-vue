@@ -90,7 +90,6 @@ onMounted(() => {
 // HomePage 假資料
 const imgDataImportHomePage = ref(imgJsonFile);
 
-
 // SubscriptionPage 假資料
 const jsonDataImportSubscriptionPage = ref(subscriptionJsonFile);
 
@@ -230,7 +229,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
                 </div>
 
                 <div class="menu-home-page-picture-div">
-                  <PostPictureViewForPersonal :imgUrlList="imgDataImportHomePage"></PostPictureViewForPersonal>
+                  <PostPictureViewForPersonal></PostPictureViewForPersonal>
                 </div>
 
               </div>

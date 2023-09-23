@@ -32,6 +32,7 @@ const navigateOnEnter = () => {
       paramName = 'tagName';
     }
 
+
     const routeParams = { [paramName]: inputString.value };
     routerSearch.push({ name: routeName, query: routeParams });
   }

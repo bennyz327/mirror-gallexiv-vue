@@ -20,6 +20,7 @@ const user = ref({
 const {token} = useUserStore();
 const getData = ref([]);
 const URL = import.meta.env.VITE_API_USER
+const URLtoAuth = import.meta.env.VITE_API_AUTH
 
 const handleUploaded = (data) => {
   const base64str = data.url.substring(data.url.indexOf(",") + 1);
@@ -116,7 +117,11 @@ watch(formattedValue, (newValue) => {
     timestamp.value = null;
   }
 });
+
 const avatar = ref();
+const isVerification = ref("尚未驗證");
+const checkVerificationStatus = ref();
+
 const getUserData = async () => {
   try {
     const response = await axios.get(`${URL}/profile`, {
@@ -126,8 +131,18 @@ const getUserData = async () => {
     email.value.value = getData.value.userEmail;
     personalEmail.value = getData.value.userEmail
     personalNickName.value = getData.value.userName;
+
+    // 驗證狀態替換
+    if (getData.value.email_verified === 1) {
+      isVerification.value = "已完成驗證";
+      checkVerificationStatus.value = true;
+    } else {
+      isVerification.value = "尚未驗證";
+      checkVerificationStatus.value = false;
+    }
+
     let hi = getData.value.intro;
-    hi = hi.replaceAll('<br/>','\n');
+    hi = hi.replaceAll('<br/>', '\n');
     personalDescription.value = hi;
     user.value.avatar = getData.value.avatar;
     console.log(avatar.value)
@@ -161,7 +176,7 @@ getUserData();
 const updateData = async () => {
   const c = confirm('你確定要修改嗎?')
   try {
-    if(c){
+    if (c) {
       const formattedDescription = personalDescription.value.replace(/\n/g, '<br/>');
       const changeData = getData.value;
       console.log("aa:" + changeData)
@@ -182,13 +197,104 @@ const updateData = async () => {
         headers: {'Authorization': token}
       });
       console.log(response.data.data)
-      router.push({name: 'SettingPage'})
-    }
 
+    }
+    router.push({name: 'SettingPage'})
 
   } catch (error) {
     console.error('提交表单时出错：', error);
   }
+}
+
+// email驗證功能
+const emailVerification = ref('');
+const isWaiting = ref(false);
+const countDown = ref(30);
+const verificationStatus = ref("取得驗證碼");
+
+// 倒數計時功能
+const startCountdown = () => {
+  countDown.value = 30;
+  const interval = setInterval(() => {
+    countDown.value--;
+    verificationStatus.value = `在 ${countDown.value} 秒後可重新發送`;
+    if (countDown.value <= 0) {
+      clearInterval(interval);
+      verificationStatus.value = "重新取得驗證碼";
+    }
+  }, 1000);
+};
+
+// 取得信箱驗證碼
+const getEmailVerificationAgain = async () => {
+
+  if (isWaiting.value) {
+    return; // 如果正在等待，不執行重複請求
+  }
+
+  try {
+    isWaiting.value = true; // 進入等待狀態
+
+    const emailData = email.value.value;
+    console.log(emailData)
+    console.log("發送請求前")
+    // 發送 POST 請求到後台 API
+    const response = await axios.post(`${URLtoAuth}/startVerifyMail`, null, {
+      headers: {'Authorization': token}
+    });
+    console.log(response)
+    console.log("發送請求後")
+    // 設置計時器，在 30 秒後將等待狀態設置為 false
+    setTimeout(() => {
+      isWaiting.value = false;
+    }, 10000); // 30 秒
+  } catch (error) {
+    console.error('提交 email 時出錯：', error);
+    isWaiting.value = false; // 在錯誤情況下也要確保解除等待狀態
+
+  }
+  startCountdown();
+};
+
+// 送出驗證碼
+const submitEmailVerification = async () => {
+
+  try {
+    const emailInput = emailVerification.value;
+    const requestData = {
+      code: emailInput,
+    };
+    console.log(emailInput)
+    console.log("發送請求前")
+    // 發送 POST 請求到後台 API
+    const response = await axios.post(`${URLtoAuth}/verifyMail`, requestData, {
+      headers: {'Authorization': token}
+    });
+    console.log(response)
+    console.log(response.data.code)
+    console.log("發送請求後")
+    if (response.data.code === 200) {
+      const dataRespone = response.data.code.value
+      alert("驗證成功!")
+      window.location.reload();
+      isVerification.value = ("已完成驗證");
+
+    } else if (response.data.code === 400) {
+      alert("驗證失敗!請重新輸入");
+    }
+  } catch (error) {
+    console.error('提交驗證碼時出錯：', error);
+  }
+};
+
+const isEditEmail = ref(true);
+const IWantEditMail = () => {
+  isEditEmail.value = false;
+  checkVerificationStatus.value = true;
+}
+const refreshStatus = () => {
+  isEditEmail.value = true;
+  checkVerificationStatus.value = false;
 }
 
 </script>
@@ -254,8 +360,10 @@ const updateData = async () => {
         <div class="edit-personal-data-div">
 
           <form @submit.prevent="submit" style="width: 80%">
-
-            <h6>電子郵件</h6>
+            <div class="email-status-div">
+              <h6>電子郵件</h6>
+              <h6>驗證狀態：{{ isVerification }}</h6>
+            </div>
             <div class="email-text-div">
               <v-text-field
                   v-model="email.value.value"
@@ -265,7 +373,7 @@ const updateData = async () => {
                   disabled="true">
               </v-text-field>
               <!--email更改按鈕-->
-              <v-btn data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="margin-left:16px">更換電子郵件
+              <v-btn data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="margin-left:16px">電子郵件相關
               </v-btn>
               <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
                    tabindex="-1"
@@ -274,23 +382,45 @@ const updateData = async () => {
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="staticBackdropLabel">email輸入欄位</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal1" aria-label="Close"></button>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="refreshStatus"></button>
                     </div>
                     <div class="modal-body">
                       <!--介紹修改表格部分-->
                       <v-textarea
+                          :disabled="isEditEmail"
                           v-model="personalEmail"
                           :rules="personalEmailRules"
                           :counter="300"
                           :maxlength="300"
                           label="請輸入新的電子郵件"
                           no-resize
-                          placeholder
+                          placeholder=""
                           style="width:100%"/>
                     </div>
                     <div class="modal-footer">
-                      <v-btn type="button" data-bs-dismiss="modal">取消</v-btn>
-                      <v-btn type="button" @click="submitNewEmailForPersonalSetting" data-bs-dismiss="modal">確認修改</v-btn>
+                      <v-btn type="button" @click="IWantEditMail">修改電子郵件</v-btn>
+                      <v-btn type="button" :disabled="isEditEmail" data-bs-dismiss="modal" @click="refreshStatus">取消</v-btn>
+                      <v-btn type="button" :disabled="isEditEmail" @click="submitNewEmailForPersonalSetting" data-bs-dismiss="modal">確認修改
+                      </v-btn>
+                    </div>
+                    <div class="modal-body">
+                      <div class="verification-email-div">
+                        <div style="margin-left: 24px">電子郵件驗證狀態：{{ isVerification }}</div>
+                      </div>
+                      <div class="modal-body">
+                        <v-text-field
+                            v-model="emailVerification"
+                            label="輸入驗證碼"
+                            bg-color="white"
+                            :disabled=checkVerificationStatus
+                        ></v-text-field>
+                        <div class="modal-footer">
+                          <v-btn @click="getEmailVerificationAgain" :disabled=checkVerificationStatus>
+                            {{ verificationStatus }}
+                          </v-btn>
+                          <v-btn @click="submitEmailVerification" :disabled=checkVerificationStatus>送出</v-btn>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -304,6 +434,7 @@ const updateData = async () => {
                   <div class="nickname-form">
                     <div>
                       <h6>暱稱</h6>
+
                     </div>
                     <v-text-field
                         v-model="personalNickName"
@@ -492,13 +623,17 @@ const updateData = async () => {
   background-color: #f47c20;
 }
 
-
 .edit-personal-data-div {
   width: 100%;
   display: flex;
   justify-content: center;
   margin: 24px auto;
   //border: 2px solid red;
+}
+
+.email-status-div{
+  display: flex;
+  justify-content: space-between;
 }
 
 .email-text-div {
@@ -508,8 +643,11 @@ const updateData = async () => {
 
 }
 
-.nickname-description-div {
-
+.verification-email-div {
+  display: flex;
+  height: 120px;
+  align-items: center;
+  justify-content: center;
 }
 
 .nickname-form {

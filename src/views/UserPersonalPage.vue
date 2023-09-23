@@ -47,6 +47,10 @@ const postDataWithPlan = ref();
 const postDataNoPlan = ref()
 const route = useRoute();
 const userId = ref(route.params.userId || '');
+const facebooklink = ref()
+const youtubelink = ref()
+const twitterlink = ref()
+const otherlink = ref()
 const fetchData = async () => {
   try {
     //判斷取得別人個人頁面或是自己個人頁面
@@ -54,11 +58,28 @@ const fetchData = async () => {
       const response = await axios.get(`${URl}/${userId.value}`)
       userData.value = response.data.data;
 
+      //TODO HI
+      userData.value.followerNums = Math.round(Math.random() * 10) + Math.round(Math.random() * 100);
+
     } else {
       const response = await axios.get(`${URl}/profile`, {headers: {'Authorization': token}})
       userData.value = response.data.data;
-
+      console.log(userData.value)
+      console.log(userData.value.linkMappingsByUserId)
     }
+    userData.value.linkMappingsByUserId.forEach((item) => {
+      console.log(item);
+      if (item.linkSite === "facebook") {
+        facebooklink.value = item.linkSource;
+        console.log(facebooklink.value)
+      } else if (item.linkSite === "youtube") {
+        youtubelink.value = item.linkSource
+      } else if (item.linkSite === "twitter") {
+        twitterlink.value = item.linkSource
+      } else if (item.linkSite === "other") {
+        otherlink.value = item.linkSource
+      }
+    })
 
   } catch (error) {
     console.error('Error fetching user data:', error);
@@ -68,9 +89,9 @@ onMounted(() => {
   fetchData();
 })
 
+
 // HomePage 假資料
 const imgDataImportHomePage = ref(imgJsonFile);
-
 
 // SubscriptionPage 假資料
 const jsonDataImportSubscriptionPage = ref(subscriptionJsonFile);
@@ -102,8 +123,8 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
           <div class="user-icon-div">
 
             <div class="user-icon-src-div">
-              <div class="rounded-circle" style="display:flex">
-                <img :src="userData.avatar" alt="User" width="176" height="176" class="rounded-circle"
+              <div class="rounded-circle-div" style="display:flex">
+                <img :src="userData.avatar" alt="User" class="rounded-circle"
                      style="object-fit: cover;"/>
               </div>
             </div>
@@ -131,20 +152,20 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
               <!--TODO 外部連結部分內容(網址判斷圖示)-->
               <div class="user-hyperlink-div">
                 <div class="facebook-icon-div">
-                  <a :href="userData.facebookLink" target="_blank"><i class="fa-brands fa-facebook fa-2xl"
-                                                                      style="color: #2369e1;"></i></a>
+                  <a :href="facebooklink" target="_blank"><i class="fa-brands fa-facebook fa-2xl"
+                                                             style="color: #2369e1;"></i></a>
                 </div>
                 <div class="twitter-icon-div">
-                  <a :href="userData.twitterLink" target="_blank"><i class="fa-brands fa-twitter fa-2xl"
-                                                                     style="color: #1a6eff;"></i></a>
+                  <a :href="twitterlink" target="_blank"><i class="fa-brands fa-twitter fa-2xl"
+                                                            style="color: #1a6eff;"></i></a>
                 </div>
                 <div class="youtube-icon-div">
-                  <a :href="userData.youtubeLink" target="_blank"><i class="fa-brands fa-youtube fa-2xl"
-                                                                     style="color: #fa0000;"></i></a>
+                  <a :href="youtubelink" target="_blank"><i class="fa-brands fa-youtube fa-2xl"
+                                                            style="color: #fa0000;"></i></a>
                 </div>
                 <div class="other-icon-div">
-                  <a :href="userData.youtubeLink" target="_blank"><i class="fa-solid fa-link fa-2xl"
-                                                                     style="color: #d88d4f; font-size: 32px;"></i></a>
+                  <a :href="otherlink" target="_blank"><i class="fa-solid fa-link fa-2xl"
+                                                          style="color: #d88d4f; font-size: 32px;"></i></a>
                 </div>
               </div>
             </div>
@@ -211,7 +232,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
                 </div>
 
                 <div class="menu-home-page-picture-div">
-                  <PostPictureViewForPersonal :imgUrlList="imgDataImportHomePage"></PostPictureViewForPersonal>
+                  <PostPictureViewForPersonal></PostPictureViewForPersonal>
                 </div>
 
               </div>
@@ -300,6 +321,7 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 
 .name-sub-count-link-div {
   width: 60%;
+  margin-left: 8px;
 }
 
 .user-name-account-div {
@@ -314,6 +336,16 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 .user-account-text {
   margin-left: 12px;
   padding-top: 12px;
+}
+
+.rounded-circle-div {
+  width: 176px;
+  height: 176px;
+}
+
+.rounded-circle {
+  width: 160px;
+  height: 160px;
 }
 
 .user-follower-hyperlink-div {
@@ -395,4 +427,27 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 .nav-tabs .nav-link.active {
   color: #d88d4f;
 }
+
+@media screen and (max-width: 1260px) {
+  .rounded-circle-div {
+    display: flex;
+    padding-top: 24px;
+  }
+
+  .rounded-circle {
+    width: 128px;
+    height: 128px;
+  }
+
+  .user-icon-div {
+    width: 30%;
+  }
+
+  .name-sub-count-link-div {
+    width: 60%;
+    margin-left: 8px;
+  }
+}
+
+
 </style>

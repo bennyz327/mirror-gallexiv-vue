@@ -4,8 +4,9 @@ import AvatarCropper from "vue-avatar-cropper";
 
 import { ref } from "vue";
 import axios from "axios";
-import {useUserStore} from "@/store/userStore.js";
-import {useRoute} from "vue-router";
+import { useUserStore } from "@/store/userStore.js";
+import { useRoute } from "vue-router";
+import router from "@/router/router.js";
 
 // 輸入限制區塊
 const subscribeTitle = ref("");
@@ -14,7 +15,7 @@ const subscribeDescription = ref("");
 const previewPicture = ref("");
 const getData = ref([]);
 const URL = import.meta.env.VITE_API_PLAN;
-const {token} = useUserStore();
+const { token } = useUserStore();
 
 const subscribeTitleRules = [
   (value) => {
@@ -77,7 +78,7 @@ const handleUploaded = (data) => {
 
   if (decodedFileSize > maxFileSize) {
     message.value =
-        "這張圖片太大了(超過2MB)請嘗試將它縮小後再上傳";
+      "這張圖片太大了(超過2MB)請嘗試將它縮小後再上傳";
 
     setTimeout(() => {
       message.value = "";
@@ -104,7 +105,7 @@ const getPlanData = async () => {
 
   try {
     const response = await axios.get(`${URL}/${planId.value}`, {
-      headers: {'Authorization': token}
+      headers: { 'Authorization': token }
     });
     getData.value = response.data;
     subscribeTitle.value = getData.value.data.planName;
@@ -119,6 +120,7 @@ const getPlanData = async () => {
     console.error('提交表单时出错：', error);
   }
 }
+
 getPlanData();
 
 const submitForm = async () => {
@@ -134,16 +136,10 @@ const submitForm = async () => {
   console.log(planData.planPicture)
 
   try {
-    const response = await axios.put(`${URL}/update`, planData, {
-      headers: {'Authorization': token}
-    });
-
+    const response = await axios.put(`${URL}/update`, planData, { headers: { 'Authorization': token } });
+    
     if (response.status === 200) {
-      // 重定向到成功页面或其他页面
-      // 注意：你需要使用Vue Router的实例来导航，这里假设已经安装并配置了Vue Router
-      // import { useRouter } from 'vue-router';
-      // const router = useRouter();
-      // router.push('/success');
+      router.push({ name: 'SettingPage' });
 
     }
   } catch (error) {
@@ -155,7 +151,6 @@ const submitForm = async () => {
 </script>
 
 <template>
-
   <Navbar></Navbar>
 
   <div class="container">
@@ -177,9 +172,9 @@ const submitForm = async () => {
             <div class="card-header py-4 custom-header">
               <div class="text-center">
                 <img v-if="user.avatar" :src="user.avatar" class="rounded img-fluid"
-                     style="max-width: 180px; max-height: 120px;" alt="index">
+                  style="max-width: 180px; max-height: 120px;" alt="index">
                 <img v-else :src="previewPicture" class="rounded img-fluid" alt=""
-                     style="max-width: 180px; max-height: 120px;"/>
+                  style="max-width: 180px; max-height: 120px;" />
               </div>
             </div>
 
@@ -199,16 +194,16 @@ const submitForm = async () => {
                 <div class="accordion accordion-flush" id="accordionFlushExample">
                   <div class="accordion-item">
                     <h3 class="accordion-header">
-                      <button class="accordion-button collapsed" type="button"
-                              data-bs-toggle="collapse" data-bs-target="#collapse"
-                              aria-expanded="false" aria-controls="collapse" style="max-width: 440px">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapse" aria-expanded="false" aria-controls="collapse"
+                        style="max-width: 440px">
                         <h5>方案內容</h5>
                       </button>
                     </h3>
 
                     <!-- 方案敘述 -->
-                    <div id="collapse" class="accordion-collapse collapse"
-                         aria-labelledby="heading" data-bs-parent="#accordion" style="max-width: 440px">
+                    <div id="collapse" class="accordion-collapse collapse" aria-labelledby="heading"
+                      data-bs-parent="#accordion" style="max-width: 440px">
                       <div class="accordion-body">
                         {{ subscribeDescription }}
                       </div>
@@ -235,32 +230,16 @@ const submitForm = async () => {
             <v-sheet width="600">
               <v-form @submit.prevent>
                 <h4>標題</h4>
-                <v-text-field
-                    v-model="subscribeTitle"
-                    :rules="subscribeTitleRules"
-                    :counter="20"
-                    :maxlength="20"
-                    label="標題"
-                ></v-text-field>
+                <v-text-field v-model="subscribeTitle" :rules="subscribeTitleRules" :counter="20" :maxlength="20"
+                  label="標題"></v-text-field>
 
                 <h4>費用</h4>
-                <v-text-field
-                    v-model="subscribePrice"
-                    :rules="subscribePriceRules"
-                    :counter="4"
-                    :maxlength="4"
-                    label="費用"
-                ></v-text-field>
+                <v-text-field v-model="subscribePrice" :rules="subscribePriceRules" :counter="4" :maxlength="4"
+                  label="費用"></v-text-field>
 
                 <h4>方案內容</h4>
-                <v-textarea
-                    v-model="subscribeDescription"
-                    :rules="subscribeDescriptionRules"
-                    :counter="250"
-                    :maxlength="250"
-                    label="敘述你的圖片或相關內容"
-                    no-resize
-                    style="width:600px"/>
+                <v-textarea v-model="subscribeDescription" :rules="subscribeDescriptionRules" :counter="250"
+                  :maxlength="250" label="敘述你的圖片或相關內容" no-resize style="width:600px" />
               </v-form>
             </v-sheet>
             <h4>方案圖片</h4>
@@ -271,10 +250,10 @@ const submitForm = async () => {
         <div class="wrapper">
           <div style="border: 1px solid #ccc; margin-left: 32px; margin-right: 32px ; border-radius: 16px">
             <div class="avatar-div" v-if="user.avatar">
-              <img :src="user.avatar" class="avatar" alt=""/>
+              <img :src="user.avatar" class="avatar" alt="" />
             </div>
             <div class="avatar-div" v-else>
-              <img :src="previewPicture" class="avatar" alt=""/>
+              <img :src="previewPicture" class="avatar" alt="" />
             </div>
 
             <div class="upload-and-delete-button-div" style="display: flex; justify-content: center">
@@ -295,22 +274,14 @@ const submitForm = async () => {
             </div>
           </div>
 
-          <avatar-cropper
-              class="custom-avatar-cropper"
-              v-model="showCropper"
-              :cropper-options="{
-        aspectRatio: 1.5,
-        autoCropArea: 1,
-        viewMode: 1,
-        movable: false,
-        zoomable: true,
-      }"
-              :mimes="'image/png, image/jpg, image/jpeg'"
-              :upload-handler="handleUploaded"
-              @changed="onChanged"
-              :output-options="{}"
-              :labels="{ submit: '上傳', cancel: '取消' }"
-          />
+          <avatar-cropper class="custom-avatar-cropper" v-model="showCropper" :cropper-options="{
+            aspectRatio: 1.5,
+            autoCropArea: 1,
+            viewMode: 1,
+            movable: false,
+            zoomable: true,
+          }" :mimes="'image/png, image/jpg, image/jpeg'" :upload-handler="handleUploaded" @changed="onChanged"
+            :output-options="{}" :labels="{ submit: '上傳', cancel: '取消' }" />
         </div>
 
 
@@ -321,7 +292,6 @@ const submitForm = async () => {
 </template>
 
 <style lang="scss" scoped>
-
 .create-subscribe-block {
   height: 720px;
   display: flex;
@@ -387,7 +357,7 @@ const submitForm = async () => {
   height: 200px;
   //border-radius: 50%;
 
-  & > p {
+  &>p {
     margin: 0;
     font-size: 3rem;
     color: white;
@@ -419,11 +389,7 @@ const submitForm = async () => {
   overflow: hidden;
 }
 
-::v-deep(.avatar-cropper
-    .avatar-cropper-container
-    .avatar-cropper-footer
-    .avatar-cropper-btn:hover) {
+::v-deep(.avatar-cropper .avatar-cropper-container .avatar-cropper-footer .avatar-cropper-btn:hover) {
   background-color: #f47c20;
 }
-
 </style>

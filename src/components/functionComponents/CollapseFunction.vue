@@ -1,5 +1,5 @@
 <script setup>
-import {nextTick, reactive, ref} from "vue";
+import { nextTick, reactive, ref } from "vue";
 
 const props = defineProps({
   descriptionText: Text
@@ -20,7 +20,6 @@ function onHide() {
 </script>
 
 <template>
-
   <div id="introduceBlock" v-if="content">
     <template v-if="isHide">
       <div class="hideIntroduce" :class="{ 'show': !isHide }" :ref="hideIntroduceRef">
@@ -32,7 +31,7 @@ function onHide() {
     </template>
     <template v-else>
       <div class="showIntroduce">
-        <p  v-html="content"></p>
+        <p v-html="content"></p>
         <div class="hideBtn">
           <a href="#" @click.stop.prevent="onHide">收起</a>
         </div>
@@ -41,13 +40,11 @@ function onHide() {
   </div>
 
 
-<!--  //&nbsp;<span class="downArrow"></span>-->
-<!--箭頭符號-->
-
+  <!--  //&nbsp;<span class="downArrow"></span>-->
+  <!--箭頭符號-->
 </template>
 
 <style scoped>
-
 .hideIntroduce {
   height: 120px;
   overflow: hidden;
@@ -60,11 +57,11 @@ function onHide() {
 }
 
 .hideIntroduce {
-//height: 2000px; //width: 960px; //margin: 1.5rem; //padding: 1.5rem; //padding-bottom: 0; //position: relative;
+  /* height: 2000px; //width: 960px; //margin: 1.5rem; //padding: 1.5rem; //padding-bottom: 0; //position: relative; */
 }
 
 .showIntroduce {
-//width: 960px; //margin: 1.5rem; //padding: 1.5rem;
+  /* width: 960px; //margin: 1.5rem; //padding: 1.5rem; */
 }
 
 .summary {
@@ -85,7 +82,7 @@ function onHide() {
   z-index: 0;
   text-align: center;
   padding-top: 3rem;
-//top: 3rem; left: 0;
+  /* top: 3rem; left: 0; */
 }
 
 .hideBtn {
@@ -99,17 +96,17 @@ function onHide() {
 .hideBtn a {
   color: #d88d4f;
   display: flex;
-//text-decoration: none;
+  /* text-decoration: none; */
 }
 
 .showBtn a {
   color: #d88d4f;
   position: relative;
   bottom: 64px;
-//text-decoration: none;
+  /* text-decoration: none; */
 }
 
-.downArrow {
+/* .downArrow {
   //display: block;
   //width: 8px;
   //height: 8px;
@@ -118,7 +115,7 @@ function onHide() {
   //transform: rotate(45deg);
   //margin-bottom: 3px;
   //color: #d88d4f;
-}
+} */
 
 
 .upArrow {
@@ -126,9 +123,8 @@ function onHide() {
   /*width: 8px;*/
   /*height: 8px;*/
   /*border-right: 1px solid;*/
-  //border-bottom: 1px solid;
-  //transform: rotate(225deg);
-  //margin-top: 3px;
+  /* border-bottom: 1px solid; */
+  /* transform: rotate(225deg); */
+  /* margin-top: 3px; */
 }
-
 </style>

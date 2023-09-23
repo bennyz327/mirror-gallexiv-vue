@@ -1,10 +1,10 @@
 <script setup>
 import Navbar from "@/components/Navbar.vue";
 
-import {ref} from 'vue';
+import { ref } from 'vue';
 import axios from 'axios';
-import {useUserStore} from "@/store/userStore.js";
-import {useRoute} from "vue-router";
+import { useUserStore } from "@/store/userStore.js";
+import { useRoute } from "vue-router";
 import router from "@/router/router.js";
 
 const id = ref(0)
@@ -17,21 +17,21 @@ const postAgeLimit = ref(0);
 const postPublic = ref(0);
 const URL = import.meta.env.VITE_API_Post;
 const tagsArray = ref([]);
-const {token} = useUserStore();
+const { token } = useUserStore();
 
 const route = useRoute();
 const postId = ref(route.query.postId || ''); //  接收來自router的值以外要讓他成為ref可以更新資料
-console.log(postId)
+console.log("postId:-", postId.value)
 const getPostData = async () => {
 
   try {
-    const response = await axios.get(`${URL}/${postId.value}`,{headers: {'Authorization': token}})
+    const response = await axios.get(`${URL}/${postId.value}`, { headers: { 'Authorization': token } })
     getData.value = response.data;
     postTitle.value = getData.value.data.postTitle;
-    postDescription.value=getData.value.data.postContent;
-    postPublic.value= getData.value.data.postPublic;
-    postAgeLimit.value=getData.value.data.postAgeLimit;
-    tags.value=getData.value.data.tagsByPostId;
+    postDescription.value = getData.value.data.postContent;
+    postPublic.value = getData.value.data.postPublic;
+    postAgeLimit.value = getData.value.data.postAgeLimit;
+    tags.value = getData.value.data.tagsByPostId;
 
     console.log(getData.value)
     console.log(tags.value)
@@ -41,7 +41,7 @@ const getPostData = async () => {
 
     console.log(tagsArray)
 
-  }catch (error){
+  } catch (error) {
     console.error('提交表单时出错：', error);
   }
 }
@@ -60,12 +60,15 @@ const submitForm = async () => {
   console.log(postData)
 
   try {
-    const response = await axios.put(`${URL}/update`, postData,{headers: {'Authorization': token}});
+    const response = await axios.put(`${URL}/update`, postData, { headers: { 'Authorization': token } });
 
     if (response.status === 200) {
 
       // const router = useRouter();
-      router.push({name: '200'});
+      //router.push({ name: '200' });
+      // router.push({ name: 'BackEndPage' });
+      router.push({ name: 'PostViewPagePath', params: { postId: postId.value } });
+      console.log("postId :", postId.value);
       console.log("回應")
       console.log(response.data)
     }
@@ -92,23 +95,12 @@ const submitForm = async () => {
             <v-sheet class="mx-auto">
               <v-form @submit.prevent>
                 <h5 style="text-align: left">標題</h5>
-                <v-text-field
-                    v-model="postTitle"
-                    :rules="postTitleRules"
-                    :counter="30"
-                    :maxlength="30"
-                    label="標題"
-                    style="width:600px"/>
+                <v-text-field v-model="postTitle" :rules="postTitleRules" :counter="30" :maxlength="30" label="標題"
+                  style="width:600px" />
 
                 <h5 style="text-align: left">內文</h5>
-                <v-textarea
-                    v-model="postDescription"
-                    :rules="postDescriptionRules"
-                    :counter="250"
-                    :maxlength="250"
-                    label="敘述你的圖片或相關內容"
-                    no-resize
-                    style="width:600px"/>
+                <v-textarea v-model="postDescription" :rules="postDescriptionRules" :counter="250" :maxlength="250"
+                  label="敘述你的圖片或相關內容" no-resize style="width:600px" />
               </v-form>
             </v-sheet>
           </div>
@@ -124,13 +116,15 @@ const submitForm = async () => {
               </div>
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" value="0" v-model="postAgeLimit" checked>
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWFalse" value="0"
+                    v-model="postAgeLimit" checked>
                   <label class="form-check-label" for="NSFWFalse">
                     無限制
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWTrue" value="1" v-model="postAgeLimit">
+                  <input class="form-check-input" type="radio" name="NSFWRadio" id="NSFWTrue" value="1"
+                    v-model="postAgeLimit">
                   <label class="form-check-label" for="NSFWTrue">
                     未成年不宜觀看
                   </label>
@@ -146,13 +140,15 @@ const submitForm = async () => {
               </div>
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" value="0" v-model="postPublic" checked>
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicTrue" value="0"
+                    v-model="postPublic" checked>
                   <label class="form-check-label" for="publicTrue">
                     公開
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse" value="1" v-model="postPublic">
+                  <input class="form-check-input" type="radio" name="publicRadio" id="publicFalse" value="1"
+                    v-model="postPublic">
                   <label class="form-check-label" for="publicFalse">
                     不公開
                   </label>
@@ -164,11 +160,7 @@ const submitForm = async () => {
 
             <h5 style="text-align: left; display: block">Tag</h5>
             <div class="tag-div" style="margin: 8px">
-              <n-dynamic-tags v-model:value="tagsArray"
-                              max="10"
-                              size="large"
-
-              />
+              <n-dynamic-tags v-model:value="tagsArray" max="10" size="large" />
             </div>
 
           </div>
@@ -181,7 +173,6 @@ const submitForm = async () => {
 </template>
 
 <style scoped>
-
 .edit-form-block {
   width: 100%;
   margin-top: 32px;
@@ -196,7 +187,7 @@ const submitForm = async () => {
   width: 50%;
   max-width: 50%;
   float: left;
-//border-right: 1px solid #ccc;
+  /* border-right: 1px solid #ccc; */
 }
 
 .title-description-center {
@@ -207,7 +198,7 @@ const submitForm = async () => {
 .checkbox-and-tag-div {
   width: 50%;
   max-width: 50%;
-//border-left: 1px solid #ccc;
+  /* border-left: 1px solid #ccc; */
 }
 
 .checkbox-and-tag-center {

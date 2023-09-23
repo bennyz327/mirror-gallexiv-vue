@@ -5,13 +5,28 @@ import PostViewCarousel from "../components/functionComponents/PostViewCarousel.
 import DescriptionArea from "@/components/functionComponents/CollapseFunction.vue";
 import { useUserStore } from "@/store/userStore.js";
 import { ref, onMounted, reactive, computed } from 'vue';
-import {useRoute} from "vue-router";
+import { useRoute } from "vue-router";
 //import MessageArea from "@/components/functionComponents/MessageArea.vue";
 const { token } = useUserStore();
 
 const route = useRoute();
 const postId = ref(route.params.postId || '');
-console.log("postId:",postId.value)
+console.log("postId:", postId.value)
+
+// 留言區塊限制
+// const messageInput = ref("");
+// const messageInputRules = [
+//   (value) => {
+//     if (value && value.length <= 120 && value.trim().length > 0) {
+//       return true;
+//     } else if (!value || value.trim().length === 0) {
+//       return "至少必須輸入1個字元";
+//     } else {
+//       return "字數不能超過 120 個字";
+//     }
+//   },
+// ];
+
 
 // const URL = import.meta.env.VITE_API_Post
 // const PostDetail = reactive({});
@@ -64,7 +79,8 @@ const loadComments = async () => {
     const response = await axios.get(`${URL_COMMENT}/findByPostId?postId=${postId.value}`);
     // console.log("response:",response.data);
     comments.value = response.data.data; // 假設返回的數據在 response.data 的 data 屬性中
-    console.log("commentsAvatar:",comments.value);
+    console.log("comment:", comments.value);
+    console.log("commentsAvatar:", comments.value);
 
   } catch (error) {
     console.error('Error fetching comments:', error);
@@ -96,7 +112,7 @@ const loadPost = async () => {
   try {
     const response = await axios.get(`http://localhost:8080/posts/post?postId=${postId.value}`);
     postData.value = response.data.data;
-    console.log("postData:",postData.value);
+    console.log("postData:", postData.value);
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
@@ -153,8 +169,8 @@ const deleteComment = async (commentId) => {
     const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
     try {
       const resDeleteComment = await axios.delete(`${URL_COMMENT}/delete?commentId=${commentId}`, { headers: { 'Authorization': token } });
-      console.log(resDeleteComment.status)
-      console.log('Response from server:', resDeleteComment.data);
+      //console.log(resDeleteComment.status)
+      //console.log('Response from server:', resDeleteComment.data);
     } catch (error) {
       console.error('Error sending comment:', error);
     }
@@ -177,21 +193,22 @@ const editComment = (commentId) => {
 };
 // 將編輯後的 commentText 傳到後端
 const updateComment = async (commentId) => {
-  console.log("commentId: ", commentId);
+  // console.log("commentId: ", commentId);
   const commentText = editedCommentText.value;// 取得新commentText
-  console.log("commentTextValue: ", editedCommentText);
-  console.log("commentText: ", commentText);
-  const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
-  console.log("URL_COMMENT:", URL_COMMENT);
-  console.log("token:", token);
+  //console.log("commentTextValue: ", editedCommentText);
+  //console.log("commentText: ", commentText);
+  //const URL_COMMENT = import.meta.env.VITE_API_COMMENT;
+  // console.log("URL_COMMENT:", URL_COMMENT);
+  // console.log("token:", token);
   const resUpdateComment = await axios.put(`http://localhost:8080/comments/update?commentId=${commentId}&commentText=${commentText}`, null, { headers: { 'Authorization': token } });
-  console.log("token:", token);
+  //console.log("token:", token);
   console.log('Saving edited comment:', resUpdateComment.data);
   // 清空初始值
   editingCommentId.value = null;
   originalCommentText.value = '';
   editedCommentText.value = '';
   loadComments();
+  loadSubCommentsDto();
 };
 //---------------------------------------------//
 
@@ -220,71 +237,20 @@ const heartClass = computed(() => {
   }
 });
 
-// 留言區塊限制
-const messageInput = ref("");
-const messageInputRules = [
-  (value) => {
-    if (value && value.length <= 120 && value.trim().length > 0) {
-      return true;
-    } else if (!value || value.trim().length === 0) {
-      return "至少必須輸入1個字元";
-    } else {
-      return "字數不能超過 120 個字";
-    }
-  },
-];
-
-// const messageEdit = ref(new Array(jsonDataImportMessageArea.value.length).fill(false));
-//
-// // 送出按鈕
-// const isEditingArray = ref([]);
-//
-// // 初始化isEditingArray狀態
-// jsonDataImportMessageArea.value.forEach(() => {
-//   isEditingArray.value.push(false);
-// });
-//
-// const isOwnerAndEditing = (index) => {
-//   return isEditingArray.value[index];
-// };
-//
-// const startEditing = (index) => {
-//   isEditingArray.value[index] = true;
-// };
-
-
-// const testData = reactive({
-//   liked: liked.value,
-//   collected: collected.value,
-//   postData: {
-//     // 这里放要传递给后端的数据
-//   },
-// });
 //格式化 commentTime
-function formatTime(times) {
-  const now = new Date();
-  const commentTime = new Date(times);
-  const diffInSeconds = now - commentTime;
+function formatTime(time) {
+  var dateTime = new Date(time);
+  var year = dateTime.getFullYear();
+  var month = dateTime.getMonth() + 1;
+  var day = dateTime.getDate();
 
-  if (diffInSeconds < (60 * 1000)) {
-    const timeDifferent = Math.floor(diffInSeconds / 1000)
-    return `${timeDifferent}秒前`;
-  } else if (diffInSeconds < (60 * 60 * 1000)) {
-    const timeDifferent = Math.floor(diffInSeconds / (60 * 1000))
-    return `${timeDifferent}分鐘前`;
-  } else if (diffInSeconds < (24 * 60 * 60 * 1000)) {
-    const timeDifferent = Math.floor(diffInSeconds / (60 * 60 * 1000))
-    return `${timeDifferent}小時前`;
-  } else if (diffInSeconds < (30 * 24 * 60 * 60 * 1000)) {
-    const timeDifferent = Math.floor(diffInSeconds / (24 * 60 * 60 * 1000))
-    return `${timeDifferent}天前`;
-  } else if (diffInSeconds < (365 * 24 * 60 * 60 * 1000)) {
-    const timeDifferent = Math.floor(diffInSeconds / (30 * 24 * 60 * 60 * 1000))
-    return `${timeDifferent}個月前`;
-  } else {
-    const timeDifferent = Math.floor(diffInSeconds / (365 * 24 * 60 * 60 * 1000))
-    return `${timeDifferent}年前`;
-  }
+  var formattedMonth = month < 10 ? "0" + month : month.toString();
+  var formattedDay = day < 10 ? "0" + day : day.toString();
+
+  var formattedDateString = year + "-" + formattedMonth + "-" + formattedDay;
+  console.log(formattedDateString);
+
+  return (formattedDateString);
 }
 
 
@@ -366,7 +332,8 @@ function formatTime(times) {
                   <!-- 留言者頭像區塊 -->
                   <div class="follower-avatar-icon-div" style="display: flex">
                     <div class="rounded-circle">
-                      <img :src="comment.userinfoByUserId.avatar" alt="User" width="64" height="64" class="rounded-circle" style="object-fit:cover;" />
+                      <img :src="comment.userinfoByUserId.avatar" alt="User" width="64" height="64" class="rounded-circle"
+                        style="object-fit:cover;" />
                     </div>
                     <div class="follower-name-and-account"
                       style="display: flex; height: 64px; line-height: 64px; padding-left: 16px">
@@ -514,7 +481,8 @@ function formatTime(times) {
 
                 <!--如果是作者本人的話-->
                 <v-btn v-if="loginUserData && loginUserData.userId === postData.userinfoByUserId.userId">
-                  <router-link :to="{ name: 'PostEditPage' , query: { postId: postData.postId }}" style="text-decoration:none;color:black;">編輯作品</router-link>
+                  <router-link :to="{ name: 'PostEditPage', query: { postId: postData.postId } }"
+                    style="text-decoration:none;color:black;">編輯作品</router-link>
                 </v-btn>
               </v-menu>
             </div>
@@ -580,7 +548,7 @@ function formatTime(times) {
 
 .container-left-block {
   float: left;
-  width:70%;
+  width: 70%;
   margin-right: 16px;
 }
 
@@ -713,6 +681,7 @@ a.link-color-avoid {
   width: 95%;
   padding: 8px;
   border-bottom: 1px dotted;
+
 }
 
 .single-message-userContextTime-div {

@@ -10,8 +10,6 @@ const {isLogin,token,name} = useUserStore()
 let decodeName = eval("'"+name+"'")
 import PostPictureView from "@/components/PostPictureView.vue";
 
-// import jsonFile from "../assets/tag.json"
-// import imgJsonFile from "../assets/imgList.json"
 
 // const json = ref(jsonFile)
 const json = ref([])
@@ -84,15 +82,15 @@ const load = async (src) => {
 
   <div class="container">
 
-    <div v-if="isLogin">
-      已登入
-    </div>
-    <div>
-      {{ decodeName }}
-    </div>
-    <div>
-      {{ token }}
-    </div>
+<!--    <div v-if="isLogin">-->
+<!--      已登入-->
+<!--    </div>-->
+<!--    <div>-->
+<!--      {{ decodeName }}-->
+<!--    </div>-->
+<!--    <div>-->
+<!--      {{ token }}-->
+<!--    </div>-->
 
     <!-- 熱門Tag的title-->
 

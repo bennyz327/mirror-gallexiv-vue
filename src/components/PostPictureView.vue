@@ -1,5 +1,6 @@
 <script setup>
-import { computed, reactive, ref } from "vue";
+import {computed, onMounted, onUpdated, reactive, ref} from "vue";
+import {onBeforeRouteUpdate} from "vue-router";
 
 // 傳回物件
 const props = defineProps({
@@ -12,18 +13,20 @@ const URL = import.meta.env.VITE_API_Post
 const liked = ref([]);
 const hovered = ref([]);
 
-const toggleLike = (index) => {
-  liked.value[index] = !liked.value[index];
+//  點讚功能
+const toggleLike = (postId) => {
+  liked.value[postId] = !liked.value[postId];
 };
 
+//  切換點讚狀態功能
 const heartClass = computed(() => {
-  return (index) => {
-    if (liked.value[index] && hovered.value[index]) {
+  return (postId) => {
+    if (liked.value[postId] && hovered.value[postId]) {
       return 'fa-solid fa-heart fa-bounce fa-lg';
-    } else if (!liked.value[index] && hovered.value[index]) {
+    } else if (!liked.value[postId] && hovered.value[postId]) {
       return 'fa-regular fa-heart fa-bounce fa-lg';
     } else {
-      return liked.value[index] ? 'fa-solid fa-heart fa-lg' : 'fa-regular fa-heart fa-lg';
+      return liked.value[postId] ? 'fa-solid fa-heart fa-lg' : 'fa-regular fa-heart fa-lg';
     }
   };
 });
@@ -36,40 +39,53 @@ const heartClass = computed(() => {
     <div class="galley-middle-block">
       <div class="picture-galley-block">
         <div class="picture-item-div" v-for="item in imgUrlList.value">
-        <router-link :to="{ name:'PostViewPagePath', params: { postId: item.postId }}">
+          <router-link :to="{ name:'PostViewPagePath', params: { postId: item.postId }}">
             <img v-if="item.blobUrl" :src="item.blobUrl" alt="pic"
                  style="width: 240px; height: 240px; object-fit: cover; border-radius: 8px;"
                  class="picture-div">
-        </router-link>
+          </router-link>
           <!-- TODO 吃飽太閒寫hover按鈕浮現功能-->
           <div class="picture-item-text-button-div">
 
+            <!--作品名稱-->
             <div class="picture-text-div">
-              <p>{{ item.postTitle }}</p>
+              {{ item.postTitle }}
             </div>
 
 
-            <div class="picture-item-user-div">
-              <div class="picture-item-user-icon-div">
+            <!--文字第二行-->
+            <div class="user-detail-div">
+
+              <!--該篇作者投向-->
+              <div class="user-icon-div">
                 <router-link :to="'/user/' + item.userinfoByUserId.userId">
                   <img :src="item.userinfoByUserId.avatar" alt="User" width="32" height="32" class="rounded-circle"
-                    style="object-fit: cover;border: 1px solid #ccc;" />
+                       style="object-fit: cover;border: 1px solid #ccc;"/>
                 </router-link>
               </div>
 
-              <div class="picture-item-user-name-div">
-                <router-link :to="'/user/' + item.userinfoByUserId.userId" style="text-decoration:none; color:inherit; float: left">
-                  <p>{{ item.userinfoByUserId.userName}}</p>
+              <!--該篇作者姓名-->
+              <div class="user-name-div">
+                <router-link :to="'/user/' + item.userinfoByUserId.userId"
+                             style="text-decoration:none; color:inherit; float: left">
+                  {{ item.userinfoByUserId.userName }}
                 </router-link>
               </div>
 
+              <!--like按鈕-->
               <div class="like-button-div">
-                <button type="button" class="btn" @click="toggleLike(index)" @mouseenter="hovered[index] = true"
-                  @mouseleave="hovered[index] = false" style="padding: 0">
-                  <i :class="heartClass(index)" style="color: #da2b2b;"></i>
+                <button type="button" class="btn" @click="toggleLike(item.postId)"
+                        @mouseenter="hovered[item.postId] = true"
+                        @mouseleave="hovered[item.postId] = false" style="margin: 0; padding:0">
+                  <i :class="heartClass(item.postId)" style="color: #da2b2b;"></i>
                 </button>
               </div>
+              <!--like數量-->
+<!--              <div class="like-val-div">-->
+<!--                1000{{}}-->
+<!--              </div>-->
             </div>
+
           </div>
         </div>
       </div>
@@ -77,14 +93,16 @@ const heartClass = computed(() => {
 
     <br>
 
-    <div class="text-center">
-      <v-pagination
-          v-model="page"
-          :length="10"
-          prev-icon="mdi-menu-left"
-          next-icon="mdi-menu-right"
-      ></v-pagination>
-    </div>
+<!-- TODO 自動加載更多內容   -->
+<!--    -->
+<!--    <div class="text-center">-->
+<!--      <v-pagination-->
+<!--          v-model="page"-->
+<!--          :length="10"-->
+<!--          prev-icon="mdi-menu-left"-->
+<!--          next-icon="mdi-menu-right"-->
+<!--      ></v-pagination>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -129,6 +147,7 @@ const heartClass = computed(() => {
 
 .picture-text-div {
   /* background-color: #F0EEFA; max-width: 264px; */
+  margin: 0;
   height: 32px;
   text-align: left;
   overflow: hidden;
@@ -137,18 +156,17 @@ const heartClass = computed(() => {
   /* text-decoration: underline; */
 }
 
-.picture-item-user-div {
+.user-detail-div {
   display: flex;
   width: 224px;
 }
 
-.picture-item-user-icon-div {
+.user-icon-div {
   width: 20%;
 }
 
-.picture-item-user-name-div {
+.user-name-div {
   width: 65%;
-  max-width: 100%;
   height: 32px;
   text-align: left;
   overflow: hidden;
@@ -158,7 +176,14 @@ const heartClass = computed(() => {
 
 .like-button-div {
   width: 15%;
-  padding-left: 8px;
+  position: relative;
+  top: -4px;
+}
+
+.like-val-div {
+  width: 15%;
+  text-align: center;
+  margin: 0;
 }
 
 .text-center {

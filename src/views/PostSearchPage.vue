@@ -7,27 +7,25 @@ import {useUserStore} from "@/store/userStore.js";
 import axios from 'axios';
 
 import Navbar from "../components/Navbar.vue";
-import TagFunction from "../components/functionComponents/TagFunction.vue";
-
+import NoneFoundPage from "@/components/functionComponents/NoneFoundPage.vue";
+import PostPictureView from "@/components/PostPictureView.vue";
 
 let decodeName = eval("'" + name + "'")
-import PostPictureView from "@/components/PostPictureView.vue";
-import NoneFoundPage from "@/components/functionComponents/NoneFoundPage.vue";
 
 // 取到的postTitle相關搜尋資料
 const route = useRoute();
 const postTitle = ref(route.query.postTitle || ''); //  接收來自router的值以外要讓他成為ref可以更新資料
 
 const URL = import.meta.env.VITE_API_Post
-const PostDetail = reactive({});
+const PostSearchDetail = reactive({});
 
-const loadAllPost = async () => {
+const loadSearchPost = async () => {
   try {
-    const response = await axios.get(`${URL}/search?postTitle=${postTitle.value}`); // 使用 postTitle.value
+    const response = await axios.get(`${URL}/postTitle?postTitle=${postTitle.value}`,{headers: {'Authorization': token}})
     console.log(response.data.data);
-    PostDetail.value = response.data.data;
-
-    PostDetail.value.forEach((item) => {
+    PostSearchDetail.value = response.data.data;
+    console.log(PostSearchDetail)
+    PostSearchDetail.value.forEach((item) => {
       // console.log(imgUrlList.value)
       console.log("進迴圈" + item);
       loadblobUrl(item);
@@ -39,14 +37,13 @@ const loadAllPost = async () => {
 };
 
 // 執行第一次
-loadAllPost();
+loadSearchPost();
 
 // 重新載入postTitle的值送入axios
 watch(() => route.query.postTitle, (newPostTitle) => {
   postTitle.value = newPostTitle; // 更新 postTitle 的值
-  loadAllPost();
+  loadSearchPost();
 });
-
 
 //  取出圖片
 onMounted(() => {
@@ -69,7 +66,7 @@ const loadblobUrl = async (item) => {
 
 //  加載圖片
 const load = async (src) => {
-  const config = {url: src, method: 'get', responseType: 'blob'};
+  const config = { url: src, method: 'get', responseType: 'blob',headers:{ 'Authorization': token } };
   const response = await axios.request(config);
   return response.data; // the blob
 };
@@ -84,7 +81,7 @@ const load = async (src) => {
 
   <div class="container">
 
-<!--    <template v-if="PostDetail">-->
+<!--    <template v-if="PostSearchDetail">-->
 <!--      <div class="none-found-block">-->
 <!--        <div class="none-found-center">-->
 <!--          <NoneFoundPage></NoneFoundPage>-->
@@ -92,12 +89,7 @@ const load = async (src) => {
 <!--      </div>-->
 <!--    </template>-->
 
-
-    <template>
-
-      <PostPictureView :imgUrlList="PostDetail"></PostPictureView>
-
-    </template>
+      <PostPictureView :imgUrlList="PostSearchDetail"></PostPictureView>
 
   </div>
 

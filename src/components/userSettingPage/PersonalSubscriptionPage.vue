@@ -4,6 +4,7 @@ import { reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import { useUserStore } from "@/store/userStore.js";
+import router from "@/router/router.js";
 
 // 傳回拿到的物件
 const props = defineProps({
@@ -22,10 +23,12 @@ const URL = import.meta.env.VITE_API_PLAN
 const getPlanData = async () => {
 
   try {
-    const response = await axios.get(`${URL}/personalPlan`, {
+    const response = await axios.get(`${URL}/personalPlan?state=1`, {
       headers: { 'Authorization': token }
     });
     getData.value = response.data.data;
+    console.log("getData", getData.value);
+    console.log("getData", getData.value.length);
 
   } catch (error) {
     console.error('提交表单时出错：', error);
@@ -49,6 +52,21 @@ const deleteItem = async (id) => {
   }
   getPlanData();
 };
+
+
+
+const isDisabled = () => {
+  const hasAtLeastThreeItems = getData.value.length;
+  console.log("|||:", props);
+  console.log("哈囉:" + props.subscribeList.length)
+  console.log("hasAtLeastThreeItems :", hasAtLeastThreeItems);
+  if (hasAtLeastThreeItems < 3) {
+    router.push('/subscribe/create');
+  } else {
+    alert("已經有三個訂閱方案了，請先刪除再嘗試新增方案");
+  }
+};
+
 
 
 </script>
@@ -121,31 +139,26 @@ const deleteItem = async (id) => {
                           </div>
                         </div>
                       </div>
-
                     </div>
                   </div>
                 </div>
               </div>
-
             </div>
           </main>
         </div>
       </div>
     </div>
-
-
-    <router-link to="/subscribe/create" class="setting-subscribe-plus-new-router-link">
-      <div class="setting-subscribe-plus-new-div">
-        <div style="display:flex; align-items: center">
-          <img src="../../assets/Picture/plusIcon.png" width="48" height="48" alt="plus-icon">
-          <h2 style="margin: 0">新增方案</h2>
-          <div style="margin-left: 16px">
-            <p style="margin: 0">(最多可以擁有3個方案)</p>
-          </div>
+  </div>
+  <div class="setting-subscribe-plus-new-div">
+    <button class="btn btn-outline-secondary setting-subscribe-plus-new-button" @click="isDisabled">
+      <div style="display:flex; align-items: center">
+        <img src="../../assets/Picture/plusIcon.png" width="48" height="48" alt="plus-icon">
+        <h2 style="margin: 0">新增方案</h2>
+        <div style="margin-left: 16px">
+          <p style="margin: 0">(最多可以擁有3個方案)</p>
         </div>
       </div>
-    </router-link>
-
+    </button>
   </div>
 </template>
 
@@ -161,23 +174,17 @@ const deleteItem = async (id) => {
 
 .setting-subscribe-plus-new-div {
   display: flex;
-  height: 20%;
   justify-content: center;
   align-content: center;
   text-align: center;
-  margin-top: 72px;
-  border: 2px solid #ccc;
+  margin-top: -72px;
+}
+
+.setting-subscribe-plus-new-button {
+  display: flex;
+  justify-content: center;
+  align-content: center;
   border-radius: 16px;
-}
-
-.setting-subscribe-plus-new-router-link {
-  text-decoration: none;
-  color: black
-}
-
-.setting-subscribe-plus-new-router-link :hover {
-  background-color: #ccc;
-  color: white;
-  opacity: 0.9;
+  width: 90%;
 }
 </style>

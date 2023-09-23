@@ -87,7 +87,7 @@ const routes = [
         path: '/subscribe/order/:planId',
         name: 'OrderPage',
         component: () => import("../views/OrderPage.vue"),
-        props: (route) => route.query
+        props: (route) => ({ params: route.params.planId })
     },
     {
         path: '/setting',

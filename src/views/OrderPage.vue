@@ -2,13 +2,15 @@
 import Navbar from "@/components/Navbar.vue";
 import {ref} from "vue";
 import {useUserStore} from "@/store/userStore.js";
-
+import {useRoute} from "vue-router";
 const {token} = useUserStore();
 import axios from 'axios';
-
+const route = useRoute();
+const planId = ref(route.params.planId || '');
 
 // 假資料，需要 planName, planPrice, userName, subscriptionId
 import fakeJsonDataFromOrder from "../assets/orderpage.json"
+import axiosInstance from "@/views/api/api.js";
 
 const items = ref(fakeJsonDataFromOrder);
 
@@ -31,6 +33,41 @@ const buttonGoToPay = () =>{
 
 }
 
+const planDetail = {
+  "planId": planId.value,
+  "planName": "test",
+  "planPrice": 300,
+  "userName": "test",
+  "planDescription": "test"
+}
+
+console.log(planId.value);
+
+async function creatOrder() {
+  try {
+    const url = 'http://localhost:8080/ecpayCheckout';
+    const response = await axiosInstance.post(url, {
+      "planId": planDetail.planId,
+      "totalAmount": planDetail.planPrice,
+      "tradeDesc": planDetail.planDescription,
+      "itemName": planDetail.planName,
+      "returnURL": "http://localhost:8080/pay/ecpayReturn",
+    }, {
+      headers: {
+        'Authorization': token
+      }
+    });
+
+    console.log(response.data);
+    // formContainer.innerHTML = response.data;
+    //開啟新視窗並將返回值放入新分頁的HTML中
+    const newWindow = window.open('', '_blank');
+    newWindow.document.write(response.data);
+
+  } catch (error) {
+    console.error(error.response.data.msg);
+  }
+}
 //
 // const sendPostRequest = () => {
 //   // 在這裡定義POST請求的數據（如果需要）
@@ -54,6 +91,7 @@ const buttonGoToPay = () =>{
 //         console.error('POST請求失敗', error);
 //       });
 // };
+
 </script>
 
 <template>
@@ -129,7 +167,7 @@ const buttonGoToPay = () =>{
 
           <!--付款按鈕-->
           <div class="link-pay-button">
-            <v-btn block size="large" @click="buttonGoToPay(item.subscriptionId)">前往付款</v-btn>
+            <v-btn block="" size="large" @click="creatOrder()">前往付款</v-btn>
           </div>
 
         </div>

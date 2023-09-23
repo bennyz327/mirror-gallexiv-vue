@@ -54,8 +54,12 @@ const deleteItem = async (id) => {
 const hasAtLeastThreeItems = props.subscribeList.length >= 3;
 console.log("哈囉:" + props.subscribeList.length)
 
-const isDisabled = (hasAtLeastThreeItems) => {
-  if(!hasAtLeastThreeItems){
+const isDisabled = () => {
+  const hasAtLeastThreeItems = getData.value.length;
+  console.log("|||:", props);
+  console.log("哈囉:" + props.subscribeList.length)
+  console.log("hasAtLeastThreeItems :", hasAtLeastThreeItems);
+  if (hasAtLeastThreeItems < 3) {
     router.push('/subscribe/create');
   } else {
     alert("已經有三個訂閱方案了，請先刪除再嘗試新增方案");

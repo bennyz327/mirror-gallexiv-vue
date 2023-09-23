@@ -95,8 +95,11 @@ onMounted(() => {
                   </ul>
 
                   <!--TODO 訂閱按鈕(傳遞參數到不同頁面) -->
-                  <button :id="'subscribeEnterId' + index" type="button"
-                    class="w-100 btn btn-outline-secondary">訂閱</button>
+                  <router-link :to="'/subscribe/order/'+item.planId" >
+                    訂閱
+                  </router-link>
+<!--                  <button :id="'subscribeEnterId' + index" type="button"-->
+<!--                    class="w-100 btn btn-outline-secondary">訂閱</button>-->
                 </div>
               </div>
             </div>

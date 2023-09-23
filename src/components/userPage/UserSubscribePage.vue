@@ -13,7 +13,7 @@ const props = defineProps({
 const items = reactive(props.subscriptionList);
 
 const POSTURL = import.meta.env.VITE_API_Post
-const {token} = useUserStore();
+const {token, isLogin} = useUserStore();
 const postDataWithPlan = ref();
 const route = useRoute();
 const userId = ref(route.params.userId || '');
@@ -24,7 +24,7 @@ const loadAllPost = async () => {
       //別人的
       const postWithPlanResponse = await axios.get(`${POSTURL}`, {
         params: {
-          s: 4,
+          s: 3,
           userId: userId.value
         }
       })
@@ -107,7 +107,7 @@ const heartClass = computed(() => {
 
 <template>
 
-  <div v-if="postDataWithPlan">
+  <div v-if="postDataWithPlan && isLogin">
 
     <div class="galley-middle-block">
       <div class="picture-galley-block">
@@ -160,6 +160,9 @@ const heartClass = computed(() => {
     <!--      ></v-pagination>-->
     <!--  </div>-->
   </div>
+  <div v-else>
+    <div style="display:flex; justify-content: center"><h2>登入查看更多內容</h2></div>
+  </div>
 </template>
 
 <style scoped>
@@ -202,9 +205,7 @@ const heartClass = computed(() => {
 }
 
 .picture-text-div {
-//background-color: #F0EEFA; max-width: 264px; height: 32px; text-align: left; overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+//background-color: #F0EEFA; max-width: 264px; height: 32px; text-align: left; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
 //text-decoration: underline;
 }
 

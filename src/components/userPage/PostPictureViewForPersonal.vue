@@ -17,7 +17,7 @@ const loadAllPost = async () => {
       //別人的
       const postOtherNoPlanResponse = await axios.get(`${POSTURL}`,{
         params:{
-          s: 3,
+          s: 4,
           userId: userId.value
         }
       })
@@ -149,9 +149,9 @@ const heartClass = computed(() => {
                 </button>
               </div>
               <!--like數量-->
-              <div class="like-val-div">
-                1000{{}}
-              </div>
+<!--              <div class="like-val-div">-->
+<!--                1000{{}}-->
+<!--              </div>-->
             </div>
           </div>
         </div>
@@ -233,7 +233,7 @@ const heartClass = computed(() => {
 }
 
 .user-name-div {
-  width: 50%;
+  width: 65%;
   height: 32px;
   text-align: left;
   overflow: hidden;

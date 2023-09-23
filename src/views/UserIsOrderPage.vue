@@ -72,7 +72,7 @@ const cancelPlanFunction = async (planId) => {
               價格：{{ item.planPrice }}
             </div>
             <div class="plan-planExpired-text">
-              訂閱到期時間：{{ item.subscriptionStartTime }}
+              訂閱到期時間：{{ item.expireDate }}
             </div>
             <div class="plan-planExpired-text" v-if="item.isSubscribedPayed">
               訂閱狀態：訂閱中

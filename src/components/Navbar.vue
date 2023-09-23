@@ -110,15 +110,15 @@ const logout = () => {
           <li>
             <router-link to="/" class="navbar-brand" style="margin-right:24px;font-size: 30px;">Gallexiv</router-link>
           </li>
-          <li>
-            <router-link to="" class="nav-link px-2 link-secondary">創作者</router-link>
-          </li>
-          <li>
-            <router-link to="/post" class="nav-link px-2 link-secondary">單頁</router-link>
-          </li>
-          <li>
-            <router-link to="" class="nav-link px-2 link-secondary">會員相關</router-link>
-          </li>
+<!--          <li>-->
+<!--            <router-link to="" class="nav-link px-2 link-secondary">創作者</router-link>-->
+<!--          </li>-->
+<!--          <li>-->
+<!--            <router-link to="/post" class="nav-link px-2 link-secondary">單頁</router-link>-->
+<!--          </li>-->
+<!--          <li>-->
+<!--            <router-link to="" class="nav-link px-2 link-secondary">會員相關</router-link>-->
+<!--          </li>-->
         </ul>
 
         <!-- 搜尋表單 -->

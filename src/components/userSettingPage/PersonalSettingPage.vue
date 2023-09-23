@@ -133,7 +133,7 @@ const getUserData = async () => {
     personalNickName.value = getData.value.userName;
 
     // 驗證狀態替換
-    if (getData.value.email_verified = 1) {
+    if (getData.value.email_verified === 1) {
       isVerification.value = "已完成驗證";
       checkVerificationStatus.value = true;
     } else {
@@ -276,7 +276,9 @@ const submitEmailVerification = async () => {
     if (response.data.code === 200) {
       const dataRespone = response.data.code.value
       alert("驗證成功!")
+      window.location.reload();
       isVerification.value = ("已完成驗證");
+
     } else if (response.data.code === 400) {
       alert("驗證失敗!請重新輸入");
     }
@@ -284,6 +286,16 @@ const submitEmailVerification = async () => {
     console.error('提交驗證碼時出錯：', error);
   }
 };
+
+const isEditEmail = ref(true);
+const IWantEditMail = () => {
+  isEditEmail.value = false;
+  checkVerificationStatus.value = true;
+}
+const refreshStatus = () => {
+  isEditEmail.value = true;
+  checkVerificationStatus.value = false;
+}
 
 </script>
 
@@ -370,23 +382,25 @@ const submitEmailVerification = async () => {
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="staticBackdropLabel">email輸入欄位</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="refreshStatus"></button>
                     </div>
                     <div class="modal-body">
                       <!--介紹修改表格部分-->
                       <v-textarea
+                          :disabled="isEditEmail"
                           v-model="personalEmail"
                           :rules="personalEmailRules"
                           :counter="300"
                           :maxlength="300"
                           label="請輸入新的電子郵件"
                           no-resize
-                          placeholder
+                          placeholder=""
                           style="width:100%"/>
                     </div>
                     <div class="modal-footer">
-                      <v-btn type="button" data-bs-dismiss="modal">取消</v-btn>
-                      <v-btn type="button" @click="submitNewEmailForPersonalSetting" data-bs-dismiss="modal">確認修改
+                      <v-btn type="button" @click="IWantEditMail">修改電子郵件</v-btn>
+                      <v-btn type="button" :disabled="isEditEmail" data-bs-dismiss="modal" @click="refreshStatus">取消</v-btn>
+                      <v-btn type="button" :disabled="isEditEmail" @click="submitNewEmailForPersonalSetting" data-bs-dismiss="modal">確認修改
                       </v-btn>
                     </div>
                     <div class="modal-body">

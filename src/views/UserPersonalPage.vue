@@ -58,6 +58,9 @@ const fetchData = async () => {
       const response = await axios.get(`${URl}/${userId.value}`)
       userData.value = response.data.data;
 
+      //TODO HI
+      userData.value.followerNums = Math.round(Math.random() * 10) + Math.round(Math.random() * 100);
+
     } else {
       const response = await axios.get(`${URl}/profile`, {headers: {'Authorization': token}})
       userData.value = response.data.data;
@@ -150,19 +153,19 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
               <div class="user-hyperlink-div">
                 <div class="facebook-icon-div">
                   <a :href="facebooklink" target="_blank"><i class="fa-brands fa-facebook fa-2xl"
-                                                                      style="color: #2369e1;"></i></a>
+                                                             style="color: #2369e1;"></i></a>
                 </div>
                 <div class="twitter-icon-div">
                   <a :href="twitterlink" target="_blank"><i class="fa-brands fa-twitter fa-2xl"
-                                                                     style="color: #1a6eff;"></i></a>
+                                                            style="color: #1a6eff;"></i></a>
                 </div>
                 <div class="youtube-icon-div">
                   <a :href="youtubelink" target="_blank"><i class="fa-brands fa-youtube fa-2xl"
-                                                                     style="color: #fa0000;"></i></a>
+                                                            style="color: #fa0000;"></i></a>
                 </div>
                 <div class="other-icon-div">
                   <a :href="otherlink" target="_blank"><i class="fa-solid fa-link fa-2xl"
-                                                                     style="color: #d88d4f; font-size: 32px;"></i></a>
+                                                          style="color: #d88d4f; font-size: 32px;"></i></a>
                 </div>
               </div>
             </div>
@@ -335,12 +338,12 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
   padding-top: 12px;
 }
 
-.rounded-circle-div{
+.rounded-circle-div {
   width: 176px;
   height: 176px;
 }
 
-.rounded-circle{
+.rounded-circle {
   width: 160px;
   height: 160px;
 }
@@ -426,17 +429,20 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 }
 
 @media screen and (max-width: 1260px) {
-  .rounded-circle-div{
+  .rounded-circle-div {
     display: flex;
-padding-top: 24px;
+    padding-top: 24px;
   }
-  .rounded-circle{
+
+  .rounded-circle {
     width: 128px;
     height: 128px;
   }
+
   .user-icon-div {
     width: 30%;
   }
+
   .name-sub-count-link-div {
     width: 60%;
     margin-left: 8px;

@@ -3,8 +3,10 @@ import Navbar from "@/components/Navbar.vue";
 import {ref} from "vue";
 import {useUserStore} from "@/store/userStore.js";
 import {useRoute} from "vue-router";
+
 const {token} = useUserStore();
 import axios from 'axios';
+
 const route = useRoute();
 const planId = ref(route.params.planId || '');
 
@@ -12,7 +14,8 @@ const planId = ref(route.params.planId || '');
 import fakeJsonDataFromOrder from "../assets/orderpage.json"
 import axiosInstance from "@/views/api/api.js";
 
-const items = ref(fakeJsonDataFromOrder);
+// const items = ref(fakeJsonDataFromOrder);
+const items = ref([]);
 
 // 創建當前date
 const nowDate = new Date();
@@ -28,29 +31,45 @@ const month2 = nowDate.getMonth() + 1;
 const day2 = nowDate.getDate();
 const nextPayDate = `${year2}/${month2}/${day2}`;
 
-// 送請求到綠界(?)
-const buttonGoToPay = () =>{
+// 請求訂閱資訊
+async function getSubscriptionData() {
+  try {
+    const url = 'http://localhost:8080/plans/' + planId.value;
+    const response = await axiosInstance.get(url, {
+      headers: {
+        'Authorization': token
+      }
+    });
 
-}
+    console.log(response.data);
+    items.value.push(response.data.data)
+    console.log(items.value);
 
-const planDetail = {
-  "planId": planId.value,
-  "planName": "test",
-  "planPrice": 300,
-  "userName": "test",
-  "planDescription": "test"
+  } catch (error) {
+    console.error(error.response.data.msg);
+  }
 }
+getSubscriptionData();
+
+
+// const planDetail = {
+//   "planId": planId.value,
+//   "planName": ,
+//   "planPrice": 300,
+//   "userName": "test",
+//   "planDescription": "test"
+// }
 
 console.log(planId.value);
 
-async function creatOrder() {
+async function creatOrder(plan) {
   try {
     const url = 'http://localhost:8080/ecpayCheckout';
     const response = await axiosInstance.post(url, {
-      "planId": planDetail.planId,
-      "totalAmount": planDetail.planPrice,
-      "tradeDesc": planDetail.planDescription,
-      "itemName": planDetail.planName,
+      "planId": planId.value,
+      "totalAmount": plan.planPrice,
+      "tradeDesc": plan.planDescription,
+      "itemName": plan.planName,
       "returnURL": "http://localhost:8080/pay/ecpayReturn",
     }, {
       headers: {
@@ -68,29 +87,6 @@ async function creatOrder() {
     console.error(error.response.data.msg);
   }
 }
-//
-// const sendPostRequest = () => {
-//   // 在這裡定義POST請求的數據（如果需要）
-//   const postData = {
-//     // 您的POST數據
-//   };
-//
-//   // 執行POST請求
-//   // axios.post('http://localhost:8080/ecpayCheckout', postData, {headers: {'Authorization': token}})
-//   axios.post(`http://localhost:8080/ecpayCheckout`,{headers: {'Authorization': token}})
-//       .then(response => {
-//         // POST請求成功處理
-//         console.log('POST請求成功', response);
-//
-//         // 在這裡可以根據需要處理回應或將用戶導向新頁面
-//         // 例如，您可以使用路由將用戶導向新頁面
-//         // this.$router.push('/ecpayCheckout');
-//       })
-//       .catch(error => {
-//         // POST請求失敗處理
-//         console.error('POST請求失敗', error);
-//       });
-// };
 
 </script>
 
@@ -116,7 +112,7 @@ async function creatOrder() {
             <tbody>
             <tr>
               <td>訂閱作者</td>
-              <td>{{ item.userName }}</td>
+              <td>{{ item.ownerIdByUserId.userName }}</td>
 
             </tr>
             <tr>
@@ -167,7 +163,7 @@ async function creatOrder() {
 
           <!--付款按鈕-->
           <div class="link-pay-button">
-            <v-btn block="" size="large" @click="creatOrder()">前往付款</v-btn>
+            <v-btn block="" size="large" @click="creatOrder(items.pop())">前往付款</v-btn>
           </div>
 
         </div>

@@ -74,16 +74,23 @@ const cancelPlanFunction = async (planId) => {
             <div class="plan-planExpired-text">
               訂閱到期時間：{{ item.subscriptionStartTime }}
             </div>
+            <div class="plan-planExpired-text" v-if="item.isSubscribedPayed">
+              訂閱狀態：訂閱中
+            </div>
+            <div class="plan-planExpired-text" v-else>
+              訂閱狀態：尚未付款
+            </div>
           </div>
 
           <div class="function-button-div">
             <div class="function-button">
-              <router-link :to="{ name:'OrderPage', params: { planId: item.planId }}" style="text-decoration: none; color: black">
-              <v-btn>繼續訂閱</v-btn>
-            </router-link>
+              <router-link :to="{ name:'OrderPage', params: { planId: item.planId }}" aria-disabled=""
+                           style="text-decoration: none; color: black">
+                <v-btn disabled="">繼續訂閱</v-btn>
+              </router-link>
             </div>
-            <div class="function-button" @click="cancelPlanFunction[item.planId]">
-              <v-btn>取消訂閱</v-btn>
+            <div class="function-button" @click="cancelPlanFunction[item.planId]" disabled>
+              <v-btn disabled="">取消訂閱</v-btn>
             </div>
           </div>
         </div>
@@ -138,7 +145,7 @@ const cancelPlanFunction = async (planId) => {
   text-overflow: ellipsis;
 }
 
-.plan-planExpired-text{
+.plan-planExpired-text {
   background-color: #ccc;
   max-width: 600px;
   overflow: hidden;
@@ -146,7 +153,7 @@ const cancelPlanFunction = async (planId) => {
   text-overflow: ellipsis;
 }
 
-.function-button-div{
+.function-button-div {
 
 }
 

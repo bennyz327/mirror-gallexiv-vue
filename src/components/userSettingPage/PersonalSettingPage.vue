@@ -117,7 +117,11 @@ watch(formattedValue, (newValue) => {
     timestamp.value = null;
   }
 });
+
 const avatar = ref();
+const isVerification = ref("尚未驗證");
+const checkVerificationStatus = ref();
+
 const getUserData = async () => {
   try {
     const response = await axios.get(`${URL}/profile`, {
@@ -127,6 +131,16 @@ const getUserData = async () => {
     email.value.value = getData.value.userEmail;
     personalEmail.value = getData.value.userEmail
     personalNickName.value = getData.value.userName;
+
+    // 驗證狀態替換
+    if (getData.value.email_verified = 1) {
+      isVerification.value = "已完成驗證";
+      checkVerificationStatus.value = true;
+    } else {
+      isVerification.value = "尚未驗證";
+      checkVerificationStatus.value = false;
+    }
+
     let hi = getData.value.intro;
     hi = hi.replaceAll('<br/>', '\n');
     personalDescription.value = hi;
@@ -194,13 +208,13 @@ const updateData = async () => {
 
 // email驗證功能
 const emailVerification = ref('');
-const isVerification = ref('尚未驗證');
 const isWaiting = ref(false);
 const countDown = ref(30);
 const verificationStatus = ref("取得驗證碼");
 
 // 倒數計時功能
 const startCountdown = () => {
+  countDown.value = 30;
   const interval = setInterval(() => {
     countDown.value--;
     verificationStatus.value = `在 ${countDown.value} 秒後可重新發送`;
@@ -225,7 +239,7 @@ const getEmailVerificationAgain = async () => {
     console.log(emailData)
     console.log("發送請求前")
     // 發送 POST 請求到後台 API
-    const response = await axios.post(`${URLtoAuth}/startVerifyMail`, {
+    const response = await axios.post(`${URLtoAuth}/startVerifyMail`, null, {
       headers: {'Authorization': token}
     });
     console.log(response)
@@ -334,8 +348,10 @@ const submitEmailVerification = async () => {
         <div class="edit-personal-data-div">
 
           <form @submit.prevent="submit" style="width: 80%">
-
-            <h6>電子郵件</h6>
+            <div class="email-status-div">
+              <h6>電子郵件</h6>
+              <h6>驗證狀態：{{ isVerification }}</h6>
+            </div>
             <div class="email-text-div">
               <v-text-field
                   v-model="email.value.value"
@@ -381,10 +397,14 @@ const submitEmailVerification = async () => {
                         <v-text-field
                             v-model="emailVerification"
                             label="輸入驗證碼"
-                            bg-color="white"></v-text-field>
+                            bg-color="white"
+                            :disabled=checkVerificationStatus
+                        ></v-text-field>
                         <div class="modal-footer">
-                          <v-btn @click="getEmailVerificationAgain">{{ verificationStatus }}</v-btn>
-                          <v-btn @click="submitEmailVerification">送出</v-btn>
+                          <v-btn @click="getEmailVerificationAgain" :disabled=checkVerificationStatus>
+                            {{ verificationStatus }}
+                          </v-btn>
+                          <v-btn @click="submitEmailVerification" :disabled=checkVerificationStatus>送出</v-btn>
                         </div>
                       </div>
                     </div>
@@ -589,13 +609,17 @@ const submitEmailVerification = async () => {
   background-color: #f47c20;
 }
 
-
 .edit-personal-data-div {
   width: 100%;
   display: flex;
   justify-content: center;
   margin: 24px auto;
   //border: 2px solid red;
+}
+
+.email-status-div{
+  display: flex;
+  justify-content: space-between;
 }
 
 .email-text-div {

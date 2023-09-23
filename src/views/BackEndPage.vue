@@ -112,12 +112,46 @@ function testRole() {
 }
 
 
-// async function testPay() {
+async function testPay() {
+  try {
+    const formContainer = document.getElementsByClassName('.pay'); // 请替换 'form-container' 为你的 div 的 ID
+    const url = 'http://localhost:8080/ecpayCheckout';
+
+    const response = await axiosInstance.post(url, {
+      "tradeDate": "2023/03/12 15:30:23",
+      "totalAmount": 30001,
+      "tradeDesc": "testDesc",
+      "itemName": "iPad",
+      "returnURL": "http://localhost:8080/pay/ecpayReturn",
+      // "clientBackURL": "localhost"
+      // "clientBackURL": "http://localhost:3100/backend"
+    }, {
+      headers: {
+        'Authorization': token
+      }
+    });
+
+    console.log(response.data);
+    // formContainer.innerHTML = response.data;
+
+    //開啟新視窗並將返回值放入新分頁的HTML中
+    const newWindow = window.open('', '_blank');
+    newWindow.document.write(response.data);
+
+    // const newWindow = window.open('', '_blank','width=600,height=600');
+    // newWindow.document.write(response.data);
+
+    const form = document.getElementById('allPayAPIForm'); // 请替换 'allPayAPIForm' 为你的表单的 ID
+    form.submit();
+  } catch (error) {
+    console.error(error.response.data.msg);
+  }
+}
+
+// const formContainer = ref(null);
+// const fetchFormData = async () => {
 //   try {
-//     const formContainer = document.getElementsByClassName('.pay'); // 请替换 'form-container' 为你的 div 的 ID
-//     const url = 'http://localhost:8080/ecpayCheckout';
-//
-//     const response = await axiosInstance.post(url, {
+//     const response = await axiosInstance.post('http://localhost:8080/ecpayCheckout', {
 //       "tradeDate": "2023/03/12 15:30:23",
 //       "totalAmount": 30001,
 //       "tradeDesc": "testDesc",
@@ -129,54 +163,46 @@ function testRole() {
 //         'Authorization': token
 //       }
 //     });
-//
 //     console.log(response.data);
-//     formContainer.innerHTML = response.data;
-//
-//     const form = document.getElementById('allPayAPIForm'); // 请替换 'allPayAPIForm' 为你的表单的 ID
-//     form.submit();
+//     // 将后端返回的 HTML 内容添加到表单容器中
+//     formContainer.value = response.data;
+//     const formDiv = document.getElementsByClassName('.pay');
+//     formDiv.innerHTML = formContainer.value;
 //   } catch (error) {
 //     console.error(error.response.data.msg);
 //   }
-// }
+// };
+// const submitForm = () => {
+//   // 找到表单元素并提交
+//   const form = formContainer.value.querySelector('#allPayAPIForm');
+//   if (form) {
+//     form.submit();
+//   } else {
+//     console.error("找不到表单元素。");
+//   }
+// };
+// onMounted(() => {
+//   // 在组件挂载后获取表单数据
+//   fetchFormData();
+// });
 
-const formContainer = ref(null);
-const fetchFormData = async () => {
+async function queryPayResult() {
   try {
-    const response = await axiosInstance.post('http://localhost:8080/ecpayCheckout', {
-      "tradeDate": "2023/03/12 15:30:23",
-      "totalAmount": 30001,
-      "tradeDesc": "testDesc",
-      "itemName": "iPad",
-      "returnURL": "localhost",
-      "clientBackURL": "localhost"
-    }, {
-      headers: {
-        'Authorization': token
-      }
-    });
-    console.log(response.data);
-    // 将后端返回的 HTML 内容添加到表单容器中
-    formContainer.value = response.data;
-    const formDiv = document.getElementsByClassName('.pay');
-    formDiv.innerHTML = formContainer.value;
+    const res = await axiosInstance.post('http://localhost:8080/pay/queryTradeNo',
+        {
+          "tradeNo": "b28aaedfc67b485eab2c",
+        },
+        {
+          headers: {
+            'Authorization': token
+          }
+        });
+    console.log(res.data);
   } catch (error) {
     console.error(error.response.data.msg);
   }
-};
-const submitForm = () => {
-  // 找到表单元素并提交
-  const form = formContainer.value.querySelector('#allPayAPIForm');
-  if (form) {
-    form.submit();
-  } else {
-    console.error("找不到表单元素。");
-  }
-};
-onMounted(() => {
-  // 在组件挂载后获取表单数据
-  fetchFormData();
-});
+}
+
 
 </script>
 
@@ -192,11 +218,8 @@ onMounted(() => {
 
 
     <div>
-      <v-btn @click="fetchFormData">測試綠界</v-btn>
-      <!-- 表单容器 -->
-      <div id="formContainer"></div>
-      <!-- 触发提交按钮 -->
-      <button @click="submitForm">提交表单</button>
+      <v-btn @click="testPay">測試綠界</v-btn>
+      <v-btn @click="queryPayResult">查詢結果</v-btn>
     </div>
 
     <div>{{ token }}</div>

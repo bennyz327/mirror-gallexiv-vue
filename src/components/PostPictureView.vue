@@ -91,14 +91,16 @@ const heartClass = computed(() => {
 
     <br>
 
-    <div class="text-center">
-      <v-pagination
-          v-model="page"
-          :length="10"
-          prev-icon="mdi-menu-left"
-          next-icon="mdi-menu-right"
-      ></v-pagination>
-    </div>
+<!-- TODO 自動加載更多內容   -->
+<!--    -->
+<!--    <div class="text-center">-->
+<!--      <v-pagination-->
+<!--          v-model="page"-->
+<!--          :length="10"-->
+<!--          prev-icon="mdi-menu-left"-->
+<!--          next-icon="mdi-menu-right"-->
+<!--      ></v-pagination>-->
+<!--    </div>-->
   </div>
 </template>
 

@@ -82,6 +82,16 @@ const load = async (src) => {
 
   <div class="container">
 
+<!--    <div v-if="isLogin">-->
+<!--      已登入-->
+<!--    </div>-->
+<!--    <div>-->
+<!--      {{ decodeName }}-->
+<!--    </div>-->
+<!--    <div>-->
+<!--      {{ token }}-->
+<!--    </div>-->
+
     <!-- 熱門Tag的title-->
 
     <div class="text-center">

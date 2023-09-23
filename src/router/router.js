@@ -83,12 +83,12 @@ const routes = [
         component: () => import("../views/PlanEditPage.vue"),
         props: (route) => ({ query: route.query.planId })
     },
-    // {
-    //     path: '/subscribe/order/:planId',
-    //     name: 'EditPlanPage',
-    //     component: () => import("../views/PlanEditPage.vue"),
-    //     props: (route) => route.query
-    // },
+    {
+        path: '/subscribe/order/:planId',
+        name: 'OrderPage',
+        component: () => import("../views/OrderPage.vue"),
+        props: (route) => route.query
+    },
     {
         path: '/setting',
         name: 'SettingPage',

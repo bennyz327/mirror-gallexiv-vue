@@ -121,7 +121,7 @@ const heartClass = computed(() => {
           <div class="picture-item-text-button-div">
 
             <div class="picture-text-div">
-              <p>{{ item.postName }}</p>
+              <p>{{ item.postTitle }}</p>
             </div>
 
             <div class="picture-item-user-div">

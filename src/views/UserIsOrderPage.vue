@@ -116,8 +116,7 @@ const cancelPlanFunction = async (planId) => {
 
 .subscribe-item-div {
   display: flex;
-
-  height: 160px;
+  height: 240px;
   border: 1px solid #ccc;
   border-radius: 16px;
   margin: 16px 0;

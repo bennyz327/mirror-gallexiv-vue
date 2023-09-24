@@ -98,7 +98,7 @@ const routes = [
         path: '/user/collect',
         name: 'UserCollectAndFollowPage',
         component: () => import("../views/UserCollectPage.vue"),
-        props: (route) => route.query
+        props: (route) => ({ query: route.query.planId })
     },
     {
         path: '/user/order',

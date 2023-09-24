@@ -1,12 +1,17 @@
 <script setup>
 
-import {ref, watch} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import AvatarCropper from "vue-avatar-cropper";
 import axios from "axios";
 import {useUserStore} from "@/store/userStore.js";
 import {NDatePicker} from "naive-ui";
 import {useField} from "vee-validate";
 import router from "@/router/router.js";
+
+const {token} = useUserStore();
+const getData = ref([]);
+const URL = import.meta.env.VITE_API_USER
+const URLtoAuth = import.meta.env.VITE_API_AUTH
 
 const maxFileSize = 2;
 const showCropper = ref(true);
@@ -17,11 +22,7 @@ const user = ref({
   avatar: "",
 });
 
-const {token} = useUserStore();
-const getData = ref([]);
-const URL = import.meta.env.VITE_API_USER
-const URLtoAuth = import.meta.env.VITE_API_AUTH
-
+// 上傳圖片功能
 const handleUploaded = (data) => {
   const base64str = data.url.substring(data.url.indexOf(",") + 1);
   const decoded = atob(base64str);
@@ -47,17 +48,14 @@ const onChanged = (event) => {
   console.log(event.file.size);
 };
 
+// 移除圖片功能
 const removePhoto = () => {
   user.value.avatar = "";
   message.value = "";
 };
 
-const email = useField('email')
-const select = useField('select')
-
 // 暱稱編輯部分
 const personalNickName = ref('');
-
 const personalNickNameRules = [
   (value) => {
     if (value && value.length <= 20 && value.trim().length > 0) {
@@ -86,6 +84,8 @@ const personalDescriptionRules = [
 
 // email編輯功能
 // email的空值
+const email = useField('email')
+const select = useField('select')
 const personalEmail = ref('');
 
 const emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
@@ -122,6 +122,7 @@ const avatar = ref();
 const isVerification = ref("尚未驗證");
 const checkVerificationStatus = ref();
 
+// 查詢所有資料
 const getUserData = async () => {
   try {
     const response = await axios.get(`${URL}/profile`, {
@@ -141,38 +142,48 @@ const getUserData = async () => {
       checkVerificationStatus.value = false;
     }
 
+    // 替換換行文字
     let hi = getData.value.intro;
     hi = hi.replaceAll('<br/>', '\n');
     personalDescription.value = hi;
+
+    // 頭像取入
     user.value.avatar = getData.value.avatar;
-    console.log(avatar.value)
+    console.log("頭像" + avatar.value)
+
     gender.value = getData.value.gender;
-    // 输入的日期时间字符串
+
+    // 取得生日
     var dateTimeString = getData.value.birthday;
 
-// 创建一个日期对象
+    // 創建日期對象
     var dateTime = new Date(dateTimeString);
 
-// 提取日期部分
+    // 提取日期部分
     var year = dateTime.getFullYear();
     var month = dateTime.getMonth() + 1; // 月份从0开始，需要加1
     var day = dateTime.getDate();
 
-// 将月份和日期格式化为字符串，确保单数的月份和日期前面有零
+    // 確保月日的二位數0值並轉換成string
     var formattedMonth = month < 10 ? "0" + month : month.toString();
     var formattedDay = day < 10 ? "0" + day : day.toString();
 
-// 构建最终的日期字符串
+    // 最後完成日期值
     var formattedDateString = year + "-" + formattedMonth + "-" + formattedDay;
 
     console.log(formattedDateString);
     formattedValue.value = formattedDateString;
 
   } catch (error) {
-    console.error('提交表单时出错：', error);
+    console.error('取得內容時錯誤：', error);
   }
 }
-getUserData();
+
+onMounted(() => {
+  getUserData();
+})
+
+//修改文字部分資料
 const updateData = async () => {
   const c = confirm('你確定要修改嗎?')
   try {
@@ -251,7 +262,6 @@ const getEmailVerificationAgain = async () => {
   } catch (error) {
     console.error('提交 email 時出錯：', error);
     isWaiting.value = false; // 在錯誤情況下也要確保解除等待狀態
-
   }
   startCountdown();
 };
@@ -309,11 +319,11 @@ const refreshStatus = () => {
       <div class="user-icon-setting-div">
         <div class="wrapper">
           <div>
-            <div class="avatar-div" v-if="true">
-              <img :src="user.avatar" class="avatar" alt=""/>
+            <div class="avatar-div" v-if="user.avatar">
+              <img class="avatar" :src="user.avatar" alt=""/>
             </div>
-            <div class="avatar-div" v-else>
-              <img src="../../assets/Picture/presetUserIcon.png" class="avatar" alt=""/>
+            <div class="avatar-div" v-if="!user.avatar">
+              <img src="../../assets/Picture/userIcon.png" class="avatar" alt=""/>
             </div>
 
             <div class="upload-button-div">

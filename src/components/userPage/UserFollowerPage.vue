@@ -67,7 +67,8 @@ onMounted(() => {
           <!-- 留言者頭像區塊 -->
           <div class="follower-avatar-icon-div">
             <div class="rounded-circle" style="display:flex">
-              <img :src="item.userIcon" alt="User" style="border-radius: 50%; width:72px; height: 72px; "/>
+              <img v-if="item.userIcon" :src="item.userIcon" alt="User" style="border-radius: 50%; width:72px; height: 72px; "/>
+              <img v-else src="../../assets/Picture/userIcon.png" alt="User" style="border-radius: 50%; width:72px; height: 72px; "/>
             </div>
           </div>
 

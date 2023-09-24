@@ -55,8 +55,12 @@ const cancelPlanFunction = async (planId) => {
     <div class="user-subscribe-item-div-center">
       <div class="user-subscribe-item-div">
         <div class="subscribe-item-div" v-for="(item, index) in getData" :key="index">
-          <div class="plan-picture-div"><img :src="item.planPicture" class="rounded img-fluid"
-                                             style="max-width: 180px; max-height: 120px;" alt="index"></div>
+          <div class="plan-picture-div">
+            <img v-if="item.planPicture" :src="item.planPicture" class="rounded img-fluid"
+                                             style="max-width: 180px; max-height: 120px;" alt="index">
+            <img v-else src="../assets/Picture/presetPlanIcon.jpg" class="rounded img-fluid"
+                 style="max-width: 180px; max-height: 120px;" alt="index">
+          </div>
           <div class="plan-detail-div row">
 
             <div class="plan-userName-text">

@@ -55,8 +55,10 @@ onMounted(() => {
                 <!-- 圖片 -->
                 <div class="card-header py-3 custom-header">
                   <div class="text-center">
-                    <img :src="item.planPicture" class="rounded img-fluid" style="max-width: 180px; max-height: 120px;"
+                    <img v-if="item.planPicture" :src="item.planPicture" class="rounded img-fluid" style="max-width: 180px; max-height: 120px;"
                       alt="index">
+                    <img v-else src="../../assets/Picture/presetPlanIcon.jpg" class="rounded img-fluid" style="max-width: 180px; max-height: 120px;"
+                         alt="index">
                   </div>
                 </div>
 
@@ -96,7 +98,9 @@ onMounted(() => {
 
                   <!--TODO 訂閱按鈕(傳遞參數到不同頁面) -->
                   <router-link :to="'/subscribe/order/'+item.planId" >
+                    <button class="btn btn btn-outline-secondary" style="width: 100%">
                     訂閱
+                    </button>
                   </router-link>
 <!--                  <button :id="'subscribeEnterId' + index" type="button"-->
 <!--                    class="w-100 btn btn-outline-secondary">訂閱</button>-->

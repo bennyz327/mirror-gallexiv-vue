@@ -6,6 +6,7 @@ import {useRoute} from "vue-router";
 
 const {token} = useUserStore();
 import axios from 'axios';
+const PLANURL = import.meta.env.VITE_API_PLAN
 
 const route = useRoute();
 const planId = ref(route.params.planId || '');
@@ -88,6 +89,29 @@ async function creatOrder(plan) {
   }
 }
 
+//
+// const sendPostRequest = () => {
+//   // 在這裡定義POST請求的數據（如果需要）
+//   const postData = {
+//     // 您的POST數據
+//   };
+//
+//   // 執行POST請求
+//   // axios.post('http://localhost:8080/ecpayCheckout', postData, {headers: {'Authorization': token}})
+//   axios.post(`http://localhost:8080/ecpayCheckout`,{headers: {'Authorization': token}})
+//       .then(response => {
+//         // POST請求成功處理
+//         console.log('POST請求成功', response);
+//
+//         // 在這裡可以根據需要處理回應或將用戶導向新頁面
+//         // 例如，您可以使用路由將用戶導向新頁面
+//         // this.$router.push('/ecpayCheckout');
+//       })
+//       .catch(error => {
+//         // POST請求失敗處理
+//         console.error('POST請求失敗', error);
+//       });
+// };
 </script>
 
 <template>

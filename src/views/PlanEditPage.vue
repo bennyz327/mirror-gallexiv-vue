@@ -173,7 +173,7 @@ const submitForm = async () => {
               <div class="text-center">
                 <img v-if="user.avatar" :src="user.avatar" class="rounded img-fluid"
                   style="max-width: 180px; max-height: 120px;" alt="index">
-                <img v-else :src="previewPicture" class="rounded img-fluid" alt=""
+                <img v-else src="../assets/Picture/presetPlanIcon.jpg" class="rounded img-fluid" alt=""
                   style="max-width: 180px; max-height: 120px;" />
               </div>
             </div>

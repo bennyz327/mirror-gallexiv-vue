@@ -98,7 +98,7 @@ const routes = [
         path: '/user/collect',
         name: 'UserCollectAndFollowPage',
         component: () => import("../views/UserCollectPage.vue"),
-        props: (route) => route.query
+        props: (route) => ({ query: route.query.planId })
     },
     {
         path: '/user/order',
@@ -199,8 +199,8 @@ router.beforeEach((to, from, next) => {
         if (to.path.startsWith('/setting')){
             router.push('/')
         }
-        if(to.path.match('/user')){
-
+        if(to.path.match('/user$')){
+            router.push('/')
         }
     }
 

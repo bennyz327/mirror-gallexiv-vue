@@ -113,7 +113,8 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 
         <!--個人背景圖片-->
         <div class="background-div">
-          <img :src="userData.background_image" class="background-picture-src" alt="">
+          <img v-if="userData.background_image" :src="userData.background_image" class="background-picture-src" alt="">
+          <img v-else src="../assets/Picture/backgroundImage.jpg" class="background-picture-src" alt="">
         </div>
 
         <!--個人介紹大區塊(切割頭像/名稱/帳號/連結/跟隨按鈕)-->
@@ -124,7 +125,9 @@ const jsonDataImportFollowerPage = ref(followerJsonFile);
 
             <div class="user-icon-src-div">
               <div class="rounded-circle-div" style="display:flex">
-                <img :src="userData.avatar" alt="User" class="rounded-circle"
+                <img v-if="userData.avatar" :src="userData.avatar" alt="User" class="rounded-circle"
+                     style="object-fit: cover;"/>
+                <img v-else src="../assets/Picture/userIcon.png" alt="User" class="rounded-circle"
                      style="object-fit: cover;"/>
               </div>
             </div>

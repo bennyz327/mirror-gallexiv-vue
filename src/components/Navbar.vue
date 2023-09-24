@@ -100,39 +100,20 @@ const logout = () => {
       </div>
 
       <!--  標題列  -->
-      <div class="d-flex flex-wrap align-items-center justify-content-center">
-        <!--              <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">-->
-        <!--                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">-->
-        <!--                  <use xlink:href="#bootstrap"></use>-->
-        <!--                </svg>-->
-        <!--              </a>-->
-        <ul class="nav col-12 col-lg-auto justify-content-center mb-md-0">
-          <li>
-            <router-link to="/" class="navbar-brand" style="margin-right:24px;font-size: 30px;">Gallexiv</router-link>
-          </li>
-<!--          <li>-->
-<!--            <router-link to="" class="nav-link px-2 link-secondary">創作者</router-link>-->
-<!--          </li>-->
-<!--          <li>-->
-<!--            <router-link to="/post" class="nav-link px-2 link-secondary">單頁</router-link>-->
-<!--          </li>-->
-<!--          <li>-->
-<!--            <router-link to="" class="nav-link px-2 link-secondary">會員相關</router-link>-->
-<!--          </li>-->
-        </ul>
+      <div class="d-flex align-items-center justify-content-center">
+        <router-link to="/" class="navbar-brand" style="margin-right:24px;font-size: 30px;">Gallexiv</router-link>
 
+        <div style="width: 30%;"></div>
         <!-- 搜尋表單 -->
+        <div class="d-flex align-content-center">
 
-        <div class="d-flex align-content-center flex-wrap">
-
-          <!--          <form class="d-flex">-->
-
-          <div class="d-flex flex-wrap align-items-center justify-content-center search-bar">
-            <input type="search" class="form-control me-1" placeholder="Search" aria-label="Search" v-model="inputString"
-              @keydown.enter="navigateOnEnter">
+          <div class="d-flex align-items-center search-bar">
+            <input type="search" class="form-control me-1" placeholder="Search" aria-label="Search"
+                   v-model="inputString"
+                   @keydown.enter="navigateOnEnter">
           </div>
 
-          <div class="d-flex flex-wrap align-items-center justify-content-center">
+          <div class="d-flex align-items-center">
             <select v-model="selectedOption" class="form-select form-select" aria-label=".form-select-lg example">
               <option value="作品名稱">作品名稱</option>
               <option value="創作者名稱">創作者名稱</option>
@@ -140,7 +121,7 @@ const logout = () => {
             </select>
           </div>
 
-          <div class="d-flex flex-wrap align-items-center justify-content-center">
+          <div v-if="isLogin" class="d-flex align-items-center">
             <router-link to="/post/create">
               <button type="button" class="btn btn-outline-info me-2">發文</button>
             </router-link>
@@ -148,7 +129,7 @@ const logout = () => {
 
 
           <!-- 登入按鈕 -->
-          <div class="d-flex flex-wrap align-items-center justify-content-center" style="margin: 8px">
+          <div class="align-items-center" style="margin: 8px">
 
             <!-- 登入前狀態 -->
             <router-link to="/login" class="dropdown-item">
@@ -160,9 +141,11 @@ const logout = () => {
 
               <!-- 觸發下拉 -->
               <button class="btn btn-link dropdown-toggle rounded-circle" type="button" id="dropdownMenuButton"
-                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img v-if="loginUserData && loginUserData.avatar" :src="loginUserData.avatar" alt="User" width="50"
-                  height="50" class="rounded-circle" style="object-fit:cover;" />
+                     height="50" class="rounded-circle" style="object-fit:cover;"/>
+                <img v-else alt="User" width="50" src="../assets/Picture/userIcon.png"
+                     height="50" class="rounded-circle" style="object-fit:cover;"/>
               </button>
 
               <!-- 下拉區塊 -->
@@ -170,7 +153,7 @@ const logout = () => {
 
                 <!-- 下拉選單 -->
                 <router-link to="/user" class="dropdown-item" v-if="isLogin">個人資料</router-link>
-                <router-link to="/user/collect" class="dropdown-item" v-if="isLogin">收藏</router-link>
+<!--                <router-link to="/user/collect" class="dropdown-item" v-if="isLogin">收藏</router-link>-->
                 <router-link to="/user/order" class="dropdown-item" v-if="isLogin">訂閱中項目</router-link>
                 <!--                <router-link to="/login" class="dropdown-item" v-if="!isLogin">登入</router-link>-->
                 <router-link to="/backend" class="dropdown-item">後台管理</router-link>

@@ -53,8 +53,6 @@ const deleteItem = async (id) => {
   getPlanData();
 };
 
-
-
 const isDisabled = () => {
   const hasAtLeastThreeItems = getData.value.length;
   console.log("|||:", props);

@@ -199,8 +199,8 @@ router.beforeEach((to, from, next) => {
         if (to.path.startsWith('/setting')){
             router.push('/')
         }
-        if(to.path.match('/user')){
-
+        if(to.path.match('/user$')){
+            router.push('/')
         }
     }
 

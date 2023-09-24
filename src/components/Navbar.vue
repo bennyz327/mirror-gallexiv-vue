@@ -121,7 +121,7 @@ const logout = () => {
             </select>
           </div>
 
-          <div class="d-flex align-items-center">
+          <div v-if="isLogin" class="d-flex align-items-center">
             <router-link to="/post/create">
               <button type="button" class="btn btn-outline-info me-2">發文</button>
             </router-link>
@@ -153,7 +153,7 @@ const logout = () => {
 
                 <!-- 下拉選單 -->
                 <router-link to="/user" class="dropdown-item" v-if="isLogin">個人資料</router-link>
-                <router-link to="/user/collect" class="dropdown-item" v-if="isLogin">收藏</router-link>
+<!--                <router-link to="/user/collect" class="dropdown-item" v-if="isLogin">收藏</router-link>-->
                 <router-link to="/user/order" class="dropdown-item" v-if="isLogin">訂閱中項目</router-link>
                 <!--                <router-link to="/login" class="dropdown-item" v-if="!isLogin">登入</router-link>-->
                 <router-link to="/backend" class="dropdown-item">後台管理</router-link>

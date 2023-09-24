@@ -214,15 +214,15 @@ async function queryPayResult() {
     <div class="title-text">
       <h3>貼文管理</h3>
     </div>
-    <v-btn @click="testRole">測試不合法 token 跳轉401</v-btn>
+<!--    <v-btn @click="testRole">測試不合法 token 跳轉401</v-btn>-->
 
 
-    <div>
-      <v-btn @click="testPay">測試綠界</v-btn>
-      <v-btn @click="queryPayResult">查詢結果</v-btn>
-    </div>
+<!--    <div>-->
+<!--      <v-btn @click="testPay">測試綠界</v-btn>-->
+<!--      <v-btn @click="queryPayResult">查詢結果</v-btn>-->
+<!--    </div>-->
 
-    <div>{{ token }}</div>
+<!--    <div>{{ token }}</div>-->
 
     <table class="table">
       <thead>

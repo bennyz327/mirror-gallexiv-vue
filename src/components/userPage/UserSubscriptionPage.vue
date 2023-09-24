@@ -49,7 +49,6 @@ onMounted(() => {
             <div v-for="(item, index) in planData" :key="index">
               <div class="col">
                 <div class="card mb-4 rounded-3 shadow-sm">
-
                 <!-- 圖片 -->
                 <div class="card-header py-3 custom-header">
                   <div class="text-center">
@@ -59,57 +58,56 @@ onMounted(() => {
                          alt="index">
                   </div>
                 </div>
-
                   <!-- 內文 -->
-                  <div class="card-body">
+                <div class="card-body">
 
-                    <!-- 方案名稱 -->
-                    <h4 class="my-4 fw-normal">{{ item.planName }}</h4>
+                  <!-- 方案名稱 -->
+                  <h4 class="my-4 fw-normal">{{ item.planName }}</h4>
 
-                    <!-- 方案價格 -->
-                    <h3 class="card-title pricing-card-title">NT${{ item.planPrice }}<small
-                        class="text-muted fw-light">/mo</small>
-                    </h3>
+                  <!-- 方案價格 -->
+                  <h3 class="card-title pricing-card-title">NT${{ item.planPrice }}
+                    <small class="text-muted fw-light">/mo</small>
+                  </h3>
 
-                    <!-- 方案內容按鈕 -->
-                    <ul class="list-unstyled mt-3 mb-4">
-                      <div class="accordion accordion-flush" id="accordionFlushExample">
-                        <div class="accordion-item">
-                          <h3 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    :data-bs-target="'#collapse' + index" aria-expanded="false"
-                                    :aria-controls="'collapse' + index">
-                              <h5>方案內容</h5>
-                            </button>
-                          </h3>
+                  <!-- 方案內容按鈕 -->
+                  <ul class="list-unstyled mt-3 mb-4">
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                      <div class="accordion-item">
+                        <h3 class="accordion-header">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                  :data-bs-target="'#collapse' + index" aria-expanded="false"
+                                  :aria-controls="'collapse' + index">
+                            <h5>方案內容</h5>
+                          </button>
+                        </h3>
 
-                          <!-- 方案敘述 -->
-                          <div :id="'collapse' + index" class="accordion-collapse collapse"
-                               :aria-labelledby="'heading' + index" :data-bs-parent="'#accordion' + index">
-                            <div class="accordion-body">
-                              {{ item.planDescription }}
-                            </div>
+                        <!-- 方案敘述 -->
+                        <div :id="'collapse' + index" class="accordion-collapse collapse"
+                             :aria-labelledby="'heading' + index" :data-bs-parent="'#accordion' + index">
+                          <div class="accordion-body">
+                            {{ item.planDescription }}
                           </div>
                         </div>
                       </div>
-                    </ul>
+                    </div>
+                  </ul>
 
-                  <!--TODO 訂閱按鈕(傳遞參數到不同頁面) -->
-                  <router-link :to="'/subscribe/order/'+item.planId" >
-                    <button class="btn btn btn-outline-secondary" style="width: 100%">
-                    訂閱
-                    </button>
-                  </router-link>
+                <!--TODO 訂閱按鈕(傳遞參數到不同頁面) -->
+                <router-link :to="'/subscribe/order/'+item.planId" >
+                  <button class="btn btn btn-outline-secondary" style="width: 100%">
+                  訂閱
+                  </button>
+                </router-link>
 <!--                  <button :id="'subscribeEnterId' + index" type="button"-->
 <!--                    class="w-100 btn btn-outline-secondary">訂閱</button>-->
                 </div>
               </div>
             </div>
+            </div>
           </div>
         </div>
         <div v-else>
           <div style="display:flex; justify-content: center"><h2>登入查看更多內容</h2></div>
-        </div>
         </div>
       </main>
     </div>

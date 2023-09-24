@@ -39,13 +39,14 @@ onUpdated(() => {
 })
 
 
-const maxFileSize = 4;
+const maxFileSize = 6;
 const showCropper = ref(true);
 const message = ref("");
 
+//  背景圖片
 const user = ref({
   id: 1,
-  backgroundPicture: "",
+  avatar: "",
 });
 
 const handleUploaded = (data) => {
@@ -55,7 +56,7 @@ const handleUploaded = (data) => {
 
   if (decodedFileSize > maxFileSize) {
     message.value =
-        "這張圖片太大了(超過4MB)請嘗試將它縮小後再上傳";
+        "這張圖片太大了(超過6MB)請嘗試將它縮小後再上傳";
 
     setTimeout(() => {
       message.value = "";
@@ -79,6 +80,9 @@ const removePhoto = () => {
   message.value = "";
 };
 
+const getData = ref([]);
+const URLBack = import.meta.env.VITE_API_USER
+
 const updateLink = () => {
   const confirmRs = confirm('確定要更新資料嗎?');
   if (confirmRs) {
@@ -86,6 +90,7 @@ const updateLink = () => {
     console.log(youtubelink.value.value)
     console.log(twitterlink.value.value)
     console.log(otherlink.value.value)
+    console.log(user.value.avatar)
     console.log('準備更新資料')
     const LinkMap = {
       facebook: facebooklink.value.value,
@@ -103,7 +108,26 @@ const updateLink = () => {
           console.log(error)
         })
   }
+}
 
+// 更新背景
+const updateBackgroundPicture = async () => {
+  try {
+    const changeData = {
+      background_image: `${user.value.avatar}`
+    };
+    console.log(changeData)
+    const response = await axios.put(`${URLBack}/update`, changeData, {headers: {'Authorization': token}});
+    console.log(response)
+
+    if (response.data.code === 200) {
+      alert("上傳成功!")
+    } else if (response.data.code === 400) {
+      alert("上傳失敗!請重新嘗試");
+    }
+  } catch (error) {
+    console.error('提交背景圖片時出錯：', error);
+  }
 }
 
 </script>
@@ -235,6 +259,10 @@ const updateLink = () => {
 
         <div style="display: flex; justify-content: center">
           <p style="color: red">{{ message }}</p>
+        </div>
+
+        <div style="display: flex; justify-content:center">
+          <v-btn @click="updateBackgroundPicture">更新背景</v-btn>
         </div>
 
         <avatar-cropper

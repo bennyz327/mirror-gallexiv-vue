@@ -300,8 +300,10 @@ function formatTime(time) {
               <div class="rounded-circle" style="display:flex">
                 <template v-if="loginUserData">
                   <div>
-                    <img :src="loginUserData.avatar" alt="User" width="64" height="64" class="rounded-circle"
+                    <img v-if="loginUserData.avatar" :src="loginUserData.avatar" alt="User" width="64" height="64" class="rounded-circle"
                       style="object-fit:cover;" />
+                    <img v-else src="../assets/Picture/userIcon.png" alt="User" width="64" height="64" class="rounded-circle"
+                         style="object-fit:cover;" />
                   </div>
                 </template>
                 <template v-else>
@@ -332,8 +334,10 @@ function formatTime(time) {
                   <!-- 留言者頭像區塊 -->
                   <div class="follower-avatar-icon-div" style="display: flex">
                     <div class="rounded-circle">
-                      <img :src="comment.userinfoByUserId.avatar" alt="User" width="64" height="64" class="rounded-circle"
+                      <img v-if="comment.userinfoByUserId.avatar" :src="comment.userinfoByUserId.avatar" alt="User" width="64" height="64" class="rounded-circle"
                         style="object-fit:cover;" />
+                      <img v-else src="../assets/Picture/userIcon.png" alt="User" width="64" height="64" class="rounded-circle"
+                           style="object-fit:cover;" />
                     </div>
                     <div class="follower-name-and-account"
                       style="display: flex; height: 64px; line-height: 64px; padding-left: 16px">

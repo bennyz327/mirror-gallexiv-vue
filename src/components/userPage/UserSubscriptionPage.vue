@@ -1,9 +1,9 @@
 <script setup>
 
-import {onMounted, reactive, ref} from "vue";
-import {useUserStore} from "@/store/userStore.js";
+import { onMounted, reactive, ref } from "vue";
+import { useUserStore } from "@/store/userStore.js";
 import axios from "axios";
-import {useRoute} from "vue-router";
+import { useRoute } from "vue-router";
 // 傳回拿到的物件
 const props = defineProps({
   subscriptionList: Array,
@@ -22,10 +22,10 @@ const fetchData = async () => {
   try {
     if (userId.value) {
       console.log(userId.value);
-      const response = await axios.get(`${PLANURL}/personalPlan`, {params: {state: 2, userId: userId.value}})
+      const response = await axios.get(`${PLANURL}/personalPlan`, { params: { state: 2, userId: userId.value } })
       planData.value = response.data.data;
     } else {
-      const response = await axios.get(`${PLANURL}/personalPlan?state=1`, {headers: {'Authorization': token}})
+      const response = await axios.get(`${PLANURL}/personalPlan?state=1`, { headers: { 'Authorization': token } })
       planData.value = response.data.data;
     }
 
@@ -50,14 +50,15 @@ onMounted(() => {
               <div class="col">
                 <div class="card mb-4 rounded-3 shadow-sm">
 
-                  <!-- 圖片 -->
-                  <div class="card-header py-3 custom-header">
-                    <div class="text-center">
-                      <img :src="item.planPicture" class="rounded img-fluid"
-                           style="max-width: 180px; max-height: 120px;"
-                           alt="index">
-                    </div>
+                <!-- 圖片 -->
+                <div class="card-header py-3 custom-header">
+                  <div class="text-center">
+                    <img v-if="item.planPicture" :src="item.planPicture" class="rounded img-fluid" style="max-width: 180px; max-height: 120px;"
+                      alt="index">
+                    <img v-else src="../../assets/Picture/presetPlanIcon.jpg" class="rounded img-fluid" style="max-width: 180px; max-height: 120px;"
+                         alt="index">
                   </div>
+                </div>
 
                   <!-- 內文 -->
                   <div class="card-body">
@@ -93,13 +94,14 @@ onMounted(() => {
                       </div>
                     </ul>
 
-                    <!--TODO 訂閱按鈕(傳遞參數到不同頁面) -->
-                    <router-link :to="'/subscribe/order/'+item.planId">
-                      訂閱
-                    </router-link>
-                    <!--                  <button :id="'subscribeEnterId' + index" type="button"-->
-                    <!--                    class="w-100 btn btn-outline-secondary">訂閱</button>-->
-                  </div>
+                  <!--TODO 訂閱按鈕(傳遞參數到不同頁面) -->
+                  <router-link :to="'/subscribe/order/'+item.planId" >
+                    <button class="btn btn btn-outline-secondary" style="width: 100%">
+                    訂閱
+                    </button>
+                  </router-link>
+<!--                  <button :id="'subscribeEnterId' + index" type="button"-->
+<!--                    class="w-100 btn btn-outline-secondary">訂閱</button>-->
                 </div>
               </div>
             </div>
@@ -107,6 +109,7 @@ onMounted(() => {
         </div>
         <div v-else>
           <div style="display:flex; justify-content: center"><h2>登入查看更多內容</h2></div>
+        </div>
         </div>
       </main>
     </div>

@@ -41,7 +41,9 @@ const sendDataToBackend = (user) => {
             <!-- 留言者頭像區塊 -->
             <div class="creator-avatar-icon-div">
               <div class="rounded-circle" style="display:flex">
-                <img :src="item.userIcon" alt="User" width="64" height="64" class="rounded-circle"
+                <img v-if="item.userIcon" :src="item.userIcon" alt="User" width="64" height="64" class="rounded-circle"
+                     style="object-fit:cover;"/>
+                <img v-else src="../assets/Picture/userIcon.png" alt="User" width="64" height="64" class="rounded-circle"
                      style="object-fit:cover;"/>
               </div>
             </div>

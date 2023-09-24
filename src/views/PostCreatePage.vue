@@ -200,7 +200,7 @@ const planData = ref();
 const selectedPlan = ref();
 const getPlanData = async () => {
   try {
-    const response = await axios.get(`${PLANURL}/personalPlan`, { headers: { 'Authorization': token } })
+    const response = await axios.get(`${PLANURL}/personalPlan?state=1`, { headers: { 'Authorization': token } })
     planData.value = response.data.data;
     console.log(planData.value)
   } catch (error) {

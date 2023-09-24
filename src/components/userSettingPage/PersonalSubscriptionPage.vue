@@ -88,8 +88,10 @@ const isDisabled = () => {
                     <!-- 圖片 -->
                     <div class="card-header py-3 custom-header">
                       <div class="text-center">
-                        <img :src="item.planPicture" class="rounded img-fluid"
+                        <img v-if="item.planPicture" :src="item.planPicture" class="rounded img-fluid"
                           style="max-width: 180px; max-height: 120px;" alt="index">
+                        <img v-else src="../../assets/Picture/presetPlanIcon.jpg" class="rounded img-fluid"
+                             style="max-width: 180px; max-height: 120px;" alt="index">
                       </div>
                     </div>
 

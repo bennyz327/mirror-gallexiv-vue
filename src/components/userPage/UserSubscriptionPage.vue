@@ -21,10 +21,13 @@ const planData = ref();
 const fetchData = async () => {
   try {
     if (userId.value) {
-      console.log(userId.value);
+      console.log("目前方案頁面是別人的，userId為: " + userId.value);
+      // 專屬內容，目前是只找這個人有訂閱狀態的，應改成
       const response = await axios.get(`${PLANURL}/personalPlan`, { params: { state: 2, userId: userId.value } })
       planData.value = response.data.data;
     } else {
+      // 個人首頁，只找本人沒有訂閱狀態的圖
+      console.log("目前為本人的訂閱方案");
       const response = await axios.get(`${PLANURL}/personalPlan?state=1`, { headers: { 'Authorization': token } })
       planData.value = response.data.data;
     }

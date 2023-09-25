@@ -21,7 +21,7 @@ const userId = ref(route.params.userId || '');
 const loadAllPost = async () => {
   try {
     if (userId.value) {
-      //別人的
+      // 他人的專屬頁面
       const postWithPlanResponse = await axios.get(`${POSTURL}`, {
         params: {
           s: 3,

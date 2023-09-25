@@ -53,7 +53,7 @@ const slideTo = (val) => {
         <v-btn @click="prev">Prev</v-btn>
         <div class="val-block">
           <div class="val-div" v-for="(item,index) in items" :key="index" :class="{ 'active': index === currentSlide }">
-            {{ index }}
+            {{ index + 1 }}
           </div>
         </div>
         <v-btn @click="next">Next</v-btn>
@@ -62,7 +62,7 @@ const slideTo = (val) => {
       <div class="carousel-down">
         <Carousel
             id="thumbnails"
-            :items-to-show="3"
+            :items-to-show="2"
             :wrap-around="true"
             slideWidth="120"
             v-model="currentSlide"

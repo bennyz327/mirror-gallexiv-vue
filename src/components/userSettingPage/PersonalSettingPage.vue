@@ -129,6 +129,12 @@ const getUserData = async () => {
       headers: {'Authorization': token}
     });
     getData.value = response.data.data;
+
+    //TODO 治標不治本
+    getData.value.postsListByUserId = [];
+    getData.value.planByPlanId = [];
+
+    console.log(getData.value)
     email.value.value = getData.value.userEmail;
     personalEmail.value = getData.value.userEmail
     personalNickName.value = getData.value.userName;
@@ -210,7 +216,8 @@ const updateData = async () => {
       console.log(response.data.data)
 
     }
-    router.push({name: 'SettingPage'})
+    // router.push({name: 'SettingPage'})
+    window.location.reload();
 
   } catch (error) {
     console.error('提交表单时出错：', error);

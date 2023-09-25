@@ -178,7 +178,7 @@ $(function () {
         if (jQuery.inArray(type, defaults.fileType) > -1) {
           // 類型符合才可上傳
           if (file.size >= defaults.fileSize) {
-            alert(file.size);
+            // alert(file.size);
             alert('檔案名稱: "' + file.name + '"的項目太大');
           } else {
             // 判斷所有文件
@@ -390,7 +390,7 @@ const submitForm = (newImgMap, fileMap) => {
               <div style="margin-top: 8px">
                 <div class="form-check-inline" style="width: 200px">
                   <input class="form-check-input" type="radio" name="planRadio" value="null" id="planNone"
-                    v-model="selectedPlan">
+                    v-model="selectedPlan" checked>
                   <label class="form-check-label" for="planNone" style="margin-left: 8px">
                     無限制
                   </label>

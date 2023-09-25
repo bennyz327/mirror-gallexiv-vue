@@ -96,11 +96,11 @@ const submitForm = async () => {
               <v-form @submit.prevent>
                 <h5 style="text-align: left">標題</h5>
                 <v-text-field v-model="postTitle" :rules="postTitleRules" :counter="30" :maxlength="30" label="標題"
-                  style="width:600px" />
+                  bg-color="white" style="width:600px" />
 
                 <h5 style="text-align: left">內文</h5>
                 <v-textarea v-model="postDescription" :rules="postDescriptionRules" :counter="250" :maxlength="250"
-                  label="敘述你的圖片或相關內容" no-resize style="width:600px" />
+                  label="敘述你的圖片或相關內容" bg-color="white" no-resize style="width:600px" />
               </v-form>
             </v-sheet>
           </div>

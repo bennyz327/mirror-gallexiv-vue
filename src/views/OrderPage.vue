@@ -173,15 +173,16 @@ async function creatOrder(plan) {
             <div class="form-check">
               <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
               <label class="form-check-label" for="flexRadioDefault1">
-                <img src="../assets/Picture/EcpayPicture.png" style="width: 160px;height: 160px; object-fit: cover">
+                綠界金流
+<!--                <img src="../assets/Picture/EcpayPicture.png" style="width: 160px;height: 160px; object-fit: cover">-->
               </label>
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-              <label class="form-check-label" for="flexCheckDisabled">
-                <img src="../assets/Picture/LinePayDisable.png" style="width: 160px;height: 160px; object-fit: cover">
-              </label>
-            </div>
+<!--            <div class="form-check">-->
+<!--              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">-->
+<!--              <label class="form-check-label" for="flexCheckDisabled">-->
+<!--                <img src="../assets/Picture/LinePayDisable.png" style="width: 160px;height: 160px; object-fit: cover">-->
+<!--              </label>-->
+<!--            </div>-->
 
           </div>
 

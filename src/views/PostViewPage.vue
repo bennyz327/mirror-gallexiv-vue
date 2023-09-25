@@ -501,14 +501,20 @@ function formatTime(time) {
               <!-- 頭像 -->
               <div class="author-icon-div">
                 <div class="rounded-circle" style="display:flex">
+                  <router-link :to="'/user/' + postData.userinfoByUserId.userId"
+                               style="text-decoration:none; color:inherit; float: left">
                   <img :src="postData.userinfoByUserId.avatar" alt="User" width="64" height="64" class="rounded-circle"
                     style="object-fit:contain;" />
+                  </router-link>
                 </div>
 
                 <!-- 名稱 -->
                 <div class="author-name-div">
                   <h6 class="ellipsis" id="mainPostUserName">
+                    <router-link :to="'/user/' + postData.userinfoByUserId.userId"
+                                 style="text-decoration:none; color:inherit; float: left">
                     {{ postData.userinfoByUserId.userName }}
+                    </router-link>
                   </h6>
                   <br>
                 </div>
